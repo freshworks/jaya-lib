@@ -3,7 +3,7 @@ import { Action } from './models/rule';
 import {
   ProductEventData,
 } from '@jaya-app/marketplace-models';
-import { FreshchatCredentials } from './models/rule-engine';
+import { Integrations } from './models/rule-engine';
 import ruleConfig from './RuleConfig';
 
 export class ActionExecutor {
@@ -11,15 +11,14 @@ export class ActionExecutor {
    * Calls the appropriate method to perform the action.
    */
   public static handleAction(
-    apiUrl: string,
-    apiToken: string,
+    integrations: Integrations,
     action: Action,
     productEventData: ProductEventData
   ): Promise<object> {
     const actionFunc = ruleConfig.actions && ruleConfig.actions[action.type];
 
     if (actionFunc) {
-      return actionFunc(apiUrl, apiToken, productEventData, action.value);
+      return actionFunc(integrations, productEventData, action.value);
     }
 
     throw new Error('Invalid action type');
@@ -30,7 +29,7 @@ export class ActionExecutor {
    */
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   public static async handleActions(
-    freshchatCredentials: FreshchatCredentials,
+    integrations: Integrations,
     actions: Action[],
     productEventData: ProductEventData
   ) {
@@ -38,8 +37,7 @@ export class ActionExecutor {
       try {
         const action = actions[i];
         await this.handleAction(
-          freshchatCredentials.url,
-          freshchatCredentials.token,
+          integrations,
           action,
           productEventData
         );

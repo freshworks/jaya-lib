@@ -12,7 +12,7 @@ import {
 import { ActionExecutor } from './ActionExecutor';
 import { Rule } from './models/rule';
 import { RuleProcessor } from './RuleProcessor';
-import { KairosCredentials, RuleEngineExternalEventPayload, FreshchatCredentials } from './models/rule-engine';
+import { KairosCredentials, RuleEngineExternalEventPayload, Integrations } from './models/rule-engine';
 
 export class TimerRuleEngine {
   /**
@@ -119,7 +119,7 @@ export class TimerRuleEngine {
     externalEventPayload: RuleEngineExternalEventPayload,
     rules: Rule[],
     kairosCredentials: KairosCredentials,
-    freshchatCredentials: FreshchatCredentials
+    integrations: Integrations
   ): Promise<void> {
     const scheduler = new Kairos(kairosCredentials);
 
@@ -136,7 +136,7 @@ export class TimerRuleEngine {
     // Execute actions
     if (timerRule && Array.isArray(timerRule.actions)) {
       ActionExecutor.handleActions(
-        freshchatCredentials,
+        integrations,
         timerRule.actions,
         externalEventPayload.data.originalPayload.data
       );

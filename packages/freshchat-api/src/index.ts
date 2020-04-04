@@ -1,6 +1,7 @@
 import axios, { AxiosPromise } from 'axios';
 import { Message } from './interfaces/Message';
 import { Conversation } from './interfaces/Conversation';
+import { BusinessHour } from './interfaces/BusinessHour';
 
 export default class Freshchat {
   private get headers(): {
@@ -87,6 +88,19 @@ export default class Freshchat {
         status,
       }),
       { headers: this.headers },
+    );
+  }
+
+  /**
+   * Calls Freshchat Business hours API to get the Business Hours for the account
+   */
+  getBusinessHours(): AxiosPromise<BusinessHour[]> {
+    const businessHoursApiUrl = `${this.apiUrl}/operating_hours_v2`;
+    let headers = this.headers;
+    headers.Authorization = this.apiToken;
+    return axios.get(
+      businessHoursApiUrl,
+      { headers: headers },
     );
   }
 }

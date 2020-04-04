@@ -1,10 +1,10 @@
 import { Event, ProductEventData } from "@jaya-app/marketplace-models";
 import { Condition } from "./rule";
+import { Integrations } from './rule-engine';
 
 export type PluginActions = {
   [key: string]: (
-    freshchatApiUrl: string,
-    freshchatApiToken: string,
+    integrations: Integrations,
     payload: ProductEventData,
     actionValue: any
   ) => Promise<any>

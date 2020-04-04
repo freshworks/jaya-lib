@@ -7,9 +7,16 @@ export interface RuleEngineOptions {
   isSchedulerEnabled: boolean;
 }
 
-export interface FreshchatCredentials {
-  token: string;
-  url: string;
+export interface Integrations {
+  freshchat: {
+    v1: ProductCredentials;
+    v2: ProductCredentials;
+  };
+}
+
+export interface ProductCredentials {
+    token: string;
+    url: string;
 }
 
 export interface RuleEngineExternalEventPayload extends ExternalEventPayload {

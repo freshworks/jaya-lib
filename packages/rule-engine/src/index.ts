@@ -1,6 +1,6 @@
 import {
   RuleEngineOptions,
-  FreshchatCredentials,
+  Integrations,
   RuleEngineExternalEventPayload,
   KairosCredentials,
 } from './models/rule-engine';
@@ -34,7 +34,7 @@ export class RuleEngine {
     payload: ProductEventPayload,
     rules: Rule[],
     options: RuleEngineOptions,
-    freshchatCredentials: FreshchatCredentials,
+    integrations: Integrations,
     kairosCredentials?: KairosCredentials,
   ): void {
     if (options.isSchedulerEnabled && kairosCredentials) {
@@ -62,7 +62,7 @@ export class RuleEngine {
     // Perform all actions sequentially in order.
     if (matchingRuleActions && matchingRuleActions.length) {
       ActionExecutor.handleActions(
-        freshchatCredentials,
+        integrations,
         matchingRuleActions,
         payload.data
       );
@@ -73,7 +73,7 @@ export class RuleEngine {
     payload: RuleEngineExternalEventPayload,
     rules: Rule[],
     options: RuleEngineOptions,
-    freshchatCredentials: FreshchatCredentials,
+    integrations: Integrations,
     kairosCredentials?: KairosCredentials,
   ): void {
     if (options.isSchedulerEnabled && kairosCredentials) {
@@ -81,7 +81,7 @@ export class RuleEngine {
         payload,
         rules,
         kairosCredentials,
-        freshchatCredentials
+        integrations
       );
     }
   }
