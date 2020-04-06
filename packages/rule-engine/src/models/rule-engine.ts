@@ -1,7 +1,7 @@
 import { 
   ExternalEventPayload,
   ProductEventPayload,
-} from '@jaya-app/marketplace-models';
+} from '@freshworks-jaya/marketplace-models';
 
 export interface RuleEngineOptions {
   isSchedulerEnabled: boolean;

@@ -1,6 +1,6 @@
 {
-  "name": "@jaya-app/kairos-api",
-  "version": "0.0.9",
+  "name": "@freshworks-jaya/kairos-api",
+  "version": "0.0.10",
   "description": "Provides simple interface for accessing Kairos's public APIs",
   "repository": "git@github.com:arunrajkumar235/jaya-app.git",
   "main": "lib/index.js",

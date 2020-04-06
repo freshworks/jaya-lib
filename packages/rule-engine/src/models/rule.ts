@@ -22,6 +22,7 @@ export enum ActionType {
   ReOpen = 'REOPEN',
   Resolve = 'RESOLVE',
   SendMessage = 'SEND_MESSAGE',
+  UnassignThenReassignGroup = 'UNASSIGN_THEN_REASSIGN_GROUP',
 }
 export enum ConditionKey {
   AssignedAgent = 'ASSIGNED_AGENT',

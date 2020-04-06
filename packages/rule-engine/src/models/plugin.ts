@@ -1,4 +1,4 @@
-import { Event, ProductEventData } from "@jaya-app/marketplace-models";
+import { Event, ProductEventData } from "@freshworks-jaya/marketplace-models";
 import { Condition } from "./rule";
 
 export type PluginActions = {
@@ -22,9 +22,14 @@ export type PluginConditions = {
   [key: string]: (condition: Condition, productEventData: ProductEventData) => boolean;
 }
 
+export type PluginPlaceholders = {
+  [key: string]: string;
+}
+
 export interface RulePlugin {
   actions?: PluginActions;
   operators?: PluginOperators;
   triggerActions?: PluginTriggerActions;
   conditions?: PluginConditions;
+  placeholders?: PluginPlaceholders;
 }

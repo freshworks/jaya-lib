@@ -1,6 +1,6 @@
 {
-  "name": "@jaya-app/firebase-remote-config",
-  "version": "0.0.13",
+  "name": "@freshworks-jaya/firebase-remote-config",
+  "version": "0.0.14",
   "description": "Provides simple interface for accessing Firebase Remote Config",
   "repository": "git@github.com:arunrajkumar235/jaya-app.git",
   "main": "lib/index.js",
