@@ -5,6 +5,7 @@ import recommendedPlugins from '../src/recommended/index';
 import { RuleProcessor } from '../src/RuleProcessor';
 import { Event, ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { Rule } from '../src/models/rule';
+import { Integrations } from '../src/models/rule-engine';
 
 describe('RuleProcessor test', () => {
   describe('getFirstMatchingRule', () => {
@@ -94,6 +95,17 @@ describe('RuleProcessor test', () => {
       }
     };
 
+    const integrations = {
+      freshchat: {
+        v2: {
+          freshchatApiUrl: 'https://api.freshchat.com/v2',
+        },
+        v1: {
+          freshchatApiUrl: 'https://api.freshchat.com/app/services/app/v1',
+        },
+      },
+    };
+
     const rules = [
       {
         "name": "When agent says hi in a particular channel",
@@ -128,7 +140,8 @@ describe('RuleProcessor test', () => {
       assert.notOk(RuleProcessor.getFirstMatchingRule(
         Event.MessageCreate,
         productEventData as any as ProductEventData,
-        []));
+        [],
+        integrations as any as Integrations));
     });
 
     it('should match rule with channel condition', () => {
@@ -136,7 +149,8 @@ describe('RuleProcessor test', () => {
         RuleProcessor.getFirstMatchingRule(
           Event.MessageCreate,
           productEventData as any as ProductEventData,
-          rules as any as Rule[]
+          rules as any as Rule[],
+          integrations as any as Integrations
         )
       );
     });

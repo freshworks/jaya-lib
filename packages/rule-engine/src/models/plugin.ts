@@ -19,7 +19,7 @@ export type PluginTriggerActions = {
 }
 
 export type PluginConditions = {
-  [key: string]: (condition: Condition, productEventData: ProductEventData) => boolean;
+  [key: string]: (condition: Condition, productEventData: ProductEventData, integrations: Integrations) => boolean;
 }
 
 export type PluginPlaceholders = {

@@ -1,6 +1,7 @@
 import { RuleEngine, Rule } from '../src/index';
 import 'mocha';
 import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
+import { Integrations } from '../src/models/rule-engine';
 
 describe('RuleEngine test', () => {
   const ruleEngine = new RuleEngine();
@@ -90,6 +91,17 @@ describe('RuleEngine test', () => {
     "timestamp": 1586149300632
   };
 
+  const integrations = {
+    freshchat: {
+      v2: {
+        freshchatApiUrl: 'https://api.freshchat.com/v2',
+      },
+      v1: {
+        freshchatApiUrl: 'https://api.freshchat.com/app/services/app/v1',
+      },
+    },
+  };
+
   const rules = [
     {
       "blocks": [
@@ -133,10 +145,7 @@ describe('RuleEngine test', () => {
         {
           isSchedulerEnabled: false
         },
-        {
-          url: 'some-freshchat-url',
-          token: 'some-freshchat-token'
-        });
+        integrations as any as Integrations);
     });
   });
 });

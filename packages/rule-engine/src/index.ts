@@ -52,7 +52,8 @@ export class RuleEngine {
       // Process all timer rules.
       TimerRuleEngine.triggerTimers(
         payload,
-        kairosCredentials
+        kairosCredentials,
+        integrations
       );
     }
 
@@ -60,7 +61,8 @@ export class RuleEngine {
     const firstMatchingRule: Rule | null = RuleProcessor.getFirstMatchingRule(
       payload.event,
       payload.data,
-      rules
+      rules,
+      integrations,
     );
 
     // Perform all actions sequentially in order.

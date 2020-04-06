@@ -14,6 +14,7 @@ import {
   TriggerAction,
   TriggerActor,
 } from './models/rule';
+import { Integrations } from './models/rule-engine';
 
 import ruleConfig from './RuleConfig';
 
@@ -23,12 +24,13 @@ export class RuleProcessor {
    */
   public static isConditionMatching(
     productEventData: ProductEventData,
-    condition: Condition
+    condition: Condition,
+    integrations: Integrations,
   ): boolean {
     const conditionFunc = ruleConfig.conditions && ruleConfig.conditions[condition.key];
 
     if (conditionFunc) {
-      return conditionFunc(condition, productEventData);
+      return conditionFunc(condition, productEventData, integrations);
     }
     throw new Error('Invalid condition key');
   }
@@ -38,13 +40,15 @@ export class RuleProcessor {
    */
   public static blockMatchAll(
     productEventData: ProductEventData,
-    conditions: Condition[]
+    conditions: Condition[],
+    integrations: Integrations,
   ): boolean {
     for (let i = 0; conditions && i < conditions.length; i += 1) {
       const condition = conditions[i];
       const conditionMatchResult: boolean = this.isConditionMatching(
         productEventData,
-        condition
+        condition,
+        integrations
       );
 
       if (!conditionMatchResult) {
@@ -60,13 +64,15 @@ export class RuleProcessor {
    */
   public static blockMatchAny(
     productEventData: ProductEventData,
-    conditions: Condition[]
+    conditions: Condition[],
+    integrations: Integrations,
   ): boolean {
     for (let i = 0; conditions && i < conditions.length; i += 1) {
       const condition = conditions[i];
       const conditionMatchResult: boolean = this.isConditionMatching(
         productEventData,
-        condition
+        condition,
+        integrations
       );
 
       if (conditionMatchResult) {
@@ -82,7 +88,8 @@ export class RuleProcessor {
    */
   public static isBlockMatching(
     productEventData: ProductEventData,
-    block: Block
+    block: Block,
+    integrations: Integrations,
   ): boolean {
     // Block is matching when there are no block conditions
     if (!block || !block.conditions || !block.conditions.length) {
@@ -91,9 +98,9 @@ export class RuleProcessor {
 
     switch (block.matchType) {
       case MatchType.All:
-        return this.blockMatchAll(productEventData, block.conditions);
+        return this.blockMatchAll(productEventData, block.conditions, integrations);
       case MatchType.Any:
-        return this.blockMatchAny(productEventData, block.conditions);
+        return this.blockMatchAny(productEventData, block.conditions, integrations);
       default:
         throw new Error('Invalid conditions matchType');
     }
@@ -165,13 +172,15 @@ export class RuleProcessor {
    */
   public static ruleMatchAll(
     productEventData: ProductEventData,
-    blocks: Block[]
+    blocks: Block[],
+    integrations: Integrations,
   ): boolean {
     for (let i = 0; blocks && i < blocks.length; i += 1) {
       const block = blocks[i];
       const blockMatchResult: boolean = this.isBlockMatching(
         productEventData,
-        block
+        block,
+        integrations
       );
 
       if (!blockMatchResult) {
@@ -186,13 +195,15 @@ export class RuleProcessor {
    */
   public static ruleMatchAny(
     productEventData: ProductEventData,
-    blocks: Block[]
+    blocks: Block[],
+    integrations: Integrations,
   ): boolean {
     for (let i = 0; blocks && i < blocks.length; i += 1) {
       const block = blocks[i];
       const blockMatchResult: boolean = this.isBlockMatching(
         productEventData,
-        block
+        block,
+        integrations
       );
 
       if (blockMatchResult) {
@@ -207,7 +218,8 @@ export class RuleProcessor {
    */
   public static isRuleBlocksMatching(
     productEventData: ProductEventData,
-    rule: Rule
+    rule: Rule,
+    integrations: Integrations,
   ): boolean {
     // Rule is matching if there are no blocks
     if (!rule.blocks || !rule.blocks.length) {
@@ -216,9 +228,9 @@ export class RuleProcessor {
 
     switch (rule.matchType) {
       case MatchType.All:
-        return this.ruleMatchAll(productEventData, rule.blocks);
+        return this.ruleMatchAll(productEventData, rule.blocks, integrations);
       case MatchType.Any:
-        return this.ruleMatchAny(productEventData, rule.blocks);
+        return this.ruleMatchAny(productEventData, rule.blocks, integrations);
       default:
         throw new Error('Invalid blocks matchType');
     }
@@ -230,7 +242,8 @@ export class RuleProcessor {
   public static isRuleMatching(
     event: Event,
     productEventData: ProductEventData,
-    rule: Rule
+    rule: Rule,
+    integrations: Integrations,
   ): boolean {
     const isTriggerConditionMatch: boolean = this.isTriggerConditionMatching(
       event,
@@ -243,7 +256,7 @@ export class RuleProcessor {
       return false;
     }
 
-    return this.isRuleBlocksMatching(productEventData, rule);
+    return this.isRuleBlocksMatching(productEventData, rule, integrations);
   }
 
   /**
@@ -259,7 +272,8 @@ export class RuleProcessor {
   public static getFirstMatchingRule(
     event: Event,
     productEventData: ProductEventData,
-    rules: Rule[]
+    rules: Rule[],
+    integrations: Integrations,
   ): Rule | null {
     let firstMatchingRule: Rule | null = null;
 
@@ -268,7 +282,7 @@ export class RuleProcessor {
 
       if (
         this.isEnabledNonTimerRule(currentRule) &&
-        this.isRuleMatching(event, productEventData, currentRule)
+        this.isRuleMatching(event, productEventData, currentRule, integrations)
       ) {
         firstMatchingRule = currentRule;
         break;

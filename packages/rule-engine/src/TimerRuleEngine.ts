@@ -28,12 +28,13 @@ export class TimerRuleEngine {
   public static isMatchingTimerRule(
     event: Event,
     productEventData: ProductEventData,
-    rule: Rule
+    rule: Rule,
+    integrations: Integrations,
   ): boolean {
     return (
       rule.isTimer &&
       rule.isEnabled &&
-      RuleProcessor.isRuleMatching(event, productEventData, rule)
+      RuleProcessor.isRuleMatching(event, productEventData, rule, integrations)
     );
   }
 
@@ -52,6 +53,7 @@ export class TimerRuleEngine {
   public static async triggerTimers(
     payload: ProductEventPayload,
     kairosCredentials: KairosCredentials,
+    integrations: Integrations,
   ): Promise<void> {
     let schedulesToCreate: KairosScheduleOptions[] = [];
     const scheduler = new Kairos(kairosCredentials);
@@ -67,7 +69,7 @@ export class TimerRuleEngine {
       const modelProperties = this.getModelProperties(payload.data);
 
       // Check for timer rules that are enabled and are matching the trigger conditions.
-      if (this.isMatchingTimerRule(payload.event, payload.data, rule)) {
+      if (this.isMatchingTimerRule(payload.event, payload.data, rule, integrations)) {
         const jobId = `${modelProperties.app_id}_${modelProperties.conversation_id}_${ruleIndex}`;
 
         // Fetch an existing schedule for the same current rule,
