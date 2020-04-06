@@ -1,6 +1,8 @@
 import axios, { AxiosPromise } from 'axios';
 import { Message } from './interfaces/Message';
-import { Conversation } from './interfaces/Conversation';
+import { Conversation, ConversationStatus } from './interfaces/Conversation';
+export * from './interfaces/Conversation';
+export * from './interfaces/Message';
 
 export default class Freshchat {
   private get headers(): {
@@ -22,6 +24,7 @@ export default class Freshchat {
     conversationId: string,
     resourceId: string,
     assignTo: 'agent' | 'group',
+    status: ConversationStatus,
   ): AxiosPromise<Conversation> {
     const conversationAssignApiUrl = `${this.apiUrl}/conversations/${conversationId}`;
     const data: {
@@ -29,19 +32,14 @@ export default class Freshchat {
       assigned_group_id?: string;
       status: string;
     } = {
-      status: 'assigned',
+      status: status,
     };
 
-    switch (assignTo) {
-      case 'agent':
-        data.assigned_agent_id = resourceId;
-        break;
-      case 'group':
-        data.status = 'new';
-        data.assigned_group_id = resourceId;
-        break;
-      default:
-        break;
+    if (assignTo === 'agent') {
+      data.assigned_agent_id = resourceId;
+    }
+    if (assignTo === 'group') {
+      data.assigned_group_id = resourceId;
     }
 
     return axios.put(conversationAssignApiUrl, JSON.stringify(data), {
@@ -90,3 +88,5 @@ export default class Freshchat {
     );
   }
 }
+
+

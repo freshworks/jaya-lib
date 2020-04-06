@@ -1,5 +1,5 @@
-import { ProductEventData } from "@jaya-app/marketplace-models";
-import Freshchat from '@jaya-app/freshchat-api';
+import { ProductEventData, ConversationStatus } from "@freshworks-jaya/marketplace-models";
+import Freshchat from '@freshworks-jaya/freshchat-api';
 
 export default (
   freshchatApiUrl: string,
@@ -12,9 +12,16 @@ export default (
     productEventData.conversation || productEventData.message;
   const conversationId = modelProperties.conversation_id;
 
+  let assignedGroupId = actionValue as string;
+
+  if (actionValue === '-1') {
+    assignedGroupId = '';
+  }
+
   return freshchat.conversationAssign(
     conversationId,
-    actionValue,
-    'group'
+    assignedGroupId,
+    'group',
+    ConversationStatus.New
   );
 } 

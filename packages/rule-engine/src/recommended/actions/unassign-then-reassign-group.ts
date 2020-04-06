@@ -12,8 +12,21 @@ export default (
     productEventData.conversation || productEventData.message;
   const conversationId = modelProperties.conversation_id;
 
-  return freshchat.conversationStatusUpdate(
-    conversationId,
-    ConversationStatus.New
-  );
+  if (modelProperties.assigned_group_id) {
+    return freshchat.conversationAssign(
+      conversationId,
+      '',
+      'agent',
+      ConversationStatus.New
+    ).then(() => {
+      return freshchat.conversationAssign(
+        conversationId,
+        modelProperties.assigned_group_id,
+        'group',
+        ConversationStatus.Assigned
+      );
+    });
+  }
+    
+  return Promise.reject();
 } 

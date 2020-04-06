@@ -1,13 +1,13 @@
 import { Condition } from "../../models/rule";
-import { ProductEventData, MessagePart } from "@jaya-app/marketplace-models";
+import { ProductEventData, MessagePart } from "@freshworks-jaya/marketplace-models";
 import { Utils } from '../../Utils';
 
 /**
  * Gets a concatenated string of messageParts with type 'text'.
  */
-function getMessagePartsTextContent(
+const getMessagePartsTextContent = (
   messageParts: MessagePart[]
-): string {
+): string => {
   let messageContent = '';
 
   if (messageParts && messageParts.length) {

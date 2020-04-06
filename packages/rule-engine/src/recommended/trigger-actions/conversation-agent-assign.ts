@@ -1,4 +1,4 @@
-import { Event, ProductEventData, ConversationStatus } from "@jaya-app/marketplace-models";
+import { Event, ProductEventData, ConversationStatus } from "@freshworks-jaya/marketplace-models";
 
 export default (productEvent: Event, productEventData: ProductEventData): boolean => {
   const modelProperties = productEventData.conversation || productEventData.message;

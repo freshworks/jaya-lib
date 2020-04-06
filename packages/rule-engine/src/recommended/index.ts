@@ -5,11 +5,11 @@ import { ConditionOperator, TriggerAction, ActionType, ConditionKey } from "../m
 import startsWith from './operators/starts-with';
 import endsWith from './operators/ends-with';
 import contains from './operators/contains';
-import doesNotContain from './operators/starts-with';
-import equals from './operators/ends-with';
-import notEquals from './operators/contains';
-import set from './operators/starts-with';
-import notSet from './operators/ends-with';
+import doesNotContain from './operators/does-not-contain';
+import equals from './operators/equals';
+import notAtAllEquals from './operators/not-equals';
+import set from './operators/set';
+import notSet from './operators/not-set';
 
 // Import all trigger actions
 import conversationAgentAssign from './trigger-actions/conversation-agent-assign';
@@ -35,6 +35,7 @@ import assignedGroup from './conditions/assigned-group';
 import assignedAgent from './conditions/assigned-agent';
 import responseDueType from './conditions/response-due-type';
 import userProperty from './conditions/user-property';
+import unassignThenReassignGroup from "./actions/unassign-then-reassign-group";
 
 const recommendedPlugins: RulePlugin[] = [
   {
@@ -53,7 +54,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionOperator.Contains]: contains,
       [ConditionOperator.DoesNotContain]: doesNotContain,
       [ConditionOperator.Equals]: equals,
-      [ConditionOperator.NotEquals]: notEquals,
+      [ConditionOperator.NotEquals]: notAtAllEquals,
       [ConditionOperator.Set]: set,
       [ConditionOperator.NotSet]: notSet
     },
@@ -71,7 +72,8 @@ const recommendedPlugins: RulePlugin[] = [
       [ActionType.Resolve]: resolve,
       [ActionType.AssignToGroup]: assignToGroup,
       [ActionType.AssignToAgent]: assignToAgent,
-      [ActionType.SendMessage]: sendMessage
+      [ActionType.SendMessage]: sendMessage,
+      [ActionType.UnassignThenReassignGroup]: unassignThenReassignGroup
     }
   }
 ];

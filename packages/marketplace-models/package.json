@@ -1,6 +1,6 @@
 {
-  "name": "@jaya-app/marketplace-models",
-  "version": "0.0.11",
+  "name": "@freshworks-jaya/marketplace-models",
+  "version": "0.0.12",
   "description": "Provides type definitions for models in marketplace product events",
   "repository": "git@github.com:arunrajkumar235/jaya-app.git",
   "main": "lib/index.js",
