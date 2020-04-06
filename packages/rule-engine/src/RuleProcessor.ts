@@ -1,9 +1,9 @@
 // Simple library to process the rules
-import { Event } from '@jaya-app/marketplace-models';
+import { Event } from '@freshworks-jaya/marketplace-models';
 import {
   ActorType,
   ProductEventData,
-} from '@jaya-app/marketplace-models';
+} from '@freshworks-jaya/marketplace-models';
 import {
   Action,
   Block,
@@ -256,11 +256,11 @@ export class RuleProcessor {
   /**
    * Iterates through each rule and return the actions of the first matching rule.
    */
-  public static processRules(
+  public static getFirstMatchingRule(
     event: Event,
     productEventData: ProductEventData,
     rules: Rule[]
-  ): Action[] {
+  ): Rule | null {
     let firstMatchingRule: Rule | null = null;
 
     for (let i = 0; rules && i < rules.length; i += 1) {
@@ -275,6 +275,6 @@ export class RuleProcessor {
       }
     }
 
-    return (firstMatchingRule && firstMatchingRule.actions) || [];
+    return firstMatchingRule;
   }
 }

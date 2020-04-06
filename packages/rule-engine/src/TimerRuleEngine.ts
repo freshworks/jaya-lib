@@ -1,14 +1,14 @@
 import Kairos, {
   KairosSchedule,
   KairosScheduleOptions,
-} from '@jaya-app/kairos-api';
+} from '@freshworks-jaya/kairos-api';
 import {
   Event,
   ExternalEventPayload,
   ProductEventPayload,
   ProductEventData,
   ModelProperties
-} from '@jaya-app/marketplace-models';
+} from '@freshworks-jaya/marketplace-models';
 import { ActionExecutor } from './ActionExecutor';
 import { Rule } from './models/rule';
 import { RuleProcessor } from './RuleProcessor';

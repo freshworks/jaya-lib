@@ -1,6 +1,8 @@
-import { ProductEventData } from "@jaya-app/marketplace-models";
-import Freshchat from '@jaya-app/freshchat-api';
-import { Placeholder } from '../../Placeholder';
+import { ProductEventData } from "@freshworks-jaya/marketplace-models";
+import Freshchat from '@freshworks-jaya/freshchat-api';
+import { Utils } from '../../Utils';
+import ruleConfig from "../../RuleConfig";
+import { PluginPlaceholders } from "../../models/plugin";
 import { Integrations } from '../../models/rule-engine';
 
 export default (
@@ -17,10 +19,7 @@ export default (
 
   return freshchat.postMessage(
     conversationId,
-    Placeholder.findAndReplacePlaceholders(
-      productEventData,
-      actionValue
-    ),
+    Utils.findAndReplacePlaceholders(actionValue, ruleConfig.placeholders as PluginPlaceholders),
     'normal'
   );
 } 

@@ -1,5 +1,5 @@
-import { ProductEventData, ConversationStatus } from "@jaya-app/marketplace-models";
-import Freshchat from '@jaya-app/freshchat-api';
+import { ProductEventData, ConversationStatus } from "@freshworks-jaya/marketplace-models";
+import Freshchat from '@freshworks-jaya/freshchat-api';
 import { Integrations } from '../../models/rule-engine';
 
 export default (

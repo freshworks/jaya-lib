@@ -7,9 +7,9 @@ import {
 
 import {
   ProductEventPayload,
-} from '@jaya-app/marketplace-models';
+} from '@freshworks-jaya/marketplace-models';
 
-import { Rule, Action } from './models/rule';
+import { Rule } from './models/rule';
 import { RulePlugin } from './models/plugin';
 import { RuleProcessor } from './RuleProcessor';
 import { ActionExecutor } from './ActionExecutor';
@@ -30,13 +30,17 @@ export class RuleEngine {
     }
   };
 
-  processProductEvent(
+  registerPlugins = ruleConfig.registerPlugins;
+  getFirstMatchingRule = RuleProcessor.getFirstMatchingRule;
+  executeActions = ActionExecutor.handleActions;
+
+  processProductEvent = (
     payload: ProductEventPayload,
     rules: Rule[],
     options: RuleEngineOptions,
     integrations: Integrations,
     kairosCredentials?: KairosCredentials,
-  ): void {
+  ): void => {
     if (options.isSchedulerEnabled && kairosCredentials) {
       // Invalidate exising schedules
       TimerRuleEngine.invalidateTimers(
@@ -53,29 +57,29 @@ export class RuleEngine {
     }
 
     // Process regular rules and get the actions of the first matching rule.
-    const matchingRuleActions: Action[] = RuleProcessor.processRules(
+    const firstMatchingRule: Rule | null = RuleProcessor.getFirstMatchingRule(
       payload.event,
       payload.data,
       rules
     );
 
     // Perform all actions sequentially in order.
-    if (matchingRuleActions && matchingRuleActions.length) {
+    if (firstMatchingRule && firstMatchingRule.actions && firstMatchingRule.actions.length) {
       ActionExecutor.handleActions(
         integrations,
-        matchingRuleActions,
+        firstMatchingRule.actions,
         payload.data
       );
     }
   }
 
-  processExternalEvent(
+  processExternalEvent = (
     payload: RuleEngineExternalEventPayload,
     rules: Rule[],
     options: RuleEngineOptions,
     integrations: Integrations,
     kairosCredentials?: KairosCredentials,
-  ): void {
+  ): void => {
     if (options.isSchedulerEnabled && kairosCredentials) {
       TimerRuleEngine.executeTimerActions(
         payload,

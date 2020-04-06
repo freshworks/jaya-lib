@@ -1,5 +1,5 @@
 import { Condition } from "../../models/rule";
-import { ProductEventData } from "@jaya-app/marketplace-models";
+import { ProductEventData } from "@freshworks-jaya/marketplace-models";
 import { Utils } from '../../Utils';
 
 export default (condition: Condition, productEventData: ProductEventData): boolean => {

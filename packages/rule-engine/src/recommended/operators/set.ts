@@ -1,3 +1,3 @@
-export default function startsWith (op1: string, op2: string): boolean {
+export default (op1: string, op2: string): boolean => {
   return !!op1;
 }

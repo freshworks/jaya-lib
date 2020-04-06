@@ -1,4 +1,4 @@
-import { Event, ProductEventData, MessageType } from "@jaya-app/marketplace-models";
+import { Event, ProductEventData, MessageType } from "@freshworks-jaya/marketplace-models";
 
 export default (productEvent: Event, productEventData: ProductEventData): boolean => {
   return (

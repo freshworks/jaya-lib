@@ -1,15 +1,15 @@
 import { Condition, UserConditionValue, ConditionOperator } from "../../models/rule";
-import { ProductEventData, User } from "@jaya-app/marketplace-models";
+import { ProductEventData, User } from "@freshworks-jaya/marketplace-models";
 import { Utils } from '../../Utils';
 
 /**
  * Check if the given userProperty condition is satisfied by the userObj.
  */
-function evaluateUserPropertyCondition(
+const evaluateUserPropertyCondition = (
   operator: ConditionOperator,
   userObj: User,
   conditionValue: UserConditionValue
-): boolean {
+): boolean => {
   // Return false if there are no user properties
   if (!userObj.properties) {
     return false;
