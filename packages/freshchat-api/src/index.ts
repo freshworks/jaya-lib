@@ -87,19 +87,6 @@ export default class Freshchat {
       { headers: this.headers },
     );
   }
-
-  /**
-   * Calls Freshchat Business hours API to get the Business Hours for the account
-   */
-  getBusinessHours(): AxiosPromise<BusinessHour[]> {
-    const businessHoursApiUrl = `${this.apiUrl}/operating_hours_v2`;
-    let headers = this.headers;
-    headers.Authorization = this.apiToken;
-    return axios.get(
-      businessHoursApiUrl,
-      { headers: headers },
-    );
-  }
 }
 
 
