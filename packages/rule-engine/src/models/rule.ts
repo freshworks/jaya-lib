@@ -32,6 +32,7 @@ export enum ConditionKey {
   ResponseDueType = 'RESPONSE_DUE_TYPE',
   Status = 'STATUS',
   UserProperty = 'USER_PROPERTY',
+  BusinessHours = 'BUSINESS_HOURS',
 }
 export enum ConditionOperator {
   Contains = 'CONTAINS',
@@ -42,6 +43,8 @@ export enum ConditionOperator {
   NotSet = 'NOT_SET',
   Set = 'SET',
   StartsWith = 'STARTS_WITH',
+  WithinBusinessHours = 'WITHIN_BUSINESS_HOURS',
+  OutsideBusinessHours = 'OUTSIDE_BUSINESS_HOURS',
 }
 export enum ResponseDueTypeValue {
   FirstResponseDue = 'FIRST_RESPONSE_DUE',
