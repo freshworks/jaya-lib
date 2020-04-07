@@ -534,11 +534,66 @@ describe('RuleProcessor test', () => {
       assert.isFalse(
         RuleProcessor.blockMatchAll(
           productEventData as any as ProductEventData,
-          [{
-            "key": "CHANNEL",
-            "operator": "NOT_EQUALS",
-            "value": "6ae7cb7a-68cb-4713-9f3d-16db9a177d76"
-          }] as any as Condition[]
+          [
+            {
+              "key": "MESSAGE_TEXT",
+              "operator": "ENDS_WITH",
+              "value": "hi"
+            },
+            {
+              "key": "MESSAGE_TEXT",
+              "operator": "STARTS_WITH",
+              "value": "hi"
+            },
+            {
+              "key": "MESSAGE_TEXT",
+              "operator": "CONTAINS",
+              "value": "hi"
+            },
+            {
+              "key": "MESSAGE_TEXT",
+              "operator": "SET"
+            },
+            {
+              "key": "MESSAGE_TEXT",
+              "operator": "DOES_NOT_CONTAIN",
+              "value": "no"
+            },
+            {
+              "key": "ASSIGNED_GROUP",
+              "operator": "NOT_SET"
+            },
+            {
+              "key": "ASSIGNED_AGENT",
+              "operator": "NOT_SET"
+            },
+            {
+              "key": "RESPONSE_DUE_TYPE",
+              "operator": "EQUALS",
+              "value": "NO_RESPONSE_DUE"
+            },
+            {
+              "key": "STATUS",
+              "operator": "EQUALS",
+              "value": "NEW"
+            },
+            {
+              "key": "USER_PROPERTY",
+              "operator": "EQUALS",
+              "value": {
+                "propertyKey": "fc_user_timezone",
+                "propertyValue": "Asia/Calcutta"
+              }
+            },
+            {
+              "key": "USER_PROPERTY",
+              "operator": "NOT_EQUALS",
+              "value": {
+                "propertyKey": "plan",
+                "propertyValue": "garden"
+              }
+            }
+        ] as any as Condition[]
         )
       );
     });

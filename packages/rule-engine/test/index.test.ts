@@ -1,9 +1,9 @@
 import { RuleEngine, Rule } from '../src/index';
-import 'mocha';
 import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
+import 'mocha';
+import { assert } from 'chai';
 
 describe('RuleEngine test', () => {
-  const ruleEngine = new RuleEngine();
   const productEventPayload = {
     "data": {
       "actor": {
@@ -125,8 +125,19 @@ describe('RuleEngine test', () => {
     }
   ];
 
+  describe('invokes RuleEngine constructor with plugins', () => {
+    const ruleEngine = new RuleEngine([{
+      placeholders: {
+        'user.first_name': 'some-name'
+      }
+    }]);
+
+    assert.ok(ruleEngine);
+  });
+
   describe('processProductEvent', () => {
     it('triggers processProductEvent function with params', () => {
+      const ruleEngine = new RuleEngine();
       ruleEngine.processProductEvent(
         productEventPayload as any as ProductEventPayload,
         rules as any as Rule[],
