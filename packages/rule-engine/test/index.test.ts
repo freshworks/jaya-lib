@@ -144,6 +144,7 @@ describe('RuleEngine test', () => {
         {
           isSchedulerEnabled: false
         },
+        'some-external-event-url',
         {
           url: 'some-freshchat-url',
           token: 'some-freshchat-token'
