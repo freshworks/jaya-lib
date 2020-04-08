@@ -1,5 +1,6 @@
 import { Event, ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { Condition } from './rule';
+import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 
 export type PluginActions = {
   [key: string]: (
@@ -22,14 +23,10 @@ export type PluginConditions = {
   [key: string]: (condition: Condition, productEventData: ProductEventData) => boolean;
 };
 
-export type PluginPlaceholders = {
-  [key: string]: string;
-};
-
 export interface RulePlugin {
   actions?: PluginActions;
   conditions?: PluginConditions;
   operators?: PluginOperators;
-  placeholders?: PluginPlaceholders;
+  placeholders?: PlaceholdersMap;
   triggerActions?: PluginTriggerActions;
 }

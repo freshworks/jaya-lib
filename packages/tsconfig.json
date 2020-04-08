@@ -10,6 +10,7 @@
     { "path": "freshchat-api/src" },
     { "path": "kairos-api/src" },
     { "path": "marketplace-models/src" },
-    { "path": "rule-engine/src" }
+    { "path": "rule-engine/src" },
+    { "path": "utilities/src" }
   ]
 }

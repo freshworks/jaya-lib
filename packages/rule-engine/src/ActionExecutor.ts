@@ -3,7 +3,7 @@ import { ProductEventData, User, ActorType, Agent, Group } from '@freshworks-jay
 import { Action } from './models/rule';
 import { FreshchatCredentials } from './models/rule-engine';
 import ruleConfig from './RuleConfig';
-import { PluginPlaceholders } from './models/plugin';
+import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Utils } from './Utils';
 
 export class ActionExecutor {
@@ -59,7 +59,7 @@ export class ActionExecutor {
       'user.id': user.id,
       'user.last_name': user.last_name,
       'user.phone': user.phone,
-    } as PluginPlaceholders;
+    } as PlaceholdersMap;
 
     if (Utils.isUsernameGenerated(user.first_name || '')) {
       placeholders['user.first_name'] = '';
@@ -72,7 +72,7 @@ export class ActionExecutor {
     ]);
 
     // Register dynamic placeholders
-    const dynamicPlaceholders: PluginPlaceholders = {};
+    const dynamicPlaceholders: PlaceholdersMap = {};
     user.properties &&
       user.properties.forEach((userProperty) => {
         const placeholderKey = `user.properties.${userProperty.name}`;
