@@ -16,10 +16,10 @@ describe('api.conversation-status-update', () => {
     beforeEach(() => {
       // SET UP expected request
       res = {
-        conversation_id: '1',
         app_id: '<test-app-id>',
-        status: ConversationStatus.New,
         channel_id: '<test-channel-id>',
+        conversation_id: '1',
+        status: ConversationStatus.New,
       };
 
       nock('https://test.freshchat.com').put('/conversations/1').reply(200, res);

@@ -40,26 +40,26 @@ export class ActionExecutor {
 
     // Register static placeholders
     const placeholders = {
-      'agent.email': agent.email || '',
-      'agent.first_name': agent.first_name || '',
-      'agent.id': agent.id || '',
-      'agent.last_name': agent.last_name || '',
-      'channel.id': channel.id || '',
-      'channel.name': channel.name || '',
-      'conversation.app_id': conversation.app_id || '',
-      'conversation.assigned_agent_id': conversation.assigned_group_id || '',
-      'conversation.assigned_group_id': conversation.assigned_group_id || '',
-      'conversation.id': conversation.conversation_id || '',
-      'conversation.status': conversation.status || '',
-      'group.id': group.id || '',
-      'group.description': group.description || '',
-      'group.name': group.name || '',
-      'user.email': user.email || '',
-      'user.first_name': user.first_name || '',
-      'user.id': user.id || '',
-      'user.last_name': user.last_name || '',
-      'user.phone': user.phone || '',
-    };
+      'agent.email': agent.email,
+      'agent.first_name': agent.first_name,
+      'agent.id': agent.id,
+      'agent.last_name': agent.last_name,
+      'channel.id': channel.id,
+      'channel.name': channel.name,
+      'conversation.app_id': conversation.app_id,
+      'conversation.assigned_agent_id': conversation.assigned_group_id,
+      'conversation.assigned_group_id': conversation.assigned_group_id,
+      'conversation.id': conversation.conversation_id,
+      'conversation.status': conversation.status,
+      'group.description': group.description,
+      'group.id': group.id,
+      'group.name': group.name,
+      'user.email': user.email,
+      'user.first_name': user.first_name,
+      'user.id': user.id,
+      'user.last_name': user.last_name,
+      'user.phone': user.phone,
+    } as PluginPlaceholders;
 
     if (Utils.isUsernameGenerated(user.first_name || '')) {
       placeholders['user.first_name'] = '';

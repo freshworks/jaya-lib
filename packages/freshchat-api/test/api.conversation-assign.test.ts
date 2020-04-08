@@ -16,11 +16,11 @@ describe('api.conversation-assign', () => {
     beforeEach(() => {
       // SET UP expected request
       res = {
-        conversation_id: '1',
         app_id: '<test-app-id>',
-        status: ConversationStatus.Assigned,
-        channel_id: '<test-channel-id>',
         assigned_agent_id: '<asigned-agent-id>',
+        channel_id: '<test-channel-id>',
+        conversation_id: '1',
+        status: ConversationStatus.Assigned,
       };
 
       nock('https://test.freshchat.com').put('/conversations/1').reply(200, res);
@@ -44,11 +44,11 @@ describe('api.conversation-assign', () => {
     beforeEach(() => {
       // SET UP expected request
       res = {
-        conversation_id: '1',
         app_id: '<test-app-id>',
-        status: ConversationStatus.Assigned,
-        channel_id: '<test-channel-id>',
         assigned_group_id: '<asigned-group-id>',
+        channel_id: '<test-channel-id>',
+        conversation_id: '1',
+        status: ConversationStatus.Assigned,
       };
 
       nock('https://test.freshchat.com').put('/conversations/1').reply(200, res);

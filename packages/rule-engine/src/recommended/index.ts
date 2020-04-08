@@ -39,6 +39,14 @@ import conditionUserProperty from './conditions/user-property';
 
 const recommendedPlugins: RulePlugin[] = [
   {
+    actions: {
+      [ActionType.ReOpen]: actionReopen,
+      [ActionType.Resolve]: actionResolve,
+      [ActionType.AssignToGroup]: actionAssignToGroup,
+      [ActionType.AssignToAgent]: actionAssignToAgent,
+      [ActionType.SendMessage]: actionSendMessage,
+      [ActionType.UnassignThenReassignGroup]: actionUnassignThenReassignGroup,
+    },
     conditions: {
       [ConditionKey.MessageText]: conditionMessageText,
       [ConditionKey.Channel]: conditionChannel,
@@ -66,14 +74,6 @@ const recommendedPlugins: RulePlugin[] = [
       [TriggerAction.ConversationAgentAssign]: triggerActionConversationAgentAssign,
       [TriggerAction.MessageCreate]: triggerActionMessageCreate,
       [TriggerAction.PrivateNoteCreate]: triggerActionPrivateNoteCreate,
-    },
-    actions: {
-      [ActionType.ReOpen]: actionReopen,
-      [ActionType.Resolve]: actionResolve,
-      [ActionType.AssignToGroup]: actionAssignToGroup,
-      [ActionType.AssignToAgent]: actionAssignToAgent,
-      [ActionType.SendMessage]: actionSendMessage,
-      [ActionType.UnassignThenReassignGroup]: actionUnassignThenReassignGroup,
     },
   },
 ];

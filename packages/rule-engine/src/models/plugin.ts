@@ -28,8 +28,8 @@ export type PluginPlaceholders = {
 
 export interface RulePlugin {
   actions?: PluginActions;
-  operators?: PluginOperators;
-  triggerActions?: PluginTriggerActions;
   conditions?: PluginConditions;
+  operators?: PluginOperators;
   placeholders?: PluginPlaceholders;
+  triggerActions?: PluginTriggerActions;
 }

@@ -65,7 +65,7 @@ describe('RuleProcessor test', () => {
             {
               text: {
                 content:
-                  "Hello there! Need help? Reach out to us right here, and we'll get back to you as soon as we can!",
+                  'Hello there! Need help? Reach out to us right here, and we will get back to you as soon as we can!',
               },
             },
           ],

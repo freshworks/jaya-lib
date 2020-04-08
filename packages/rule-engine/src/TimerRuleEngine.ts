@@ -53,9 +53,7 @@ export class TimerRuleEngine {
         let existingSchedule;
         try {
           existingSchedule = (await scheduler.fetchSchedule(jobId)) as KairosSchedule;
-        } catch (err) {
-          console.log('error fetching existing schedule', err);
-        }
+        } catch (err) {}
 
         // If there are no existing schedules, create schedule object
         // and push it into the schedules array for bulk scheduling later.
