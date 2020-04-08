@@ -2,7 +2,7 @@ import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import { Utils } from '../../Utils';
 import ruleConfig from '../../RuleConfig';
-import findAndReplacePlaceholders, { PlaceholdersMap } from '@freshworks-jaya/utilities';
+import { findAndReplacePlaceholders, PlaceholdersMap } from '@freshworks-jaya/utilities';
 
 export default (
   freshchatApiUrl: string,

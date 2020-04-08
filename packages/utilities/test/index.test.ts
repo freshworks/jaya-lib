@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import 'mocha';
-import findAndReplacePlaceholders from '../src/index';
+import { findAndReplacePlaceholders } from '../src/index';
 
 describe('Utils test', () => {
   describe('findAndReplacePlaceholders', () => {

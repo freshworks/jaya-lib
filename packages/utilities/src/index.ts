@@ -50,4 +50,4 @@ const findAndReplacePlaceholders = (message: string, placeholders: PlaceholdersM
   return result;
 };
 
-export default findAndReplacePlaceholders;
+export { findAndReplacePlaceholders };
