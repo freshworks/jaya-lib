@@ -1,5 +1,5 @@
-import { Condition, UserConditionValue, ConditionOperator } from "../../models/rule";
-import { ProductEventData, User } from "@freshworks-jaya/marketplace-models";
+import { ProductEventData, User } from '@freshworks-jaya/marketplace-models';
+import { Condition, UserConditionValue, ConditionOperator } from '../../models/rule';
 import { Utils } from '../../Utils';
 
 /**
@@ -8,30 +8,23 @@ import { Utils } from '../../Utils';
 const evaluateUserPropertyCondition = (
   operator: ConditionOperator,
   userObj: User,
-  conditionValue: UserConditionValue
+  conditionValue: UserConditionValue,
 ): boolean => {
   let retVal = false;
-  const matchedProperty = userObj.properties && userObj.properties.find(
-    property => property.name === conditionValue.propertyKey
-  );
+  const matchedProperty =
+    userObj.properties && userObj.properties.find((property) => property.name === conditionValue.propertyKey);
 
   if (matchedProperty) {
-    retVal = Utils.evaluateCondition(
-      operator,
-      matchedProperty.value,
-      conditionValue.propertyValue
-    );
+    retVal = Utils.evaluateCondition(operator, matchedProperty.value, conditionValue.propertyValue);
   }
 
   return retVal;
-}
+};
 
 export default (condition: Condition, productEventData: ProductEventData): boolean => {
-  const modelProperties = productEventData.conversation || productEventData.message;
-
   return evaluateUserPropertyCondition(
     condition.operator,
     productEventData.associations.user,
-    condition.value as UserConditionValue
+    condition.value as UserConditionValue,
   );
-}
+};

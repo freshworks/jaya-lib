@@ -1,5 +1,5 @@
-import { RulePlugin } from "../models/plugin";
-import { ConditionOperator, TriggerAction, ActionType, ConditionKey } from "../models/rule";
+import { RulePlugin } from '../models/plugin';
+import { ConditionOperator, TriggerAction, ActionType, ConditionKey } from '../models/rule';
 
 // Import all operators
 import operatorStartsWith from './operators/starts-with';
@@ -26,7 +26,7 @@ import actionResolve from './actions/resolve';
 import actionAssignToGroup from './actions/assign-to-group';
 import actionAssignToAgent from './actions/assign-to-agent';
 import actionSendMessage from './actions/send-message';
-import actionUnassignThenReassignGroup from "./actions/unassign-then-reassign-group";
+import actionUnassignThenReassignGroup from './actions/unassign-then-reassign-group';
 
 // Import all conditions
 import conditionMessageText from './conditions/message-text';
@@ -39,6 +39,14 @@ import conditionUserProperty from './conditions/user-property';
 
 const recommendedPlugins: RulePlugin[] = [
   {
+    actions: {
+      [ActionType.ReOpen]: actionReopen,
+      [ActionType.Resolve]: actionResolve,
+      [ActionType.AssignToGroup]: actionAssignToGroup,
+      [ActionType.AssignToAgent]: actionAssignToAgent,
+      [ActionType.SendMessage]: actionSendMessage,
+      [ActionType.UnassignThenReassignGroup]: actionUnassignThenReassignGroup,
+    },
     conditions: {
       [ConditionKey.MessageText]: conditionMessageText,
       [ConditionKey.Channel]: conditionChannel,
@@ -46,7 +54,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionKey.AssignedAgent]: conditionAssignedAgent,
       [ConditionKey.AssignedGroup]: conditionAssignedGroup,
       [ConditionKey.ResponseDueType]: conditionResponseDueType,
-      [ConditionKey.UserProperty]: conditionUserProperty
+      [ConditionKey.UserProperty]: conditionUserProperty,
     },
     operators: {
       [ConditionOperator.StartsWith]: operatorStartsWith,
@@ -56,7 +64,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionOperator.Equals]: operatorEquals,
       [ConditionOperator.NotEquals]: operatorNotAtAllEquals,
       [ConditionOperator.Set]: operatorSet,
-      [ConditionOperator.NotSet]: operatorNotSet
+      [ConditionOperator.NotSet]: operatorNotSet,
     },
     triggerActions: {
       [TriggerAction.ConversationCreate]: triggerActionConversationCreate,
@@ -65,17 +73,9 @@ const recommendedPlugins: RulePlugin[] = [
       [TriggerAction.ConversationGroupAssign]: triggerActionConversationGroupAssign,
       [TriggerAction.ConversationAgentAssign]: triggerActionConversationAgentAssign,
       [TriggerAction.MessageCreate]: triggerActionMessageCreate,
-      [TriggerAction.PrivateNoteCreate]: triggerActionPrivateNoteCreate
+      [TriggerAction.PrivateNoteCreate]: triggerActionPrivateNoteCreate,
     },
-    actions: {
-      [ActionType.ReOpen]: actionReopen,
-      [ActionType.Resolve]: actionResolve,
-      [ActionType.AssignToGroup]: actionAssignToGroup,
-      [ActionType.AssignToAgent]: actionAssignToAgent,
-      [ActionType.SendMessage]: actionSendMessage,
-      [ActionType.UnassignThenReassignGroup]: actionUnassignThenReassignGroup
-    }
-  }
+  },
 ];
 
 export default recommendedPlugins;

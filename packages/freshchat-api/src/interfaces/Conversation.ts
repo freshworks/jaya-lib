@@ -5,10 +5,10 @@ export enum ConversationStatus {
 }
 
 export interface Conversation {
-  conversation_id: string;
   app_id: string;
-  status: ConversationStatus;
-  channel_id: string;
   assigned_agent_id?: string;
   assigned_group_id?: string;
+  channel_id: string;
+  conversation_id: string;
+  status: ConversationStatus;
 }

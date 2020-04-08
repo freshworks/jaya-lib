@@ -1,15 +1,14 @@
-import { ProductEventData, ConversationStatus } from "@freshworks-jaya/marketplace-models";
+import { ProductEventData, ConversationStatus } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 
 export default (
   freshchatApiUrl: string,
   freshchatApiToken: string,
-  productEventData: ProductEventData, 
-  actionValue: any
-): Promise<any> => {
+  productEventData: ProductEventData,
+  actionValue: unknown,
+): Promise<unknown> => {
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
-  const modelProperties =
-    productEventData.conversation || productEventData.message;
+  const modelProperties = productEventData.conversation || productEventData.message;
   const conversationId = modelProperties.conversation_id;
 
   let assignedGroupId = actionValue as string;
@@ -18,10 +17,5 @@ export default (
     assignedGroupId = '';
   }
 
-  return freshchat.conversationAssign(
-    conversationId,
-    assignedGroupId,
-    'group',
-    ConversationStatus.New
-  );
-} 
+  return freshchat.conversationAssign(conversationId, assignedGroupId, 'group', ConversationStatus.New);
+};
