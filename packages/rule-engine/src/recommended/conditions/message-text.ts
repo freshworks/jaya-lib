@@ -1,6 +1,7 @@
 import { Condition } from "../../models/rule";
 import { ProductEventData, MessagePart } from "@freshworks-jaya/marketplace-models";
 import { Utils } from '../../Utils';
+import { Integrations } from '../../models/rule-engine';
 
 /**
  * Gets a concatenated string of messageParts with type 'text'.
@@ -22,7 +23,7 @@ const getMessagePartsTextContent = (
   return messageContent;
 }
 
-export default (condition: Condition, productEventData: ProductEventData): boolean => {
+export default (condition: Condition, productEventData: ProductEventData, integrations: Integrations): boolean => {
   const modelProperties = productEventData.conversation || productEventData.message;
 
   return Utils.evaluateCondition(
@@ -30,6 +31,7 @@ export default (condition: Condition, productEventData: ProductEventData): boole
     getMessagePartsTextContent(
       modelProperties.messages[0].message_parts
     ),
-    condition.value as string
+    condition.value as string,
+    integrations
   );
 }

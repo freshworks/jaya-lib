@@ -2,6 +2,8 @@ import { ConditionOperator, PluginPlaceholders } from "./index";
 import ruleConfig from './RuleConfig';
 import usernameVerbs from './constants/username-verbs';
 import usernameNouns from './constants/username-nouns';
+import { Integrations } from './models/rule-engine';
+import axios from 'axios';
 
 export class Utils {
   /**
@@ -39,7 +41,8 @@ export class Utils {
   public static evaluateCondition(
     operator: ConditionOperator,
     operand1: string,
-    operand2: string
+    operand2: string,
+    integrations: Integrations
   ): boolean {
     const sanitizedOperand1 = this.convertOperand(operand1);
     const sanitizedOperand2 = this.convertOperand(operand2);
@@ -47,7 +50,7 @@ export class Utils {
     const operatorFunc = ruleConfig.operators && ruleConfig.operators[operator];
 
     if (operatorFunc) {
-      return operatorFunc(sanitizedOperand1, sanitizedOperand2);
+      return operatorFunc(sanitizedOperand1, sanitizedOperand2, integrations);
     }
 
     throw new Error('no matching condition');
@@ -103,6 +106,39 @@ export class Utils {
     }
     
     return result;
+  }
+  /**
+   * Returns true if isWithinBusinessHours
+   */
+  public static isWithinBusinessHours(businessHour: any): boolean {
+    return true;
+  }
+  /**
+   * Returns true if outsideBusinessHours
+   */
+  public static outsideBusinessHours(businessHour: any): boolean {
+    return true;
+  }
+  /**
+   * Gets business hour for an account based on businessHourId provided.
+   */
+  public static getBusinessHour = async (
+    businessHourId: string,
+    integrations: Integrations
+  ): Promise<any> => {
+    const freshchatApiUrl= integrations.freshchatv1.url;
+    const freshchatApiToken= integrations.freshchatv1.token;
+    try {
+      let businessHours = await axios.get(freshchatApiUrl, {
+        headers: {
+          Authorization: freshchatApiToken,
+        },
+      });
+      let conditionBusinessHour = businessHours.data.filterBy('operatingHoursId', parseInt(businessHourId));
+      return conditionBusinessHour && conditionBusinessHour[0];
+    } catch (err) {
+      throw new Error('Error getting BusinessHours');
+    }
   }
 }
 

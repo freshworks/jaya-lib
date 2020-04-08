@@ -11,7 +11,7 @@ export type PluginActions = {
 };
 
 export type PluginOperators = {
-  [key: string]: (op1: string, op2: string) => boolean;
+  [key: string]: (op1: string, op2: string, integrations: Integrations) => boolean;
 };
 
 export type PluginTriggerActions = {

@@ -3,8 +3,18 @@ import { assert } from 'chai';
 import 'mocha';
 import ruleConfig from '../src/RuleConfig';
 import { ConditionOperator } from '../src/models/rule';
+import { Integrations } from '../src/models/rule-engine';
 
 describe('Utils test', () => {
+  const integrations = {
+    freshchatv2: {
+      url: 'https://api.freshchat.com/v2',
+    },
+    freshchatv1: {
+      url: 'https://api.freshchat.com/app/services/app/v1',
+    },
+  };
+
   describe('findAndReplacePlaceholders', () => {
     it('should return the string without any changes', () => {
       const message = 'Welcome home!';
@@ -89,13 +99,13 @@ describe('Utils test', () => {
     });
 
     it('should evaluate EQUALS condition', () => {
-      assert.equal(true, Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'a'));
-      assert.equal(false, Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'b'));
+      assert.equal(true, Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'a',integrations as any as Integrations));
+      assert.equal(false, Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'b', integrations as any as Integrations));
     });
 
     it('should handle the condition when operator is not available', () => {
       try {
-        Utils.evaluateCondition('NOT_EQUALS' as ConditionOperator, 'a', 'b');
+        Utils.evaluateCondition('NOT_EQUALS' as ConditionOperator, 'a', 'b', integrations as any as Integrations);
       } catch(err) {
         assert('threw an exception when operator was not available');
       }
