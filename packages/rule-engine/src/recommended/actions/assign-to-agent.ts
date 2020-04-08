@@ -1,17 +1,16 @@
-import { ProductEventData, ActorType, ConversationStatus } from "@freshworks-jaya/marketplace-models";
+import { ProductEventData, ActorType, ConversationStatus } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import { Integrations } from '../../models/rule-engine';
 
 export default (
   integrations: Integrations,
   productEventData: ProductEventData, 
-  actionValue: any
-): Promise<any> => {
+  actionValue: unknown
+): Promise<unknown> => {
   const freshchatApiUrl= integrations.freshchatv1.url;
   const freshchatApiToken= integrations.freshchatv1.token;
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
-  const modelProperties =
-    productEventData.conversation || productEventData.message;
+  const modelProperties = productEventData.conversation || productEventData.message;
   const conversationId = modelProperties.conversation_id;
 
   let assignedAgentId = '';
@@ -26,13 +25,8 @@ export default (
   } else if (actionValue === '-1') {
     conversationStatus = ConversationStatus.New;
   } else {
-    assignedAgentId = actionValue;
+    assignedAgentId = actionValue as string;
   }
 
-  return freshchat.conversationAssign(
-    conversationId,
-    assignedAgentId,
-    'agent',
-    conversationStatus
-  );
-} 
+  return freshchat.conversationAssign(conversationId, assignedAgentId, 'agent', conversationStatus);
+};

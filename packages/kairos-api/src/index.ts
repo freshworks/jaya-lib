@@ -51,7 +51,7 @@ export default class Kairos {
    * Fetches a schedule.
    */
   fetchSchedule(jobId: string): Promise<KairosSchedule> {
-  return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       axios
         .get(`${this.url}/schedules/${this.group}/${jobId}`, {
           headers: this.headers,
@@ -69,7 +69,7 @@ export default class Kairos {
           },
           () => {
             reject();
-          }
+          },
         );
     });
   }
@@ -106,7 +106,7 @@ export default class Kairos {
    * Creates a schedule using Kairos.
    */
   bulkCreateSchedules(optsArr: KairosScheduleOptions[]): AxiosPromise<string> {
-    const body = optsArr.map(opts => {
+    const body = optsArr.map((opts) => {
       return {
         data: opts.payload,
         job_id: opts.jobId,
@@ -117,21 +117,13 @@ export default class Kairos {
       };
     });
 
-    return axios.post(
-      `${this.url}/bulk/${this.group}/schedules`,
-      JSON.stringify(body),
-      { headers: this.headers }
-    );
+    return axios.post(`${this.url}/bulk/${this.group}/schedules`, JSON.stringify(body), { headers: this.headers });
   }
 
   /**
    * Bulk deletes a schedules using Kairos.
    */
   bulkDeleteSchedules(jobIds: string[]): AxiosPromise<string> {
-    return axios.post(
-      `${this.url}/bulk/${this.group}/delete`,
-      JSON.stringify(jobIds),
-      { headers: this.headers }
-    );
+    return axios.post(`${this.url}/bulk/${this.group}/delete`, JSON.stringify(jobIds), { headers: this.headers });
   }
 }

@@ -1,5 +1,5 @@
-import { RuleEngine } from '../src/index';
 import { expect } from 'chai';
+import { RuleEngine } from '../src/index';
 import 'mocha';
 
 describe('module test', () => {

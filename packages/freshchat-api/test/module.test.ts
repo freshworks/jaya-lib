@@ -1,5 +1,5 @@
-import Freshchat from '../src/index';
 import { expect } from 'chai';
+import Freshchat from '../src/index';
 import 'mocha';
 
 describe('module test', () => {

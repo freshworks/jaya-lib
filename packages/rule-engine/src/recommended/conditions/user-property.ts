@@ -1,5 +1,5 @@
-import { Condition, UserConditionValue, ConditionOperator } from "../../models/rule";
-import { ProductEventData, User } from "@freshworks-jaya/marketplace-models";
+import { ProductEventData, User } from '@freshworks-jaya/marketplace-models';
+import { Condition, UserConditionValue, ConditionOperator } from '../../models/rule';
 import { Utils } from '../../Utils';
 import { Integrations } from '../../models/rule-engine';
 
@@ -13,21 +13,15 @@ const evaluateUserPropertyCondition = (
   integrations: Integrations
 ): boolean => {
   let retVal = false;
-  const matchedProperty = userObj.properties && userObj.properties.find(
-    property => property.name === conditionValue.propertyKey
-  );
+  const matchedProperty =
+    userObj.properties && userObj.properties.find((property) => property.name === conditionValue.propertyKey);
 
   if (matchedProperty) {
-    retVal = Utils.evaluateCondition(
-      operator,
-      matchedProperty.value,
-      conditionValue.propertyValue,
-      integrations
-    );
+    retVal = Utils.evaluateCondition(operator, matchedProperty.value, conditionValue.propertyValue, integrations);
   }
 
   return retVal;
-}
+};
 
 export default (condition: Condition, productEventData: ProductEventData, integrations: Integrations): boolean => {
   const modelProperties = productEventData.conversation || productEventData.message;
@@ -38,4 +32,4 @@ export default (condition: Condition, productEventData: ProductEventData, integr
     condition.value as UserConditionValue,
     integrations
   );
-}
+};

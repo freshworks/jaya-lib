@@ -1,22 +1,33 @@
-import { RulePlugin, PluginActions, PluginOperators, PluginTriggerActions, PluginConditions, PluginPlaceholders } from "./models/plugin";
+import {
+  RulePlugin,
+  PluginActions,
+  PluginOperators,
+  PluginTriggerActions,
+  PluginConditions,
+  PluginPlaceholders,
+} from './models/plugin';
 
 class RuleConfig {
   actions?: PluginActions = {};
+
   operators?: PluginOperators = {};
+
   triggerActions?: PluginTriggerActions = {};
+
   conditions?: PluginConditions = {};
+
   placeholders?: PluginPlaceholders = {};
 
-  reset = () => {
+  reset = (): void => {
     this.actions = {};
     this.operators = {};
     this.triggerActions = {};
     this.conditions = {};
     this.placeholders = {};
-  }
+  };
 
   registerPlugins = (plugins: RulePlugin[]): void => {
-    for (let i = 0; i < plugins.length; i++ ) {
+    for (let i = 0; i < plugins.length; i++) {
       const rulePlugin = plugins[i];
 
       if (rulePlugin.actions) {

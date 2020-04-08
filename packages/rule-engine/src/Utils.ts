@@ -1,4 +1,4 @@
-import { ConditionOperator, PluginPlaceholders } from "./index";
+import { ConditionOperator, PluginPlaceholders } from './index';
 import ruleConfig from './RuleConfig';
 import usernameVerbs from './constants/username-verbs';
 import usernameNouns from './constants/username-nouns';
@@ -24,12 +24,7 @@ export class Utils {
    * Converts operand to string.
    */
   public static convertOperand(operand: string): string {
-    let retVal: string =
-      operand &&
-      operand
-        .toString()
-        .trim()
-        .toLowerCase();
+    let retVal: string = operand && operand.toString().trim().toLowerCase();
 
     retVal = typeof retVal === 'string' ? retVal : '';
     return retVal;
@@ -38,12 +33,7 @@ export class Utils {
   /**
    * Performs operation defined by 'operator' on operands operand1 and operand2.
    */
-  public static evaluateCondition(
-    operator: ConditionOperator,
-    operand1: string,
-    operand2: string,
-    integrations: Integrations
-  ): boolean {
+  public static evaluateCondition(operator: ConditionOperator, operand1: string, operand2: string, integrations: Integrations): boolean {
     const sanitizedOperand1 = this.convertOperand(operand1);
     const sanitizedOperand2 = this.convertOperand(operand2);
 
@@ -71,9 +61,11 @@ export class Utils {
 
     // Construct regex string with placeholders like so.
     // agent\\.first_name|agent\\.last_name|agent\\.id
-    const placeholdersRegExpString = Object.keys(placeholders).map(placeholder => {
-      return placeholder.replace('.', '\\.');
-    }).join('|');
+    const placeholdersRegExpString = Object.keys(placeholders)
+      .map((placeholder) => {
+        return placeholder.replace('.', '\\.');
+      })
+      .join('|');
 
     // Regex to find all placeholders in a given string with the format.
     // {<placeholder>|<alValue>}
@@ -92,19 +84,19 @@ export class Utils {
         const [field, altValue] = match.split('|');
 
         // Construct regex to replace all occurrences of match.
-        // Use value for placeholder from 
+        // Use value for placeholder from
         // If not available, use altValue.
         // Even if that is not available, use an empty string.
         // Constructed replacement regex string will look like so.
         // Eg. \\{user\\.first_name(\\|there)?\\}
-        const value = placeholders && placeholders[field] || altValue || '';
+        const value = (placeholders && placeholders[field]) || altValue || '';
         const regExpReplaceString = `\\{${field.replace('.', '\\.')}(\\|${altValue})?\\}`;
 
         // Replace all occurrences of placeholder with value.
         return this.replaceAll(replacedString, regExpReplaceString, value.trim());
       }, result);
     }
-    
+
     return result;
   }
   /**
@@ -141,4 +133,3 @@ export class Utils {
     }
   }
 }
-

@@ -5,7 +5,7 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
 chai.use(chaiAsPromised);
-const expect = chai.expect;
+const { expect } = chai;
 
 describe('api.conversation-status-update', () => {
   const freshchat = new Freshchat('https://test.freshchat.com', 'TEST API TOKEN');
@@ -16,10 +16,10 @@ describe('api.conversation-status-update', () => {
     beforeEach(() => {
       // SET UP expected request
       res = {
-        conversation_id: '1',
         app_id: '<test-app-id>',
-        status: ConversationStatus.New,
         channel_id: '<test-channel-id>',
+        conversation_id: '1',
+        status: ConversationStatus.New,
       };
 
       nock('https://test.freshchat.com').put('/conversations/1').reply(200, res);

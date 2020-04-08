@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": "../packages",
+    "paths": {
+      "@freshworks-jaya/*": ["./*/src"]
+    }
+  },
+  "files": [],
+  "references": [
+    { "path": "freshchat-api/src" },
+    { "path": "kairos-api/src" },
+    { "path": "marketplace-models/src" },
+    { "path": "rule-engine/src" }
+  ]
+}

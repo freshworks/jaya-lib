@@ -1,19 +1,7 @@
 // Simple library to process the rules
 import { Event } from '@freshworks-jaya/marketplace-models';
-import {
-  ActorType,
-  ProductEventData,
-} from '@freshworks-jaya/marketplace-models';
-import {
-  Action,
-  Block,
-  Condition,
-  MatchType,
-  Rule,
-  Trigger,
-  TriggerAction,
-  TriggerActor,
-} from './models/rule';
+import { ActorType, ProductEventData } from '@freshworks-jaya/marketplace-models';
+import { Block, Condition, MatchType, Rule, Trigger, TriggerAction, TriggerActor } from './models/rule';
 import { Integrations } from './models/rule-engine';
 
 import ruleConfig from './RuleConfig';
@@ -22,11 +10,7 @@ export class RuleProcessor {
   /**
    * Checks if the given condition is satisfied by the payload.
    */
-  public static isConditionMatching(
-    productEventData: ProductEventData,
-    condition: Condition,
-    integrations: Integrations,
-  ): boolean {
+  public static isConditionMatching(productEventData: ProductEventData, condition: Condition, integrations: Integrations): boolean {
     const conditionFunc = ruleConfig.conditions && ruleConfig.conditions[condition.key];
 
     if (conditionFunc) {
@@ -38,18 +22,10 @@ export class RuleProcessor {
   /**
    * Checks if all the conditions in the block are matching.
    */
-  public static blockMatchAll(
-    productEventData: ProductEventData,
-    conditions: Condition[],
-    integrations: Integrations,
-  ): boolean {
+  public static blockMatchAll(productEventData: ProductEventData, conditions: Condition[], integrations: Integrations): boolean {
     for (let i = 0; conditions && i < conditions.length; i += 1) {
       const condition = conditions[i];
-      const conditionMatchResult: boolean = this.isConditionMatching(
-        productEventData,
-        condition,
-        integrations
-      );
+      const conditionMatchResult: boolean = this.isConditionMatching(productEventData, condition, integrations);
 
       if (!conditionMatchResult) {
         return false;
@@ -62,18 +38,10 @@ export class RuleProcessor {
   /**
    * Check if any of the conditions in a block are matching.
    */
-  public static blockMatchAny(
-    productEventData: ProductEventData,
-    conditions: Condition[],
-    integrations: Integrations,
-  ): boolean {
+  public static blockMatchAny(productEventData: ProductEventData, conditions: Condition[], integrations: Integrations): boolean {
     for (let i = 0; conditions && i < conditions.length; i += 1) {
       const condition = conditions[i];
-      const conditionMatchResult: boolean = this.isConditionMatching(
-        productEventData,
-        condition,
-        integrations
-      );
+      const conditionMatchResult: boolean = this.isConditionMatching(productEventData, condition, integrations);
 
       if (conditionMatchResult) {
         return true;
@@ -86,11 +54,7 @@ export class RuleProcessor {
   /**
    * Check if all the conditions in block are matching.
    */
-  public static isBlockMatching(
-    productEventData: ProductEventData,
-    block: Block,
-    integrations: Integrations,
-  ): boolean {
+  public static isBlockMatching(productEventData: ProductEventData, block: Block, integrations: Integrations): boolean {
     // Block is matching when there are no block conditions
     if (!block || !block.conditions || !block.conditions.length) {
       return true;
@@ -109,28 +73,18 @@ export class RuleProcessor {
   /**
    * Checks if the given actor matches for the actor received from payload.
    */
-  public static isTriggerActorMatch(
-    actor: TriggerActor,
-    productEventData: ProductEventData
-  ): boolean {
+  public static isTriggerActorMatch(actor: TriggerActor, productEventData: ProductEventData): boolean {
     return (
-      (actor === TriggerActor.Agent &&
-        productEventData.actor.type === ActorType.Agent) ||
-      (actor === TriggerActor.User &&
-        productEventData.actor.type === ActorType.User) ||
-      (actor === TriggerActor.System &&
-        productEventData.actor.type === ActorType.System)
+      (actor === TriggerActor.Agent && productEventData.actor.type === ActorType.Agent) ||
+      (actor === TriggerActor.User && productEventData.actor.type === ActorType.User) ||
+      (actor === TriggerActor.System && productEventData.actor.type === ActorType.System)
     );
   }
 
   /**
    * Checks if the given action matches for the action received from payload.
    */
-  public static isTriggerActionMatch(
-    action: TriggerAction,
-    event: Event,
-    productEventData: ProductEventData
-  ): boolean {
+  public static isTriggerActionMatch(action: TriggerAction, event: Event, productEventData: ProductEventData): boolean {
     const triggerActionFunc = ruleConfig.triggerActions && ruleConfig.triggerActions[action];
 
     if (triggerActionFunc) {
@@ -145,7 +99,7 @@ export class RuleProcessor {
   public static isTriggerConditionMatching(
     event: Event,
     productEventData: ProductEventData,
-    triggers: Trigger[]
+    triggers: Trigger[],
   ): boolean {
     let isMatch = false;
 
@@ -154,11 +108,7 @@ export class RuleProcessor {
 
       if (
         this.isTriggerActorMatch(currentTrigger.actor, productEventData) &&
-        this.isTriggerActionMatch(
-          currentTrigger.action,
-          event,
-          productEventData
-        )
+        this.isTriggerActionMatch(currentTrigger.action, event, productEventData)
       ) {
         isMatch = true;
         break;
@@ -170,18 +120,10 @@ export class RuleProcessor {
   /**
    * Returns true if all blocks in a rule are matching; false otherwise.
    */
-  public static ruleMatchAll(
-    productEventData: ProductEventData,
-    blocks: Block[],
-    integrations: Integrations,
-  ): boolean {
+  public static ruleMatchAll(productEventData: ProductEventData, blocks: Block[], integrations: Integrations): boolean {
     for (let i = 0; blocks && i < blocks.length; i += 1) {
       const block = blocks[i];
-      const blockMatchResult: boolean = this.isBlockMatching(
-        productEventData,
-        block,
-        integrations
-      );
+      const blockMatchResult: boolean = this.isBlockMatching(productEventData, block, integrations);
 
       if (!blockMatchResult) {
         return false;
@@ -193,18 +135,10 @@ export class RuleProcessor {
   /**
    * Returns true if any block in a rule is matching; false if none are matching.
    */
-  public static ruleMatchAny(
-    productEventData: ProductEventData,
-    blocks: Block[],
-    integrations: Integrations,
-  ): boolean {
+  public static ruleMatchAny(productEventData: ProductEventData, blocks: Block[], integrations: Integrations): boolean {
     for (let i = 0; blocks && i < blocks.length; i += 1) {
       const block = blocks[i];
-      const blockMatchResult: boolean = this.isBlockMatching(
-        productEventData,
-        block,
-        integrations
-      );
+      const blockMatchResult: boolean = this.isBlockMatching(productEventData, block, integrations);
 
       if (blockMatchResult) {
         return true;
@@ -216,11 +150,7 @@ export class RuleProcessor {
   /**
    * Check if all blocks in a rule are matching.
    */
-  public static isRuleBlocksMatching(
-    productEventData: ProductEventData,
-    rule: Rule,
-    integrations: Integrations,
-  ): boolean {
+  public static isRuleBlocksMatching(productEventData: ProductEventData, rule: Rule, integrations: Integrations): boolean {
     // Rule is matching if there are no blocks
     if (!rule.blocks || !rule.blocks.length) {
       return true;
@@ -239,17 +169,8 @@ export class RuleProcessor {
   /**
    * Checks if trigger conditions are matching and then checks if property conditions are matching.
    */
-  public static isRuleMatching(
-    event: Event,
-    productEventData: ProductEventData,
-    rule: Rule,
-    integrations: Integrations,
-  ): boolean {
-    const isTriggerConditionMatch: boolean = this.isTriggerConditionMatching(
-      event,
-      productEventData,
-      rule.triggers
-    );
+  public static isRuleMatching(event: Event, productEventData: ProductEventData, rule: Rule, integrations: Integrations): boolean {
+    const isTriggerConditionMatch: boolean = this.isTriggerConditionMatching(event, productEventData, rule.triggers);
 
     // Rule does not match if trigger conditions don't match
     if (!isTriggerConditionMatch) {
@@ -269,21 +190,13 @@ export class RuleProcessor {
   /**
    * Iterates through each rule and return the actions of the first matching rule.
    */
-  public static getFirstMatchingRule(
-    event: Event,
-    productEventData: ProductEventData,
-    rules: Rule[],
-    integrations: Integrations,
-  ): Rule | null {
+  public static getFirstMatchingRule(event: Event, productEventData: ProductEventData, rules: Rule[], integrations: Integrations): Rule | null {
     let firstMatchingRule: Rule | null = null;
 
     for (let i = 0; rules && i < rules.length; i += 1) {
       const currentRule = rules[i];
 
-      if (
-        this.isEnabledNonTimerRule(currentRule) &&
-        this.isRuleMatching(event, productEventData, currentRule, integrations)
-      ) {
+      if (this.isEnabledNonTimerRule(currentRule) && this.isRuleMatching(event, productEventData, currentRule, integrations)) {
         firstMatchingRule = currentRule;
         break;
       }

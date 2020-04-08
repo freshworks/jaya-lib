@@ -6,8 +6,8 @@ export type PluginActions = {
   [key: string]: (
     integrations: Integrations,
     payload: ProductEventData,
-    actionValue: any
-  ) => Promise<any>
+    actionValue: unknown,
+  ) => Promise<unknown>;
 };
 
 export type PluginOperators = {
@@ -16,7 +16,7 @@ export type PluginOperators = {
 
 export type PluginTriggerActions = {
   [key: string]: (productEvent: Event, productEventData: ProductEventData) => boolean;
-}
+};
 
 export type PluginConditions = {
   [key: string]: (condition: Condition, productEventData: ProductEventData, integrations: Integrations) => boolean;
@@ -24,12 +24,12 @@ export type PluginConditions = {
 
 export type PluginPlaceholders = {
   [key: string]: string;
-}
+};
 
 export interface RulePlugin {
   actions?: PluginActions;
-  operators?: PluginOperators;
-  triggerActions?: PluginTriggerActions;
   conditions?: PluginConditions;
+  operators?: PluginOperators;
   placeholders?: PluginPlaceholders;
+  triggerActions?: PluginTriggerActions;
 }
