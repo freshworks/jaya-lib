@@ -32,13 +32,11 @@ export interface KairosCredentials {
 
 export interface BusinessHour {
   appId: number;
-  created: string;
   days?: {
     [key: string]: string;
   };
   defaultBhr: boolean;
   enabled: boolean;
-  isCalendarLinked: boolean;
   name: string;
   operatingHoursId: number;
   timezone: string;
