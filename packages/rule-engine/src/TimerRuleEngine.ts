@@ -52,6 +52,8 @@ export class TimerRuleEngine {
    */
   public static async triggerTimers(
     payload: ProductEventPayload,
+    rules: Rule[],
+    externalEventUrl: string,
     kairosCredentials: KairosCredentials,
     integrations: Integrations,
   ): Promise<void> {
@@ -60,11 +62,11 @@ export class TimerRuleEngine {
 
     // Iterate through each rule
     for (
-      let ruleIndex = 0, len = payload.iparams.rules.length;
+      let ruleIndex = 0, len = rules.length;
       ruleIndex < len;
       ruleIndex += 1
     ) {
-      const rule = payload.iparams.rules[ruleIndex];
+      const rule = rules[ruleIndex];
 
       const modelProperties = this.getModelProperties(payload.data);
 
@@ -78,7 +80,9 @@ export class TimerRuleEngine {
           existingSchedule = (await scheduler.fetchSchedule(
             jobId
           )) as KairosSchedule;
-        } catch (err) {}
+        } catch (err) {
+          console.log('error fetching existing schedule', err);
+        }
 
         // If there are no existing schedules, create schedule object
         // and push it into the schedules array for bulk scheduling later.
@@ -96,7 +100,7 @@ export class TimerRuleEngine {
                 new Date(),
                 rule.timerValue
               ).toISOString(),
-              webhookUrl: payload.iparams.externalEventUrl,
+              webhookUrl: externalEventUrl,
             },
           ];
         }
@@ -132,7 +136,7 @@ export class TimerRuleEngine {
       throw new Error('Error deleting kairos schedule before execution');
     }
 
-    // Get actions from rules in iparams
+    // Get actions from rules
     const timerRule = rules[externalEventPayload.data.ruleIndex];
 
     // Execute actions

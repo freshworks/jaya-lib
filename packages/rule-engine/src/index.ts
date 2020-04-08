@@ -38,6 +38,7 @@ export class RuleEngine {
     payload: ProductEventPayload,
     rules: Rule[],
     options: RuleEngineOptions,
+    externalEventUrl: string,    
     integrations: Integrations,
     kairosCredentials?: KairosCredentials,
   ): void => {
@@ -52,6 +53,8 @@ export class RuleEngine {
       // Process all timer rules.
       TimerRuleEngine.triggerTimers(
         payload,
+        rules,
+        externalEventUrl,        
         kairosCredentials,
         integrations
       );
