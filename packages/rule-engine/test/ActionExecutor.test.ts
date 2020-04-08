@@ -5,19 +5,8 @@ import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import ruleConfig from '../src/RuleConfig';
 import recommendedPlugins from '../src/recommended/index';
 import { ActionExecutor } from '../src/ActionExecutor';
-import { PluginPlaceholders } from '../src';
 
 describe('ActionExecutor test', () => {
-  const productEventDataWihoutAssociations = {
-    actor: {
-      type: 'agent',
-    },
-    message: {},
-    associations: {
-      channel: {},
-    },
-  };
-
   const productEventDataForGeneratedUsername = {
     actor: {
       type: 'user',
