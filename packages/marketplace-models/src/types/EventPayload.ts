@@ -13,7 +13,7 @@ export interface EventPayload {
   account_id: string;
   domain: string;
   event: Event;
-  iparams: any;
+  iparams: unknown;
   region: string;
   timestamp: string;
   version: string;
@@ -24,5 +24,5 @@ export interface ProductEventPayload extends EventPayload {
 }
 
 export interface ExternalEventPayload extends EventPayload {
-  data: any;
+  data: unknown;
 }

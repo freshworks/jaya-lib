@@ -1,44 +1,34 @@
-
-
 import 'mocha';
 import { assert } from 'chai';
 import sinon, { SinonSandbox } from 'sinon';
+import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import ruleConfig from '../src/RuleConfig';
 import recommendedPlugins from '../src/recommended/index';
 import { ActionExecutor } from '../src/ActionExecutor';
-import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { PluginPlaceholders } from '../src';
 
 describe('ActionExecutor test', () => {
   const productEventDataWihoutAssociations = {
-    "actor": {
-      "type": "agent"
+    actor: {
+      type: 'agent',
     },
-    "message": {
-      
+    message: {},
+    associations: {
+      channel: {},
     },
-    "associations": {
-      "channel": {
-        
-      }
-    }
   };
 
   const productEventDataForGeneratedUsername = {
-    "actor": {
-      "type": "user"
+    actor: {
+      type: 'user',
     },
-    "message": {
-      
-    },
-    "associations": {
-      "channel": {
-        
+    message: {},
+    associations: {
+      channel: {},
+      user: {
+        first_name: 'Dancing Horse',
       },
-      "user": {
-        "first_name": "Dancing Horse"
-      }
-    }
+    },
   };
 
   describe('setupPlaceholders', () => {
@@ -54,7 +44,7 @@ describe('ActionExecutor test', () => {
     });
 
     it('should have empty strings for all the placeholders', () => {
-      ActionExecutor.setupPlaceholders(productEventDataWihoutAssociations as any as ProductEventData);
+      ActionExecutor.setupPlaceholders((productEventDataWihoutAssociations as any) as ProductEventData);
 
       Object.keys(ruleConfig.placeholders as PluginPlaceholders).forEach((placeholder) => {
         if (ruleConfig.placeholders) {
@@ -64,12 +54,11 @@ describe('ActionExecutor test', () => {
     });
 
     it('check for generated username', () => {
-      ActionExecutor.setupPlaceholders(productEventDataForGeneratedUsername as any as ProductEventData);
+      ActionExecutor.setupPlaceholders((productEventDataForGeneratedUsername as any) as ProductEventData);
 
       if (ruleConfig.placeholders) {
         assert.ok(ruleConfig.placeholders['user.first_name'] === '');
       }
     });
-
   });
 });

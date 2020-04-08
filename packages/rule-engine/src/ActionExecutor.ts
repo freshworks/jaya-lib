@@ -1,8 +1,6 @@
 // Simple library to handle the actions to be performed
+import { ProductEventData, User, ActorType, Agent, Group } from '@freshworks-jaya/marketplace-models';
 import { Action } from './models/rule';
-import {
-  ProductEventData, User, ActorType, Agent, Group,
-} from '@freshworks-jaya/marketplace-models';
 import { FreshchatCredentials } from './models/rule-engine';
 import ruleConfig from './RuleConfig';
 import { PluginPlaceholders } from './models/plugin';
@@ -16,8 +14,8 @@ export class ActionExecutor {
     apiUrl: string,
     apiToken: string,
     action: Action,
-    productEventData: ProductEventData
-  ): Promise<object> {
+    productEventData: ProductEventData,
+  ): Promise<unknown> {
     const actionFunc = ruleConfig.actions && ruleConfig.actions[action.type];
 
     if (actionFunc) {
@@ -28,16 +26,15 @@ export class ActionExecutor {
   }
 
   /**
-   * 
+   *
    * Sets up placeholders for productEventData
    */
   public static setupPlaceholders(productEventData: ProductEventData): void {
     const user = productEventData.associations.user || ({} as User);
-    const agent = productEventData.associations.agent ||
-      (productEventData.actor.type === ActorType.Agent
-        ? productEventData.actor
-        : {} as Agent);
-    const channel = productEventData.associations.channel;
+    const agent =
+      productEventData.associations.agent ||
+      (productEventData.actor.type === ActorType.Agent ? productEventData.actor : ({} as Agent));
+    const { channel } = productEventData.associations;
     const group = productEventData.associations.group || ({} as Group);
     const conversation = productEventData.conversation || productEventData.message;
 
@@ -68,19 +65,24 @@ export class ActionExecutor {
       placeholders['user.first_name'] = '';
     }
 
-    ruleConfig.registerPlugins([{
-      placeholders: placeholders
-    }]);
+    ruleConfig.registerPlugins([
+      {
+        placeholders,
+      },
+    ]);
 
     // Register dynamic placeholders
     const dynamicPlaceholders: PluginPlaceholders = {};
-    user.properties && user.properties.forEach(userProperty => {
-      const placeholderKey: string = `user.properties.${userProperty.name}`;
-      dynamicPlaceholders[placeholderKey] = userProperty.value;
-    });
-    ruleConfig.registerPlugins([{
-      placeholders: dynamicPlaceholders
-    }]);
+    user.properties &&
+      user.properties.forEach((userProperty) => {
+        const placeholderKey = `user.properties.${userProperty.name}`;
+        dynamicPlaceholders[placeholderKey] = userProperty.value;
+      });
+    ruleConfig.registerPlugins([
+      {
+        placeholders: dynamicPlaceholders,
+      },
+    ]);
   }
 
   /**
@@ -90,19 +92,14 @@ export class ActionExecutor {
   public static async handleActions(
     freshchatCredentials: FreshchatCredentials,
     actions: Action[],
-    productEventData: ProductEventData
+    productEventData: ProductEventData,
   ) {
     this.setupPlaceholders(productEventData);
 
     for (let i = 0; actions && i < actions.length; i += 1) {
       try {
         const action = actions[i];
-        await this.handleAction(
-          freshchatCredentials.url,
-          freshchatCredentials.token,
-          action,
-          productEventData
-        );
+        await this.handleAction(freshchatCredentials.url, freshchatCredentials.token, action, productEventData);
       } catch (err) {
         throw new Error('Error processing action');
       }

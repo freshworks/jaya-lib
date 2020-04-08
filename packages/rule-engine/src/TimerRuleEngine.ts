@@ -1,14 +1,5 @@
-import Kairos, {
-  KairosSchedule,
-  KairosScheduleOptions,
-} from '@freshworks-jaya/kairos-api';
-import {
-  Event,
-  ExternalEventPayload,
-  ProductEventPayload,
-  ProductEventData,
-  ModelProperties
-} from '@freshworks-jaya/marketplace-models';
+import Kairos, { KairosSchedule, KairosScheduleOptions } from '@freshworks-jaya/kairos-api';
+import { Event, ProductEventPayload, ProductEventData, ModelProperties } from '@freshworks-jaya/marketplace-models';
 import { ActionExecutor } from './ActionExecutor';
 import { Rule } from './models/rule';
 import { RuleProcessor } from './RuleProcessor';
@@ -25,24 +16,14 @@ export class TimerRuleEngine {
   /**
    * Checks if the rule is a timer rule and is enabled.
    */
-  public static isMatchingTimerRule(
-    event: Event,
-    productEventData: ProductEventData,
-    rule: Rule
-  ): boolean {
-    return (
-      rule.isTimer &&
-      rule.isEnabled &&
-      RuleProcessor.isRuleMatching(event, productEventData, rule)
-    );
+  public static isMatchingTimerRule(event: Event, productEventData: ProductEventData, rule: Rule): boolean {
+    return rule.isTimer && rule.isEnabled && RuleProcessor.isRuleMatching(event, productEventData, rule);
   }
 
   /**
    * Gets the model for either conversation or message.
    */
-  public static getModelProperties(
-    productEventData: ProductEventData
-  ): ModelProperties {
+  public static getModelProperties(productEventData: ProductEventData): ModelProperties {
     return productEventData.conversation || productEventData.message;
   }
 
@@ -59,11 +40,7 @@ export class TimerRuleEngine {
     const scheduler = new Kairos(kairosCredentials);
 
     // Iterate through each rule
-    for (
-      let ruleIndex = 0, len = rules.length;
-      ruleIndex < len;
-      ruleIndex += 1
-    ) {
+    for (let ruleIndex = 0, len = rules.length; ruleIndex < len; ruleIndex += 1) {
       const rule = rules[ruleIndex];
 
       const modelProperties = this.getModelProperties(payload.data);
@@ -75,9 +52,7 @@ export class TimerRuleEngine {
         // Fetch an existing schedule for the same current rule,
         let existingSchedule;
         try {
-          existingSchedule = (await scheduler.fetchSchedule(
-            jobId
-          )) as KairosSchedule;
+          existingSchedule = (await scheduler.fetchSchedule(jobId)) as KairosSchedule;
         } catch (err) {
           console.log('error fetching existing schedule', err);
         }
@@ -94,10 +69,7 @@ export class TimerRuleEngine {
                 originalPayload: payload,
                 ruleIndex,
               },
-              scheduledTime: this.addSeconds(
-                new Date(),
-                rule.timerValue
-              ).toISOString(),
+              scheduledTime: this.addSeconds(new Date(), rule.timerValue).toISOString(),
               webhookUrl: externalEventUrl,
             },
           ];
@@ -123,7 +95,7 @@ export class TimerRuleEngine {
     externalEventPayload: RuleEngineExternalEventPayload,
     rules: Rule[],
     kairosCredentials: KairosCredentials,
-    freshchatCredentials: FreshchatCredentials
+    freshchatCredentials: FreshchatCredentials,
   ): Promise<void> {
     const scheduler = new Kairos(kairosCredentials);
 
@@ -142,7 +114,7 @@ export class TimerRuleEngine {
       ActionExecutor.handleActions(
         freshchatCredentials,
         timerRule.actions,
-        externalEventPayload.data.originalPayload.data
+        externalEventPayload.data.originalPayload.data,
       );
     }
   }
@@ -153,26 +125,19 @@ export class TimerRuleEngine {
   public static async invalidateTimers(
     payload: ProductEventPayload,
     rules: Rule[],
-    kairosCredentials: KairosCredentials
+    kairosCredentials: KairosCredentials,
   ): Promise<void> {
-    const modelProperties =
-      payload.data.conversation || payload.data.message;
+    const modelProperties = payload.data.conversation || payload.data.message;
 
     const jobsToDelete = rules.reduce((jobIds: string[], rule, ruleIndex) => {
       let isMatch = false;
 
       if (rule.isEnabled && rule.isTimer && rule.invalidators) {
-        isMatch = RuleProcessor.isTriggerConditionMatching(
-          payload.event,
-          payload.data,
-          rule.invalidators
-        );
+        isMatch = RuleProcessor.isTriggerConditionMatching(payload.event, payload.data, rule.invalidators);
       }
 
       if (isMatch) {
-        jobIds.push(
-          `${modelProperties.app_id}_${modelProperties.conversation_id}_${ruleIndex}`
-        );
+        jobIds.push(`${modelProperties.app_id}_${modelProperties.conversation_id}_${ruleIndex}`);
       }
       return jobIds;
     }, []);

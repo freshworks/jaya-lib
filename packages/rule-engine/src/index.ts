@@ -1,13 +1,10 @@
+import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import {
   RuleEngineOptions,
   FreshchatCredentials,
   RuleEngineExternalEventPayload,
   KairosCredentials,
 } from './models/rule-engine';
-
-import {
-  ProductEventPayload,
-} from '@freshworks-jaya/marketplace-models';
 
 import { Rule } from './models/rule';
 import { RulePlugin } from './models/plugin';
@@ -28,10 +25,12 @@ export class RuleEngine {
     } else {
       ruleConfig.registerPlugins(recommendedPlugins);
     }
-  };
+  }
 
   registerPlugins = ruleConfig.registerPlugins;
+
   getFirstMatchingRule = RuleProcessor.getFirstMatchingRule;
+
   executeActions = ActionExecutor.handleActions;
 
   processProductEvent = (
@@ -44,37 +43,20 @@ export class RuleEngine {
   ): void => {
     if (options.isSchedulerEnabled && kairosCredentials) {
       // Invalidate exising schedules
-      TimerRuleEngine.invalidateTimers(
-        payload,
-        rules,
-        kairosCredentials
-      );
-  
+      TimerRuleEngine.invalidateTimers(payload, rules, kairosCredentials);
+
       // Process all timer rules.
-      TimerRuleEngine.triggerTimers(
-        payload,
-        rules,
-        externalEventUrl,
-        kairosCredentials
-      );
+      TimerRuleEngine.triggerTimers(payload, rules, externalEventUrl, kairosCredentials);
     }
 
     // Process regular rules and get the actions of the first matching rule.
-    const firstMatchingRule: Rule | null = RuleProcessor.getFirstMatchingRule(
-      payload.event,
-      payload.data,
-      rules
-    );
+    const firstMatchingRule: Rule | null = RuleProcessor.getFirstMatchingRule(payload.event, payload.data, rules);
 
     // Perform all actions sequentially in order.
     if (firstMatchingRule && firstMatchingRule.actions && firstMatchingRule.actions.length) {
-      ActionExecutor.handleActions(
-        freshchatCredentials,
-        firstMatchingRule.actions,
-        payload.data
-      );
+      ActionExecutor.handleActions(freshchatCredentials, firstMatchingRule.actions, payload.data);
     }
-  }
+  };
 
   processExternalEvent = (
     payload: RuleEngineExternalEventPayload,
@@ -84,12 +66,7 @@ export class RuleEngine {
     kairosCredentials?: KairosCredentials,
   ): void => {
     if (options.isSchedulerEnabled && kairosCredentials) {
-      TimerRuleEngine.executeTimerActions(
-        payload,
-        rules,
-        kairosCredentials,
-        freshchatCredentials
-      );
+      TimerRuleEngine.executeTimerActions(payload, rules, kairosCredentials, freshchatCredentials);
     }
-  }
+  };
 }

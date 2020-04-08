@@ -1,6 +1,7 @@
 import axios, { AxiosPromise } from 'axios';
 import { Message } from './interfaces/Message';
 import { Conversation, ConversationStatus } from './interfaces/Conversation';
+
 export * from './interfaces/Conversation';
 export * from './interfaces/Message';
 
@@ -32,7 +33,7 @@ export default class Freshchat {
       assigned_group_id?: string;
       status: string;
     } = {
-      status: status,
+      status,
     };
 
     if (assignTo === 'agent') {
@@ -88,5 +89,3 @@ export default class Freshchat {
     );
   }
 }
-
-

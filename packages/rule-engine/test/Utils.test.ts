@@ -1,5 +1,5 @@
-import { Utils } from '../src/Utils';
 import { assert } from 'chai';
+import { Utils } from '../src/Utils';
 import 'mocha';
 import ruleConfig from '../src/RuleConfig';
 import { ConditionOperator } from '../src/models/rule';
@@ -68,20 +68,21 @@ describe('Utils test', () => {
     });
 
     it('should return an empty string when param is not string', () => {
-      assert.equal('', Utils.convertOperand(undefined as any as string));
+      assert.equal('', Utils.convertOperand((undefined as any) as string));
     });
   });
 
   describe('evaluateCondition', () => {
-
     beforeEach(() => {
-      ruleConfig.registerPlugins([{
-        operators: {
-          'EQUALS': (op1: string, op2: string): boolean => {
-            return op1 === op2;
-          }
-        }
-      }]);
+      ruleConfig.registerPlugins([
+        {
+          operators: {
+            EQUALS: (op1: string, op2: string): boolean => {
+              return op1 === op2;
+            },
+          },
+        },
+      ]);
     });
 
     afterEach(() => {
@@ -96,7 +97,7 @@ describe('Utils test', () => {
     it('should handle the condition when operator is not available', () => {
       try {
         Utils.evaluateCondition('NOT_EQUALS' as ConditionOperator, 'a', 'b');
-      } catch(err) {
+      } catch (err) {
         assert('threw an exception when operator was not available');
       }
     });

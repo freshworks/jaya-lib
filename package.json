@@ -1,7 +1,28 @@
 {
-  "name": "root",
+  "name": "@freshworks-jaya/jaya-lib",
+  "description": "Collection of libraries for building Freshchat Marketplace Apps",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "lint": "eslint '*/**/*.ts' --quiet --fix",
+    "lint:watch": "esw '*/**/*.ts' --fix -w",
+    "tsc": "tsc -b ./packages/rule-engine ./packages/marketplace-models ./packages/freshchat-api ./packages/kairos-api",
+    "tsc:watch": "tsc -b ./packages/rule-engine ./packages/marketplace-models ./packages/freshchat-api ./packages/kairos-api -w"
+  },
   "devDependencies": {
-    "lerna": "^3.20.2"
+    "@types/node": "^13.11.0",
+    "@typescript-eslint/eslint-plugin": "^2.25.0",
+    "@typescript-eslint/parser": "^2.25.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-typescript": "^6.3.1",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-import-resolver-typescript": "^2.0.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-prettier": "^3.1.2",
+    "lerna": "^3.20.2",
+    "prettier": "^2.0.2",
+    "typescript": "^3.8.3"
   }
 }
