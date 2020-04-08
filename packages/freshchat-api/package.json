@@ -1,10 +1,10 @@
 {
   "name": "@freshworks-jaya/freshchat-api",
-  "version": "0.0.16",
+  "version": "0.0.18",
   "description": "Provides simple interface for accessing Freshchat's public APIs",
-  "repository": "git@github.com:arunrajkumar235/jaya-app.git",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "repository": "git@github.com:freshdesk/jaya-lib.git",
+  "main": "lib/src/index.js",
+  "types": "lib/src/index.d.ts",
   "publishConfig": {
     "access": "public"
   },

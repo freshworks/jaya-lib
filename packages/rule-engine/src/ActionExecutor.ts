@@ -36,8 +36,7 @@ export class ActionExecutor {
     const agent = productEventData.associations.agent ||
       (productEventData.actor.type === ActorType.Agent
         ? productEventData.actor
-        : null) ||
-      ({} as Agent);
+        : {} as Agent);
     const channel = productEventData.associations.channel;
     const group = productEventData.associations.group || ({} as Group);
     const conversation = productEventData.conversation || productEventData.message;
@@ -77,7 +76,7 @@ export class ActionExecutor {
     const dynamicPlaceholders: PluginPlaceholders = {};
     user.properties && user.properties.forEach(userProperty => {
       const placeholderKey: string = `user.properties.${userProperty.name}`;
-      dynamicPlaceholders[placeholderKey] = userProperty.value || '';
+      dynamicPlaceholders[placeholderKey] = userProperty.value;
     });
     ruleConfig.registerPlugins([{
       placeholders: dynamicPlaceholders

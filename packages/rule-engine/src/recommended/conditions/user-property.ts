@@ -10,13 +10,8 @@ const evaluateUserPropertyCondition = (
   userObj: User,
   conditionValue: UserConditionValue
 ): boolean => {
-  // Return false if there are no user properties
-  if (!userObj.properties) {
-    return false;
-  }
-
   let retVal = false;
-  const matchedProperty = userObj.properties.find(
+  const matchedProperty = userObj.properties && userObj.properties.find(
     property => property.name === conditionValue.propertyKey
   );
 
