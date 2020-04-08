@@ -1,5 +1,5 @@
-import { Condition } from "../../models/rule";
-import { ProductEventData } from "@freshworks-jaya/marketplace-models";
+import { Condition } from '../../models/rule';
+import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { Utils } from '../../Utils';
 import { Integrations } from '../../models/rule-engine';
 
@@ -8,6 +8,6 @@ export default (condition: Condition, productEventData: ProductEventData, integr
     condition.operator,
     productEventData.associations.channel.id,
     condition.value as string,
-    integrations
+    integrations,
   );
-}
+};

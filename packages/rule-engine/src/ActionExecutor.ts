@@ -88,11 +88,7 @@ export class ActionExecutor {
    * Iterates through all the actions and performs each one as configured.
    */
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  public static async handleActions(
-    integrations: Integrations,
-    actions: Action[],
-    productEventData: ProductEventData,
-  ) {
+  public static async handleActions(integrations: Integrations, actions: Action[], productEventData: ProductEventData) {
     this.setupPlaceholders(productEventData);
 
     for (let i = 0; actions && i < actions.length; i += 1) {

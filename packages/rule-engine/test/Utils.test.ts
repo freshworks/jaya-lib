@@ -100,14 +100,20 @@ describe('Utils test', () => {
     });
 
     it('should evaluate EQUALS condition', () => {
-      assert.equal(true, Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'a',integrations as any as Integrations));
-      assert.equal(false, Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'b', integrations as any as Integrations));
+      assert.equal(
+        true,
+        Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'a', (integrations as any) as Integrations),
+      );
+      assert.equal(
+        false,
+        Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'b', (integrations as any) as Integrations),
+      );
     });
 
     it('should handle the condition when operator is not available', () => {
       try {
-        Utils.evaluateCondition('NOT_EQUALS' as ConditionOperator, 'a', 'b', integrations as any as Integrations);
-      } catch(err) {
+        Utils.evaluateCondition('NOT_EQUALS' as ConditionOperator, 'a', 'b', (integrations as any) as Integrations);
+      } catch (err) {
         assert('threw an exception when operator was not available');
       }
     });

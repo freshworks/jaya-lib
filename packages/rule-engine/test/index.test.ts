@@ -156,8 +156,9 @@ describe('RuleEngine test', () => {
         {
           isSchedulerEnabled: false,
         },
-        'some-external-event-url',        
-        integrations as any as Integrations);
+        'some-external-event-url',
+        (integrations as any) as Integrations,
+      );
     });
   });
 });

@@ -27,12 +27,12 @@ export enum ActionType {
 export enum ConditionKey {
   AssignedAgent = 'ASSIGNED_AGENT',
   AssignedGroup = 'ASSIGNED_GROUP',
+  BusinessHours = 'BUSINESS_HOURS',
   Channel = 'CHANNEL',
   MessageText = 'MESSAGE_TEXT',
   ResponseDueType = 'RESPONSE_DUE_TYPE',
   Status = 'STATUS',
   UserProperty = 'USER_PROPERTY',
-  BusinessHours = 'BUSINESS_HOURS',
 }
 export enum ConditionOperator {
   Contains = 'CONTAINS',
@@ -41,10 +41,10 @@ export enum ConditionOperator {
   Equals = 'EQUALS',
   NotEquals = 'NOT_EQUALS',
   NotSet = 'NOT_SET',
+  OutsideBusinessHours = 'OUTSIDE_BUSINESS_HOURS',
   Set = 'SET',
   StartsWith = 'STARTS_WITH',
   WithinBusinessHours = 'WITHIN_BUSINESS_HOURS',
-  OutsideBusinessHours = 'OUTSIDE_BUSINESS_HOURS',
 }
 export enum ResponseDueTypeValue {
   FirstResponseDue = 'FIRST_RESPONSE_DUE',

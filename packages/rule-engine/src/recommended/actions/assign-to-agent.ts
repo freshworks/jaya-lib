@@ -4,11 +4,11 @@ import { Integrations } from '../../models/rule-engine';
 
 export default (
   integrations: Integrations,
-  productEventData: ProductEventData, 
-  actionValue: unknown
+  productEventData: ProductEventData,
+  actionValue: unknown,
 ): Promise<unknown> => {
-  const freshchatApiUrl= integrations.freshchatv1.url;
-  const freshchatApiToken= integrations.freshchatv1.token;
+  const freshchatApiUrl = integrations.freshchatv1.url;
+  const freshchatApiToken = integrations.freshchatv1.token;
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
   const modelProperties = productEventData.conversation || productEventData.message;
   const conversationId = modelProperties.conversation_id;

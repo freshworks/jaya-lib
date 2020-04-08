@@ -8,6 +8,6 @@ export default (condition: Condition, productEventData: ProductEventData, integr
     condition.operator,
     productEventData.associations.channel.id,
     condition.value as string,
-    integrations
+    integrations,
   );
 };

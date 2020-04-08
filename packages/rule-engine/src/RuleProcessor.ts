@@ -10,7 +10,11 @@ export class RuleProcessor {
   /**
    * Checks if the given condition is satisfied by the payload.
    */
-  public static isConditionMatching(productEventData: ProductEventData, condition: Condition, integrations: Integrations): boolean {
+  public static isConditionMatching(
+    productEventData: ProductEventData,
+    condition: Condition,
+    integrations: Integrations,
+  ): boolean {
     const conditionFunc = ruleConfig.conditions && ruleConfig.conditions[condition.key];
 
     if (conditionFunc) {
@@ -22,7 +26,11 @@ export class RuleProcessor {
   /**
    * Checks if all the conditions in the block are matching.
    */
-  public static blockMatchAll(productEventData: ProductEventData, conditions: Condition[], integrations: Integrations): boolean {
+  public static blockMatchAll(
+    productEventData: ProductEventData,
+    conditions: Condition[],
+    integrations: Integrations,
+  ): boolean {
     for (let i = 0; conditions && i < conditions.length; i += 1) {
       const condition = conditions[i];
       const conditionMatchResult: boolean = this.isConditionMatching(productEventData, condition, integrations);
@@ -38,7 +46,11 @@ export class RuleProcessor {
   /**
    * Check if any of the conditions in a block are matching.
    */
-  public static blockMatchAny(productEventData: ProductEventData, conditions: Condition[], integrations: Integrations): boolean {
+  public static blockMatchAny(
+    productEventData: ProductEventData,
+    conditions: Condition[],
+    integrations: Integrations,
+  ): boolean {
     for (let i = 0; conditions && i < conditions.length; i += 1) {
       const condition = conditions[i];
       const conditionMatchResult: boolean = this.isConditionMatching(productEventData, condition, integrations);
@@ -150,7 +162,11 @@ export class RuleProcessor {
   /**
    * Check if all blocks in a rule are matching.
    */
-  public static isRuleBlocksMatching(productEventData: ProductEventData, rule: Rule, integrations: Integrations): boolean {
+  public static isRuleBlocksMatching(
+    productEventData: ProductEventData,
+    rule: Rule,
+    integrations: Integrations,
+  ): boolean {
     // Rule is matching if there are no blocks
     if (!rule.blocks || !rule.blocks.length) {
       return true;
@@ -169,7 +185,12 @@ export class RuleProcessor {
   /**
    * Checks if trigger conditions are matching and then checks if property conditions are matching.
    */
-  public static isRuleMatching(event: Event, productEventData: ProductEventData, rule: Rule, integrations: Integrations): boolean {
+  public static isRuleMatching(
+    event: Event,
+    productEventData: ProductEventData,
+    rule: Rule,
+    integrations: Integrations,
+  ): boolean {
     const isTriggerConditionMatch: boolean = this.isTriggerConditionMatching(event, productEventData, rule.triggers);
 
     // Rule does not match if trigger conditions don't match
@@ -190,13 +211,21 @@ export class RuleProcessor {
   /**
    * Iterates through each rule and return the actions of the first matching rule.
    */
-  public static getFirstMatchingRule(event: Event, productEventData: ProductEventData, rules: Rule[], integrations: Integrations): Rule | null {
+  public static getFirstMatchingRule(
+    event: Event,
+    productEventData: ProductEventData,
+    rules: Rule[],
+    integrations: Integrations,
+  ): Rule | null {
     let firstMatchingRule: Rule | null = null;
 
     for (let i = 0; rules && i < rules.length; i += 1) {
       const currentRule = rules[i];
 
-      if (this.isEnabledNonTimerRule(currentRule) && this.isRuleMatching(event, productEventData, currentRule, integrations)) {
+      if (
+        this.isEnabledNonTimerRule(currentRule) &&
+        this.isRuleMatching(event, productEventData, currentRule, integrations)
+      ) {
         firstMatchingRule = currentRule;
         break;
       }

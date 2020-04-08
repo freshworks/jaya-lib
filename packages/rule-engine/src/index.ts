@@ -37,7 +37,7 @@ export class RuleEngine {
     payload: ProductEventPayload,
     rules: Rule[],
     options: RuleEngineOptions,
-    externalEventUrl: string,    
+    externalEventUrl: string,
     integrations: Integrations,
     kairosCredentials?: KairosCredentials,
   ): void => {
@@ -46,11 +46,16 @@ export class RuleEngine {
       TimerRuleEngine.invalidateTimers(payload, rules, kairosCredentials);
 
       // Process all timer rules.
-      TimerRuleEngine.triggerTimers(payload, rules, externalEventUrl, kairosCredentials,integrations);
+      TimerRuleEngine.triggerTimers(payload, rules, externalEventUrl, kairosCredentials, integrations);
     }
 
     // Process regular rules and get the actions of the first matching rule.
-    const firstMatchingRule: Rule | null = RuleProcessor.getFirstMatchingRule(payload.event, payload.data, rules,integrations);
+    const firstMatchingRule: Rule | null = RuleProcessor.getFirstMatchingRule(
+      payload.event,
+      payload.data,
+      rules,
+      integrations,
+    );
 
     // Perform all actions sequentially in order.
     if (firstMatchingRule && firstMatchingRule.actions && firstMatchingRule.actions.length) {

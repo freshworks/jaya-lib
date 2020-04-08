@@ -362,7 +362,7 @@ describe('TimerRuleEngine test', () => {
             token: 'some token',
             url: 'some url',
           },
-          integrations as any as Integrations
+          (integrations as any) as Integrations,
         );
       } catch (err) {
         assert('delete schedule threw an error');
@@ -381,7 +381,7 @@ describe('TimerRuleEngine test', () => {
           token: 'some token',
           url: 'some url',
         },
-        integrations as any as Integrations
+        (integrations as any) as Integrations,
       );
 
       assert.isFalse(spy.called);
@@ -399,7 +399,7 @@ describe('TimerRuleEngine test', () => {
           token: 'some token',
           url: 'some url',
         },
-        integrations as any as Integrations
+        (integrations as any) as Integrations,
       );
     });
   });
@@ -496,9 +496,9 @@ describe('TimerRuleEngine test', () => {
         {
           group: 'some group',
           url: 'some url',
-          token: 'some token'
+          token: 'some token',
         },
-        integrations as any as Integrations
+        (integrations as any) as Integrations,
       );
 
       assert.isTrue(createStub.called);
@@ -517,9 +517,9 @@ describe('TimerRuleEngine test', () => {
         {
           group: 'some group',
           url: 'some url',
-          token: 'some token'
+          token: 'some token',
         },
-        integrations as any as Integrations
+        (integrations as any) as Integrations,
       );
 
       assert.isFalse(createStub.called);
@@ -537,9 +537,9 @@ describe('TimerRuleEngine test', () => {
           {
             group: 'some group',
             url: 'some url',
-            token: 'some token'
+            token: 'some token',
           },
-          integrations as any as Integrations
+          (integrations as any) as Integrations,
         );
       } catch (err) {
         assert('bulk create throws error');
@@ -570,9 +570,9 @@ describe('TimerRuleEngine test', () => {
         {
           group: 'some group',
           url: 'some url',
-          token: 'some token'
+          token: 'some token',
         },
-        integrations as any as Integrations
+        (integrations as any) as Integrations,
       );
 
       assert.isFalse(createStub.called);

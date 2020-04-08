@@ -16,7 +16,12 @@ export class TimerRuleEngine {
   /**
    * Checks if the rule is a timer rule and is enabled.
    */
-  public static isMatchingTimerRule(event: Event, productEventData: ProductEventData, rule: Rule, integrations: Integrations): boolean {
+  public static isMatchingTimerRule(
+    event: Event,
+    productEventData: ProductEventData,
+    rule: Rule,
+    integrations: Integrations,
+  ): boolean {
     return rule.isTimer && rule.isEnabled && RuleProcessor.isRuleMatching(event, productEventData, rule, integrations);
   }
 
@@ -94,7 +99,7 @@ export class TimerRuleEngine {
     externalEventPayload: RuleEngineExternalEventPayload,
     rules: Rule[],
     kairosCredentials: KairosCredentials,
-    integrations: Integrations
+    integrations: Integrations,
   ): Promise<void> {
     const scheduler = new Kairos(kairosCredentials);
 
@@ -110,11 +115,7 @@ export class TimerRuleEngine {
 
     // Execute actions
     if (timerRule && Array.isArray(timerRule.actions)) {
-      ActionExecutor.handleActions(
-        integrations,
-        timerRule.actions,
-        externalEventPayload.data.originalPayload.data,
-      );
+      ActionExecutor.handleActions(integrations, timerRule.actions, externalEventPayload.data.originalPayload.data);
     }
   }
 

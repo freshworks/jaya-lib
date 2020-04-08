@@ -10,8 +10,8 @@ export interface Integrations {
 }
 
 export interface ProductCredentials {
-    token: string;
-    url: string;
+  token: string;
+  url: string;
 }
 
 export interface RuleEngineExternalEventPayload extends ExternalEventPayload {
@@ -31,19 +31,19 @@ export interface KairosCredentials {
 }
 
 export interface BusinessHour {
-  timezone: string;
+  appId: number;
+  created: string;
   days?: {
     [key: string]: string;
-  },
+  };
+  defaultBhr: boolean;
+  enabled: boolean;
+  isCalendarLinked: boolean;
+  name: string;
+  operatingHoursId: number;
+  timezone: string;
   working?: {
     [key: string]: boolean;
-  },
-  enabled: boolean;
-  appId: number;
-  operatingHoursId: number;
-  created: string;
+  };
   workingDaily: boolean;
-  name: string;
-  defaultBhr: boolean;
-  isCalendarLinked: boolean;
 }

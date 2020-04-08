@@ -10,7 +10,7 @@ const evaluateUserPropertyCondition = (
   operator: ConditionOperator,
   userObj: User,
   conditionValue: UserConditionValue,
-  integrations: Integrations
+  integrations: Integrations,
 ): boolean => {
   let retVal = false;
   const matchedProperty =
@@ -30,6 +30,6 @@ export default (condition: Condition, productEventData: ProductEventData, integr
     condition.operator,
     productEventData.associations.user,
     condition.value as UserConditionValue,
-    integrations
+    integrations,
   );
 };

@@ -33,7 +33,12 @@ export class Utils {
   /**
    * Performs operation defined by 'operator' on operands operand1 and operand2.
    */
-  public static evaluateCondition(operator: ConditionOperator, operand1: string, operand2: string, integrations: Integrations): boolean {
+  public static evaluateCondition(
+    operator: ConditionOperator,
+    operand1: string,
+    operand2: string,
+    integrations: Integrations,
+  ): boolean {
     const sanitizedOperand1 = this.convertOperand(operand1);
     const sanitizedOperand2 = this.convertOperand(operand2);
 
@@ -114,22 +119,19 @@ export class Utils {
   /**
    * Gets business hour for an account based on businessHourId provided.
    */
-  public static getBusinessHour = async (
-    businessHourId: string,
-    integrations: Integrations
-  ): Promise<any> => {
-    const freshchatApiUrl= integrations.freshchatv1.url;
-    const freshchatApiToken= integrations.freshchatv1.token;
+  public static getBusinessHour = async (businessHourId: string, integrations: Integrations): Promise<any> => {
+    const freshchatApiUrl = integrations.freshchatv1.url;
+    const freshchatApiToken = integrations.freshchatv1.token;
     try {
-      let businessHours = await axios.get(freshchatApiUrl, {
+      const businessHours = await axios.get(freshchatApiUrl, {
         headers: {
           Authorization: freshchatApiToken,
         },
       });
-      let conditionBusinessHour = businessHours.data.filterBy('operatingHoursId', parseInt(businessHourId));
+      const conditionBusinessHour = businessHours.data.filterBy('operatingHoursId', parseInt(businessHourId));
       return conditionBusinessHour && conditionBusinessHour[0];
     } catch (err) {
       throw new Error('Error getting BusinessHours');
     }
-  }
+  };
 }

@@ -28,6 +28,6 @@ export default (condition: Condition, productEventData: ProductEventData, integr
     condition.operator,
     getMessagePartsTextContent(modelProperties.messages[0].message_parts),
     condition.value as string,
-    integrations
+    integrations,
   );
 };
