@@ -43,16 +43,6 @@ describe('ActionExecutor test', () => {
       ruleConfig.reset();
     });
 
-    it('should have empty strings for all the placeholders', () => {
-      ActionExecutor.setupPlaceholders((productEventDataWihoutAssociations as any) as ProductEventData);
-
-      Object.keys(ruleConfig.placeholders as PluginPlaceholders).forEach((placeholder) => {
-        if (ruleConfig.placeholders) {
-          assert.ok(ruleConfig.placeholders[placeholder] === '');
-        }
-      });
-    });
-
     it('check for generated username', () => {
       ActionExecutor.setupPlaceholders((productEventDataForGeneratedUsername as any) as ProductEventData);
 
