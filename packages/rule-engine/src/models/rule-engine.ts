@@ -8,10 +8,8 @@ export interface RuleEngineOptions {
 }
 
 export interface Integrations {
-  freshchat: {
-    v1: ProductCredentials;
-    v2: ProductCredentials;
-  };
+  freshchatv1: ProductCredentials;
+  freshchatv2: ProductCredentials;
 }
 
 export interface ProductCredentials {

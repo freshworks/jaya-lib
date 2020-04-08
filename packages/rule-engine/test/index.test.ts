@@ -92,13 +92,11 @@ describe('RuleEngine test', () => {
   };
 
   const integrations = {
-    freshchat: {
-      v2: {
-        freshchatApiUrl: 'https://api.freshchat.com/v2',
-      },
-      v1: {
-        freshchatApiUrl: 'https://api.freshchat.com/app/services/app/v1',
-      },
+    freshchatv2: {
+      url: 'https://api.freshchat.com/v2',
+    },
+    freshchatv1: {
+      url: 'https://api.freshchat.com/app/services/app/v1',
     },
   };
 

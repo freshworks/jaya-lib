@@ -7,8 +7,8 @@ import axios from 'axios';
 export default async (condition: Condition, productEventData: ProductEventData, integrations: Integrations,): boolean => {
   
 
-  const freshchatApiUrl= integrations.freshchat.v1.url;
-  const freshchatApiToken= integrations.freshchat.v1.token;
+  const freshchatApiUrl= integrations.freshchatv1.url;
+  const freshchatApiToken= integrations.freshchatv1.token;
   
   const businessHours = await axios.get(freshchatApiUrl, {
     headers: {

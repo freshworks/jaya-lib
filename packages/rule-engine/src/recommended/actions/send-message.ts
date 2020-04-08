@@ -10,8 +10,8 @@ export default (
   productEventData: ProductEventData, 
   actionValue: any
 ): Promise<any> => {
-  const freshchatApiUrl= integrations.freshchat.v1.url;
-  const freshchatApiToken= integrations.freshchat.v1.token;
+  const freshchatApiUrl= integrations.freshchatv1.url;
+  const freshchatApiToken= integrations.freshchatv1.token;
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
   const modelProperties =
     productEventData.conversation || productEventData.message;
