@@ -1,19 +1,19 @@
-import { ConditionOperator, PluginPlaceholders } from './index';
+import { ConditionOperator } from './index';
 import ruleConfig from './RuleConfig';
 import usernameVerbs from './constants/username-verbs';
 import usernameNouns from './constants/username-nouns';
 import { Integrations, BusinessHour } from './models/rule-engine';
 import axios from 'axios';
-import dayjs from 'dayjs';
-import advancedFormat from 'dayjs/plugin/advancedFormat';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
-import { findTimeZone, getZonedTime } from 'timezone-support';
-import { formatZonedTime } from 'timezone-support/dist/parse-format';
+// import dayjs from 'dayjs';
+// import advancedFormat from 'dayjs/plugin/advancedFormat';
+// import relativeTime from 'dayjs/plugin/relativeTime';
+// import localizedFormat from 'dayjs/plugin/localizedFormat';
+// import { findTimeZone, getZonedTime } from 'timezone-support';
+// import { formatZonedTime } from 'timezone-support/dist/parse-format';
 
-dayjs.extend(advancedFormat);
-dayjs.extend(relativeTime);
-dayjs.extend(localizedFormat);
+// dayjs.extend(advancedFormat);
+// dayjs.extend(relativeTime);
+// dayjs.extend(localizedFormat);
 
 type DateInput = Date | number;
 export class Utils {
@@ -63,73 +63,19 @@ export class Utils {
   }
 
   /**
-   * Replaces all occurrences of a string within a string with another string.
-   */
-  public static replaceAll(str: string, find: string, replace: string): string {
-    return str.replace(new RegExp(find, 'g'), replace);
-  }
-
-  /**
-   * Finds and replaces all placeholders.
-   */
-  public static findAndReplacePlaceholders(message: string, placeholders: PluginPlaceholders): string {
-    let result = message;
-
-    // Construct regex string with placeholders like so.
-    // agent\\.first_name|agent\\.last_name|agent\\.id
-    const placeholdersRegExpString = Object.keys(placeholders)
-      .map((placeholder) => {
-        return placeholder.replace('.', '\\.');
-      })
-      .join('|');
-
-    // Regex to find all placeholders in a given string with the format.
-    // {<placeholder>|<alValue>}
-    // Eg. {user.first_name|there}
-    const regExpString = `(?:(?<=\\{)(?:${placeholdersRegExpString})(?:\\|[\\w\\s]+)?(?=\\}))`;
-    const placeholdersRegExp = new RegExp(regExpString, 'gm');
-
-    // Find matches in the given message for above regexp.
-    // Eg. ['user.first_name|there', 'agent.id']
-    const matches = message.match(placeholdersRegExp);
-
-    // Replace placeholder with value for each match
-    if (Array.isArray(matches)) {
-      result = matches.reduce((replacedString, match) => {
-        // Each match is of the format `field|altValue`
-        const [field, altValue] = match.split('|');
-
-        // Construct regex to replace all occurrences of match.
-        // Use value for placeholder from
-        // If not available, use altValue.
-        // Even if that is not available, use an empty string.
-        // Constructed replacement regex string will look like so.
-        // Eg. \\{user\\.first_name(\\|there)?\\}
-        const value = (placeholders && placeholders[field]) || altValue || '';
-        const regExpReplaceString = `\\{${field.replace('.', '\\.')}(\\|${altValue})?\\}`;
-
-        // Replace all occurrences of placeholder with value.
-        return this.replaceAll(replacedString, regExpReplaceString, value.trim());
-      }, result);
-    }
-
-    return result;
-  }
-
-  /**
    * Returns working hours as an array
    */
-  public static getWorkingHours(data: string): string[] {
-    const dataStr = data.substr(0, data.length - 1),
-      arrayData = dataStr.split(';');
-    const timeArray = arrayData.reduce((all: string[], one: string, i: number) => {
-      const ch = Math.floor(i / 2);
-      all[ch] = [].concat(all[ch] || [], one);
-      return all;
-    }, [] as string[]);
+  // public static getWorkingHours(data: string): string[] {
+  //   const dataStr = data.substr(0, data.length - 1),
+  //     arrayData = dataStr.split(';');
+  //   const timeArray = arrayData.reduce((all: string[], one: string, i: number) => {
+  //     const ch = Math.floor(i / 2);
+  //     all[ch] = [].concat(all[ch] || [], one);
+  //     return all;
+  //   }, [] as string[]);
 
-    return timeArray;
-  }
+  //   return timeArray;
+  // }
 
   /**
    * Returns true if isWithinBusinessHours
@@ -144,39 +90,40 @@ export class Utils {
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public static outsideBusinessHours(businessHour: any): boolean {
-    let isAway = true,
-      agentTime,
-      workingHoursArr,
-      agentDayOfWeek;
-    const operatingHours = businessHour;
-    const currentTimeInMillis = new Date().getTime();
-    if (!operatingHours) {
-      isAway = false;
-    } else if (!operatingHours.enabled) {
-      isAway = false;
-    } else {
-      agentTime = dayjs(this.toTimeZone(currentTimeInMillis, operatingHours.timezone.replace(' - ', '/')));
-      if (agentTime) {
-        agentDayOfWeek = (agentTime.day() + 6) % 7;
-        if (operatingHours.working[agentDayOfWeek] !== 'true') {
-          isAway = true;
-        } else {
-          workingHoursArr = this.getWorkingHours(operatingHours.days[agentDayOfWeek]);
-          for (let i = 0, iLen = workingHoursArr.length; i < iLen; i++) {
-            const fromToArr = workingHoursArr[i],
-              fromTimeSeconds = parseInt(fromToArr[0], 10),
-              toTimeSeconds = parseInt(fromToArr[1], 10),
-              agentTimeFrom = agentTime.clone().startOf('day').add(fromTimeSeconds, 's'),
-              agentTimeTo = agentTime.clone().startOf('day').add(toTimeSeconds, 's');
-            if (agentTime.isAfter(agentTimeFrom) && agentTime.isBefore(agentTimeTo)) {
-              isAway = false;
-              break;
-            }
-          }
-        }
-      }
-    }
-    return isAway;
+    // let isAway = true,
+    //   agentTime,
+    //   workingHoursArr,
+    //   agentDayOfWeek;
+    // const operatingHours = businessHour;
+    // const currentTimeInMillis = new Date().getTime();
+    // if (!operatingHours) {
+    //   isAway = false;
+    // } else if (!operatingHours.enabled) {
+    //   isAway = false;
+    // } else {
+    //   agentTime = dayjs(this.toTimeZone(currentTimeInMillis, operatingHours.timezone.replace(' - ', '/')));
+    //   if (agentTime) {
+    //     agentDayOfWeek = (agentTime.day() + 6) % 7;
+    //     if (operatingHours.working[agentDayOfWeek] !== 'true') {
+    //       isAway = true;
+    //     } else {
+    //       workingHoursArr = this.getWorkingHours(operatingHours.days[agentDayOfWeek]);
+    //       for (let i = 0, iLen = workingHoursArr.length; i < iLen; i++) {
+    //         const fromToArr = workingHoursArr[i],
+    //           fromTimeSeconds = parseInt(fromToArr[0], 10),
+    //           toTimeSeconds = parseInt(fromToArr[1], 10),
+    //           agentTimeFrom = agentTime.clone().startOf('day').add(fromTimeSeconds, 's'),
+    //           agentTimeTo = agentTime.clone().startOf('day').add(toTimeSeconds, 's');
+    //         if (agentTime.isAfter(agentTimeFrom) && agentTime.isBefore(agentTimeTo)) {
+    //           isAway = false;
+    //           break;
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+    businessHour && businessHour;
+    return true;
   }
 
   /**
@@ -187,20 +134,20 @@ export class Utils {
    * @param {String} preferredTimeZone
    * @returns {String} - If at least one of the params passed are valid
    */
-  public static toTimeZone(timeStamp: DateInput, preferredTimeZone: string): string {
-    if (timeStamp && preferredTimeZone) {
-      try {
-        const timeZoneData = findTimeZone(preferredTimeZone);
-        const convertedTime = getZonedTime(timeStamp, timeZoneData);
-        const format = 'YYYY-MM-DD HH:mm:ss';
+  // public static toTimeZone(timeStamp: DateInput, preferredTimeZone: string): string {
+  //   if (timeStamp && preferredTimeZone) {
+  //     try {
+  //       const timeZoneData = findTimeZone(preferredTimeZone);
+  //       const convertedTime = getZonedTime(timeStamp, timeZoneData);
+  //       const format = 'YYYY-MM-DD HH:mm:ss';
 
-        return formatZonedTime(convertedTime, format);
-      } catch (err) {
-        return '';
-      }
-    }
-    return '';
-  }
+  //       return formatZonedTime(convertedTime, format);
+  //     } catch (err) {
+  //       return '';
+  //     }
+  //   }
+  //   return '';
+  // }
 
   /**
    * Gets business hour for an account based on businessHourId provided.
