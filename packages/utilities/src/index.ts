@@ -6,12 +6,10 @@ const replaceAll = (str: string, find: string, replace: string): string => {
   return str.replace(new RegExp(find, 'g'), replace);
 };
 
-const findAndReplacePlaceholders = (message: string, placeholders: PlaceholdersMap): string => {
-  let result = message;
-
+const findMatchingPlaceholders = (message: string, placeholdersMap: PlaceholdersMap): null | string[] => {
   // Construct regex string with placeholders like so.
   // agent\\.first_name|agent\\.last_name|agent\\.id
-  const placeholdersRegExpString = Object.keys(placeholders)
+  const placeholdersRegExpString = Object.keys(placeholdersMap)
     .map((placeholder) => {
       return placeholder.replace('.', '\\.');
     })
@@ -25,7 +23,14 @@ const findAndReplacePlaceholders = (message: string, placeholders: PlaceholdersM
 
   // Find matches in the given message for above regexp.
   // Eg. ['user.first_name|there', 'agent.id']
-  const matches = message.match(placeholdersRegExp);
+  return message.match(placeholdersRegExp);
+};
+
+const findAndReplacePlaceholders = (message: string, placeholdersMap: PlaceholdersMap): string => {
+  let result = message;
+
+  // Get the matching placeholders from message
+  const matches = findMatchingPlaceholders(message, placeholdersMap);
 
   // Replace placeholder with value for each match
   if (Array.isArray(matches)) {
@@ -39,15 +44,15 @@ const findAndReplacePlaceholders = (message: string, placeholders: PlaceholdersM
       // Even if that is not available, use an empty string.
       // Constructed replacement regex string will look like so.
       // Eg. \\{user\\.first_name(\\|there)?\\}
-      const value = (placeholders && placeholders[field]) || altValue || '';
+      const value = (placeholdersMap && placeholdersMap[field]) || altValue || '';
       const regExpReplaceString = `\\{${field.replace('.', '\\.')}(\\|${altValue})?\\}`;
 
       // Replace all occurrences of placeholder with value.
-      return replaceAll(replacedString, regExpReplaceString, value.trim());
+      return replaceAll(replacedString, regExpReplaceString, value);
     }, result);
   }
 
   return result;
 };
 
-export { findAndReplacePlaceholders };
+export { findAndReplacePlaceholders, findMatchingPlaceholders };
