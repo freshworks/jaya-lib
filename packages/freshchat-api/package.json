@@ -1,6 +1,6 @@
 {
   "name": "@freshworks-jaya/freshchat-api",
-  "version": "0.0.21-alpha.0",
+  "version": "0.0.21",
   "description": "Provides simple interface for accessing Freshchat's public APIs",
   "repository": "git@github.com:freshdesk/jaya-lib.git",
   "main": "lib/index.js",
@@ -33,8 +33,8 @@
     "mocha": "^7.1.1",
     "nock": "^12.0.3",
     "nyc": "^15.0.1",
-    "ts-node": "^8.8.1",
     "source-map-support": "^0.5.16",
+    "ts-node": "^8.8.1",
     "typescript": "^3.8.3"
   },
   "dependencies": {
