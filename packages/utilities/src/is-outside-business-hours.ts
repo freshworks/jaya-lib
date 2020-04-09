@@ -53,13 +53,12 @@ const toTimeZone = (timeStamp: DateInput, preferredTimeZone: string): string => 
 /**
  * Returns true if outsideBusinessHours else false
  */
-export const isOutsideBusinessHours = (businessHour: any): boolean => {
+export const isOutsideBusinessHours = (businessHour: any, currentTimeInMillis: number): boolean => {
   let isAway = true,
     agentTime,
     workingHoursArr,
     agentDayOfWeek;
   const operatingHours = businessHour;
-  const currentTimeInMillis = new Date().getTime();
   if (!operatingHours) {
     isAway = false;
   } else if (!operatingHours.enabled) {
