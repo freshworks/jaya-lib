@@ -65,22 +65,20 @@ export const isOutsideBusinessHours = (businessHour: any, currentTimeInMillis: n
     isAway = false;
   } else {
     agentTime = dayjs(toTimeZone(currentTimeInMillis, operatingHours.timezone.replace(' - ', '/')));
-    if (agentTime) {
-      agentDayOfWeek = (agentTime.day() + 6) % 7;
-      if (operatingHours.working[agentDayOfWeek] !== 'true') {
-        isAway = true;
-      } else {
-        workingHoursArr = getWorkingHours(operatingHours.days[agentDayOfWeek]);
-        for (let i = 0, iLen = workingHoursArr.length; i < iLen; i++) {
-          const fromToArr = workingHoursArr[i],
-            fromTimeSeconds = parseInt(fromToArr[0], 10),
-            toTimeSeconds = parseInt(fromToArr[1], 10),
-            agentTimeFrom = agentTime.clone().startOf('day').add(fromTimeSeconds, 's'),
-            agentTimeTo = agentTime.clone().startOf('day').add(toTimeSeconds, 's');
-          if (agentTime.isAfter(agentTimeFrom) && agentTime.isBefore(agentTimeTo)) {
-            isAway = false;
-            break;
-          }
+    agentDayOfWeek = (agentTime.day() + 6) % 7;
+    if (operatingHours.working[agentDayOfWeek] !== 'true') {
+      isAway = true;
+    } else {
+      workingHoursArr = getWorkingHours(operatingHours.days[agentDayOfWeek]);
+      for (let i = 0, iLen = workingHoursArr.length; i < iLen; i++) {
+        const fromToArr = workingHoursArr[i],
+          fromTimeSeconds = parseInt(fromToArr[0], 10),
+          toTimeSeconds = parseInt(fromToArr[1], 10),
+          agentTimeFrom = agentTime.clone().startOf('day').add(fromTimeSeconds, 's'),
+          agentTimeTo = agentTime.clone().startOf('day').add(toTimeSeconds, 's');
+        if (agentTime.isAfter(agentTimeFrom) && agentTime.isBefore(agentTimeTo)) {
+          isAway = false;
+          break;
         }
       }
     }
