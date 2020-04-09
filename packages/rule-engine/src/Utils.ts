@@ -65,14 +65,15 @@ export class Utils {
   /**
    * Returns working hours as an array
    */
-  // public static getWorkingHours(data: string): string[] {
+  // public static getWorkingHours(data: string): string[][] {
   //   const dataStr = data.substr(0, data.length - 1),
   //     arrayData = dataStr.split(';');
-  //   const timeArray = arrayData.reduce((all: string[], one: string, i: number) => {
+  //   const timeArray = arrayData.reduce((all: string[][], one: string, i: number) => {
   //     const ch = Math.floor(i / 2);
-  //     all[ch] = [].concat(all[ch] || [], one);
+  //     const fromHrs = all[ch] || [];
+  //     all[ch] = fromHrs.concat(one);
   //     return all;
-  //   }, [] as string[]);
+  //   }, []);
 
   //   return timeArray;
   // }
@@ -123,7 +124,7 @@ export class Utils {
     //   }
     // }
     businessHour && businessHour;
-    return true;
+    return true; // return isAway
   }
 
   /**
