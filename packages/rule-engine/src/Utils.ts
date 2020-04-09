@@ -162,7 +162,7 @@ export class Utils {
           Authorization: freshchatApiToken,
         },
       });
-      const conditionBusinessHour = businessHours.data.filterBy('operatingHoursId', parseInt(businessHourId));
+      const conditionBusinessHour = businessHours.data.filterBy('operatingHoursId', parseInt(businessHourId, 10));
       return conditionBusinessHour && conditionBusinessHour[0];
     } catch (err) {
       throw new Error('Error getting BusinessHours');
