@@ -77,5 +77,15 @@ describe('Utils test', () => {
       const agentTime = 1586430600201;
       assert.equal(true, isOutsideBusinessHours(businessHour, agentTime));
     });
+    it('should return true when no agentTime is passed', () => {
+      businessHour.enabled = true;
+      assert.equal(true, isOutsideBusinessHours(businessHour, 0));
+    });
+    it('should return true when wrong timezone is passed', () => {
+      businessHour.enabled = true;
+      businessHour.timezone = 'test';
+      const agentTime = 1586437800201;
+      assert.equal(true, isOutsideBusinessHours(businessHour, agentTime));
+    });
   });
 });
