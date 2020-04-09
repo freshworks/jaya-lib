@@ -9,7 +9,7 @@ npm install --save @freshworks-jaya/freshchat-api
 or
 
 ```
-yarn add freshdesk-api
+yarn add @freshworks-jaya/freshchat-api
 ```
 
 ## Usage
