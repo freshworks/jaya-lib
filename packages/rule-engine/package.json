@@ -40,6 +40,7 @@
     "@freshworks-jaya/kairos-api": "^0.0.18",
     "@freshworks-jaya/marketplace-models": "^0.0.19",
     "@freshworks-jaya/utilities": "^0.0.5",
-    "bluebird": "^3.7.2"
+    "bluebird": "^3.7.2",
+    "axios": "^0.19.2"
   }
 }
