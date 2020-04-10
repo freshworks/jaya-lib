@@ -37,9 +37,9 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@freshworks-jaya/freshchat-api": "^0.0.21",
-    "@freshworks-jaya/kairos-api": "^0.0.15",
-    "@freshworks-jaya/marketplace-models": "^0.0.17",
-    "@freshworks-jaya/utilities": "^0.0.2"
+    "@freshworks-jaya/freshchat-api": "^0.0.24",
+    "@freshworks-jaya/kairos-api": "^0.0.18",
+    "@freshworks-jaya/marketplace-models": "^0.0.19",
+    "@freshworks-jaya/utilities": "^0.0.4"
   }
 }
