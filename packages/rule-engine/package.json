@@ -26,7 +26,6 @@
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.11.0",
     "@types/sinon": "^9.0.0",
-    "bluebird": "^3.7.2",
     "chai": "^4.2.0",
     "codecov": "^3.6.5",
     "mocha": "^7.1.1",
@@ -37,6 +36,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
+    "bluebird": "^3.7.2",
     "@freshworks-jaya/freshchat-api": "^0.0.24",
     "@freshworks-jaya/kairos-api": "^0.0.18",
     "@freshworks-jaya/marketplace-models": "^0.0.19",
