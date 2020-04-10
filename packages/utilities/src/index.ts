@@ -1,3 +1,4 @@
+import { BusinessHour, isOutsideBusinessHours } from './is-outside-business-hours';
 export interface PlaceholdersMap {
   [key: string]: string;
 }
@@ -55,4 +56,4 @@ const findAndReplacePlaceholders = (message: string, placeholdersMap: Placeholde
   return result;
 };
 
-export { findAndReplacePlaceholders, findMatchingPlaceholders };
+export { findAndReplacePlaceholders, findMatchingPlaceholders, BusinessHour, isOutsideBusinessHours };
