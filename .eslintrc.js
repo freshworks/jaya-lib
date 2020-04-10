@@ -19,6 +19,7 @@ module.exports =  {
     "camelcase": 0,
     "@typescript-eslint/camelcase": ["error", {properties: "never"}],
     "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-explicit-any": "error",
     "typescript-sort-keys/interface": 2,
     "typescript-sort-keys/string-enum": 2,
     "no-await-in-loop": 0,
