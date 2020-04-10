@@ -23,7 +23,6 @@ class RuleConfig {
   registerPlugins = (plugins: RulePlugin[]): void => {
     for (let i = 0; i < plugins.length; i++) {
       const rulePlugin = plugins[i];
-
       if (rulePlugin.actions) {
         this.actions = { ...this.actions, ...rulePlugin.actions };
       }
