@@ -41,7 +41,7 @@ export interface BusinessHour {
   operatingHoursId: number;
   timezone: string;
   working?: {
-    [key: string]: boolean;
+    [key: string]: string;
   };
   workingDaily: boolean;
 }
