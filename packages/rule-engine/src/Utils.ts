@@ -4,7 +4,7 @@ import usernameVerbs from './constants/username-verbs';
 import usernameNouns from './constants/username-nouns';
 import { Integrations } from './models/rule-engine';
 import axios from 'axios';
-import { BusinessHour } from '@freshworks-jaya/utilities';
+import { BusinessHour } from '@freshworks-jaya/utilities/lib/is-outside-business-hours';
 
 export class Utils {
   /**

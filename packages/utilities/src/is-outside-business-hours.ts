@@ -11,7 +11,7 @@ dayjs.extend(localizedFormat);
 
 type DateInput = Date | number;
 
-export interface BusinessHour {
+interface BusinessHour {
   appId: number;
   days: {
     [key: string]: string;
@@ -68,7 +68,7 @@ const toTimeZone = (timeStamp: DateInput, preferredTimeZone: string): string => 
 /**
  * Returns true if outsideBusinessHours else false
  */
-export const isOutsideBusinessHours = (businessHour: BusinessHour, currentTimeInMillis: number): boolean => {
+const isOutsideBusinessHours = (businessHour: BusinessHour, currentTimeInMillis: number): boolean => {
   let isAway = true,
     agentTime,
     workingHoursArr,
@@ -98,3 +98,5 @@ export const isOutsideBusinessHours = (businessHour: BusinessHour, currentTimeIn
   }
   return isAway;
 };
+
+export { isOutsideBusinessHours, BusinessHour };
