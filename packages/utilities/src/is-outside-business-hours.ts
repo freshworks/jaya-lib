@@ -11,6 +11,21 @@ dayjs.extend(localizedFormat);
 
 type DateInput = Date | number;
 
+export interface BusinessHour {
+  appId: number;
+  days: {
+    [key: string]: string;
+  };
+  defaultBhr: boolean;
+  enabled: boolean;
+  name: string;
+  operatingHoursId: number;
+  timezone: string;
+  working: {
+    [key: string]: string;
+  };
+  workingDaily: boolean;
+}
 /**
  * Returns working hours as an array
  */
@@ -53,15 +68,13 @@ const toTimeZone = (timeStamp: DateInput, preferredTimeZone: string): string => 
 /**
  * Returns true if outsideBusinessHours else false
  */
-export const isOutsideBusinessHours = (businessHour: any, currentTimeInMillis: number): boolean => {
+export const isOutsideBusinessHours = (businessHour: BusinessHour, currentTimeInMillis: number): boolean => {
   let isAway = true,
     agentTime,
     workingHoursArr,
     agentDayOfWeek;
   const operatingHours = businessHour;
-  if (!operatingHours) {
-    isAway = false;
-  } else if (!operatingHours.enabled) {
+  if (!operatingHours.enabled) {
     isAway = false;
   } else {
     agentTime = dayjs(toTimeZone(currentTimeInMillis, operatingHours.timezone.replace(' - ', '/')));

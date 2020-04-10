@@ -14,7 +14,7 @@ export class RuleProcessor {
     productEventData: ProductEventData,
     condition: Condition,
     integrations: Integrations,
-  ): boolean {
+  ): Promise<boolean> {
     const conditionFunc = ruleConfig.conditions && ruleConfig.conditions[condition.key];
 
     if (conditionFunc) {
@@ -33,7 +33,11 @@ export class RuleProcessor {
   ): boolean {
     for (let i = 0; conditions && i < conditions.length; i += 1) {
       const condition = conditions[i];
-      const conditionMatchResult: boolean = this.isConditionMatching(productEventData, condition, integrations);
+      const conditionMatchResult: Promise<boolean> = this.isConditionMatching(
+        productEventData,
+        condition,
+        integrations,
+      );
 
       if (!conditionMatchResult) {
         return false;
@@ -53,7 +57,11 @@ export class RuleProcessor {
   ): boolean {
     for (let i = 0; conditions && i < conditions.length; i += 1) {
       const condition = conditions[i];
-      const conditionMatchResult: boolean = this.isConditionMatching(productEventData, condition, integrations);
+      const conditionMatchResult: Promise<boolean> = this.isConditionMatching(
+        productEventData,
+        condition,
+        integrations,
+      );
 
       if (conditionMatchResult) {
         return true;

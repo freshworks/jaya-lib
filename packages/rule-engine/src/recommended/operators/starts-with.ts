@@ -1,4 +1,4 @@
 import { Integrations } from '../../models/rule-engine';
-export default (op1: string, op2: string, integrations: Integrations): boolean => {
-  return op1.startsWith(op2);
+export default (op1: string, op2: string, integrations: Integrations): Promise<boolean> => {
+  return Promise.resolve(op1.startsWith(op2));
 };

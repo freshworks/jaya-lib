@@ -37,10 +37,6 @@ describe('Utils test', () => {
       businessHour.enabled = false;
       assert.equal(false, isOutsideBusinessHours(businessHour, new Date().getTime()));
     });
-    it('should return false when no business hour is passed', () => {
-      businessHour.enabled = false;
-      assert.equal(false, isOutsideBusinessHours(null, new Date().getTime()));
-    });
     it('should return false when agent is within business hour', () => {
       businessHour.enabled = true;
       // 11:10 AM in UTC

@@ -59,8 +59,8 @@ describe('Utils test', () => {
       ruleConfig.registerPlugins([
         {
           operators: {
-            EQUALS: (op1: string, op2: string): boolean => {
-              return op1 === op2;
+            EQUALS: (op1: string, op2: string): Promise<boolean> => {
+              return Promise.resolve(op1 === op2);
             },
           },
         },
@@ -71,14 +71,14 @@ describe('Utils test', () => {
       ruleConfig.reset();
     });
 
-    it('should evaluate EQUALS condition', () => {
+    it('should evaluate EQUALS condition', async () => {
       assert.equal(
         true,
-        Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'a', (integrations as any) as Integrations),
+        await Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'a', (integrations as any) as Integrations),
       );
       assert.equal(
         false,
-        Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'b', (integrations as any) as Integrations),
+        await Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'b', (integrations as any) as Integrations),
       );
     });
 

@@ -2,8 +2,9 @@ import { ConditionOperator } from './index';
 import ruleConfig from './RuleConfig';
 import usernameVerbs from './constants/username-verbs';
 import usernameNouns from './constants/username-nouns';
-import { Integrations, BusinessHour } from './models/rule-engine';
+import { Integrations } from './models/rule-engine';
 import axios from 'axios';
+import { isOutsideBusinessHours, BusinessHour } from '@freshworks-jaya/utilities';
 
 export class Utils {
   /**
@@ -38,7 +39,7 @@ export class Utils {
     operand1: string,
     operand2: string,
     integrations: Integrations,
-  ): boolean {
+  ): Promise<boolean> {
     const sanitizedOperand1 = this.convertOperand(operand1);
     const sanitizedOperand2 = this.convertOperand(operand2);
 
@@ -54,19 +55,30 @@ export class Utils {
   /**
    * Gets business hour for an account based on businessHourId provided.
    */
-  public static getBusinessHour = async (businessHourId: string, integrations: Integrations): Promise<BusinessHour> => {
+  public static getBusinessHour = (businessHourId: string, integrations: Integrations): Promise<boolean> => {
     const freshchatApiUrl = integrations.freshchatv1.url;
     const freshchatApiToken = integrations.freshchatv1.token;
-    try {
-      const businessHours = await axios.get(freshchatApiUrl, {
-        headers: {
-          Authorization: freshchatApiToken,
-        },
-      });
-      const conditionBusinessHour = businessHours.data.filterBy('operatingHoursId', parseInt(businessHourId, 10));
-      return conditionBusinessHour && conditionBusinessHour[0];
-    } catch (err) {
-      throw new Error('Error getting BusinessHours');
-    }
+    return new Promise((resolve, reject) => {
+      axios
+        .get(freshchatApiUrl, {
+          headers: {
+            Authorization: freshchatApiToken,
+          },
+        })
+        .then((response: { data: BusinessHour[] }) => {
+          const conditionBusinessHour = response.data.filter((businessHour) => {
+            return businessHour.operatingHoursId === parseInt(businessHourId, 10);
+          });
+          if (conditionBusinessHour && conditionBusinessHour && conditionBusinessHour[0]) {
+            resolve(isOutsideBusinessHours(conditionBusinessHour && conditionBusinessHour[0], new Date().getTime()));
+          } else {
+            //  no businesshour then its within business hour
+            resolve(false);
+          }
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
   };
 }

@@ -21,13 +21,19 @@ const getMessagePartsTextContent = (messageParts: MessagePart[]): string => {
   return messageContent;
 };
 
-export default (condition: Condition, productEventData: ProductEventData, integrations: Integrations): boolean => {
+export default (
+  condition: Condition,
+  productEventData: ProductEventData,
+  integrations: Integrations,
+): Promise<boolean> => {
   const modelProperties = productEventData.conversation || productEventData.message;
 
-  return Utils.evaluateCondition(
-    condition.operator,
-    getMessagePartsTextContent(modelProperties.messages[0].message_parts),
-    condition.value as string,
-    integrations,
+  return Promise.resolve(
+    Utils.evaluateCondition(
+      condition.operator,
+      getMessagePartsTextContent(modelProperties.messages[0].message_parts),
+      condition.value as string,
+      integrations,
+    ),
   );
 };
