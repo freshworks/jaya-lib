@@ -50,17 +50,12 @@ export class RuleEngine {
     }
 
     // Process regular rules and get the actions of the first matching rule.
-    const firstMatchingRule: Rule | null = RuleProcessor.getFirstMatchingRule(
-      payload.event,
-      payload.data,
-      rules,
-      integrations,
-    );
-
-    // Perform all actions sequentially in order.
-    if (firstMatchingRule && firstMatchingRule.actions && firstMatchingRule.actions.length) {
-      ActionExecutor.handleActions(integrations, firstMatchingRule.actions, payload.data);
-    }
+    RuleProcessor.getFirstMatchingRule(payload.event, payload.data, rules, integrations).then((firstMatchingRule) => {
+      // Perform all actions sequentially in order.
+      if (firstMatchingRule && firstMatchingRule.actions && firstMatchingRule.actions.length) {
+        ActionExecutor.handleActions(integrations, firstMatchingRule.actions, payload.data);
+      }
+    });
   };
 
   processExternalEvent = (

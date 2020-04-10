@@ -7,13 +7,11 @@ export default (
   condition: Condition,
   productEventData: ProductEventData,
   integrations: Integrations,
-): Promise<boolean> => {
-  return Promise.resolve(
-    Utils.evaluateCondition(
-      condition.operator,
-      productEventData.associations.channel.id,
-      condition.value as string,
-      integrations,
-    ),
+): Promise<void> => {
+  return Utils.evaluateCondition(
+    condition.operator,
+    productEventData.associations.channel.id,
+    condition.value as string,
+    integrations,
   );
 };

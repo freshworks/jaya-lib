@@ -7,15 +7,13 @@ export default (
   condition: Condition,
   productEventData: ProductEventData,
   integrations: Integrations,
-): Promise<boolean> => {
+): Promise<void> => {
   const modelProperties = productEventData.conversation || productEventData.message;
 
-  return Promise.resolve(
-    Utils.evaluateCondition(
-      condition.operator,
-      modelProperties.assigned_group_id,
-      condition.value as string,
-      integrations,
-    ),
+  return Utils.evaluateCondition(
+    condition.operator,
+    modelProperties.assigned_group_id,
+    condition.value as string,
+    integrations,
   );
 };

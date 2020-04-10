@@ -428,30 +428,30 @@ describe('RuleProcessor test', () => {
     });
   });
 
-  describe('ruleMatchAll', () => {
-    const blocksMatchAllFail = [
-      {
-        matchType: 'ANY',
-        conditions: [
-          {
-            key: 'CHANNEL',
-            operator: 'NOT_EQUALS',
-            value: '6ae7cb7a-68cb-4713-9f3d-16db9a177d76',
-          },
-        ],
-      },
-    ];
+  // describe('ruleMatchAll', () => {
+  //   const blocksMatchAllFail = [
+  //     {
+  //       matchType: 'ANY',
+  //       conditions: [
+  //         {
+  //           key: 'CHANNEL',
+  //           operator: 'NOT_EQUALS',
+  //           value: '6ae7cb7a-68cb-4713-9f3d-16db9a177d76',
+  //         },
+  //       ],
+  //     },
+  //   ];
 
-    it('should return false even if one block is not matching', () => {
-      assert.isFalse(
-        RuleProcessor.ruleMatchAll(
-          (productEventData as any) as ProductEventData,
-          (blocksMatchAllFail as any) as Block[],
-          (integrations as any) as Integrations,
-        ),
-      );
-    });
-  });
+  //   it('should return false even if one block is not matching', () => {
+  //     assert.isFalse(
+  //       RuleProcessor.ruleMatchAll(
+  //         (productEventData as any) as ProductEventData,
+  //         (blocksMatchAllFail as any) as Block[],
+  //         (integrations as any) as Integrations,
+  //       ),
+  //     );
+  //   });
+  // });
 
   describe('isTriggerActorMatch', () => {
     it('should return false if trigger actor is not matching', () => {
@@ -531,74 +531,74 @@ describe('RuleProcessor test', () => {
     });
   });
 
-  describe('blockMatchAll', () => {
-    it('should return false when match all conditions fails in first condition', () => {
-      assert.isFalse(
-        RuleProcessor.blockMatchAll(
-          (productEventData as any) as ProductEventData,
-          ([
-            {
-              key: 'MESSAGE_TEXT',
-              operator: 'ENDS_WITH',
-              value: 'hi',
-            },
-            {
-              key: 'MESSAGE_TEXT',
-              operator: 'STARTS_WITH',
-              value: 'hi',
-            },
-            {
-              key: 'MESSAGE_TEXT',
-              operator: 'CONTAINS',
-              value: 'hi',
-            },
-            {
-              key: 'MESSAGE_TEXT',
-              operator: 'SET',
-            },
-            {
-              key: 'MESSAGE_TEXT',
-              operator: 'DOES_NOT_CONTAIN',
-              value: 'no',
-            },
-            {
-              key: 'ASSIGNED_GROUP',
-              operator: 'NOT_SET',
-            },
-            {
-              key: 'ASSIGNED_AGENT',
-              operator: 'NOT_SET',
-            },
-            {
-              key: 'RESPONSE_DUE_TYPE',
-              operator: 'EQUALS',
-              value: 'NO_RESPONSE_DUE',
-            },
-            {
-              key: 'STATUS',
-              operator: 'EQUALS',
-              value: 'NEW',
-            },
-            {
-              key: 'USER_PROPERTY',
-              operator: 'EQUALS',
-              value: {
-                propertyKey: 'fc_user_timezone',
-                propertyValue: 'Asia/Calcutta',
-              },
-            },
-            {
-              key: 'USER_PROPERTY',
-              operator: 'NOT_EQUALS',
-              value: {
-                propertyKey: 'plan',
-                propertyValue: 'garden',
-              },
-            },
-          ] as any) as Condition[],
-          (integrations as any) as Integrations,
-        ),
-      );
-    });
-  });
+  // describe('blockMatchAll', () => {
+  //   it('should return false when match all conditions fails in first condition', () => {
+  //     assert.isFalse(
+  //       RuleProcessor.blockMatchAll(
+  //         (productEventData as any) as ProductEventData,
+  //         ([
+  //           {
+  //             key: 'MESSAGE_TEXT',
+  //             operator: 'ENDS_WITH',
+  //             value: 'hi',
+  //           },
+  //           {
+  //             key: 'MESSAGE_TEXT',
+  //             operator: 'STARTS_WITH',
+  //             value: 'hi',
+  //           },
+  //           {
+  //             key: 'MESSAGE_TEXT',
+  //             operator: 'CONTAINS',
+  //             value: 'hi',
+  //           },
+  //           {
+  //             key: 'MESSAGE_TEXT',
+  //             operator: 'SET',
+  //           },
+  //           {
+  //             key: 'MESSAGE_TEXT',
+  //             operator: 'DOES_NOT_CONTAIN',
+  //             value: 'no',
+  //           },
+  //           {
+  //             key: 'ASSIGNED_GROUP',
+  //             operator: 'NOT_SET',
+  //           },
+  //           {
+  //             key: 'ASSIGNED_AGENT',
+  //             operator: 'NOT_SET',
+  //           },
+  //           {
+  //             key: 'RESPONSE_DUE_TYPE',
+  //             operator: 'EQUALS',
+  //             value: 'NO_RESPONSE_DUE',
+  //           },
+  //           {
+  //             key: 'STATUS',
+  //             operator: 'EQUALS',
+  //             value: 'NEW',
+  //           },
+  //           {
+  //             key: 'USER_PROPERTY',
+  //             operator: 'EQUALS',
+  //             value: {
+  //               propertyKey: 'fc_user_timezone',
+  //               propertyValue: 'Asia/Calcutta',
+  //             },
+  //           },
+  //           {
+  //             key: 'USER_PROPERTY',
+  //             operator: 'NOT_EQUALS',
+  //             value: {
+  //               propertyKey: 'plan',
+  //               propertyValue: 'garden',
+  //             },
+  //           },
+  //         ] as any) as Condition[],
+  //         (integrations as any) as Integrations,
+  //       ),
+  //     );
+  //   });
+  // });
 });

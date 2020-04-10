@@ -21,8 +21,12 @@ export class TimerRuleEngine {
     productEventData: ProductEventData,
     rule: Rule,
     integrations: Integrations,
-  ): boolean {
-    return rule.isTimer && rule.isEnabled && RuleProcessor.isRuleMatching(event, productEventData, rule, integrations);
+  ): Promise<void> {
+    if (rule.isTimer && rule.isEnabled) {
+      return RuleProcessor.isRuleMatching(event, productEventData, rule, integrations);
+    } else {
+      return Promise.reject();
+    }
   }
 
   /**

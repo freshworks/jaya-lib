@@ -11,7 +11,7 @@ const evaluateUserPropertyCondition = (
   userObj: User,
   conditionValue: UserConditionValue,
   integrations: Integrations,
-): Promise<boolean> => {
+): Promise<void> => {
   const matchedProperty =
     userObj.properties && userObj.properties.find((property) => property.name === conditionValue.propertyKey);
 
@@ -19,16 +19,14 @@ const evaluateUserPropertyCondition = (
     return Utils.evaluateCondition(operator, matchedProperty.value, conditionValue.propertyValue, integrations);
   }
 
-  return Promise.resolve(false);
+  return Promise.reject();
 };
 
 export default (
   condition: Condition,
   productEventData: ProductEventData,
   integrations: Integrations,
-): Promise<boolean> => {
-  const modelProperties = productEventData.conversation || productEventData.message;
-
+): Promise<void> => {
   return evaluateUserPropertyCondition(
     condition.operator,
     productEventData.associations.user,

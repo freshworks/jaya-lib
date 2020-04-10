@@ -4,7 +4,7 @@ import usernameVerbs from './constants/username-verbs';
 import usernameNouns from './constants/username-nouns';
 import { Integrations } from './models/rule-engine';
 import axios from 'axios';
-import { isOutsideBusinessHours, BusinessHour } from '@freshworks-jaya/utilities';
+import { BusinessHour } from '@freshworks-jaya/utilities';
 
 export class Utils {
   /**
@@ -39,7 +39,7 @@ export class Utils {
     operand1: string,
     operand2: string,
     integrations: Integrations,
-  ): Promise<boolean> {
+  ): Promise<void> {
     const sanitizedOperand1 = this.convertOperand(operand1);
     const sanitizedOperand2 = this.convertOperand(operand2);
 
@@ -53,9 +53,16 @@ export class Utils {
   }
 
   /**
+   * Either resolve or reject based on boolean param.
+   */
+  public static promisify = (response: boolean): Promise<void> => {
+    return response ? Promise.resolve() : Promise.reject();
+  };
+
+  /**
    * Gets business hour for an account based on businessHourId provided.
    */
-  public static getBusinessHour = (businessHourId: string, integrations: Integrations): Promise<boolean> => {
+  public static getBusinessHour = (businessHourId: string, integrations: Integrations): Promise<BusinessHour> => {
     const freshchatApiUrl = integrations.freshchatv1.url;
     const freshchatApiToken = integrations.freshchatv1.token;
     return new Promise((resolve, reject) => {
@@ -66,14 +73,13 @@ export class Utils {
           },
         })
         .then((response: { data: BusinessHour[] }) => {
-          const conditionBusinessHour = response.data.filter((businessHour) => {
+          const matchingBusinessHour = response.data.find((businessHour) => {
             return businessHour.operatingHoursId === parseInt(businessHourId, 10);
           });
-          if (conditionBusinessHour && conditionBusinessHour && conditionBusinessHour[0]) {
-            resolve(isOutsideBusinessHours(conditionBusinessHour && conditionBusinessHour[0], new Date().getTime()));
+          if (matchingBusinessHour) {
+            resolve(matchingBusinessHour);
           } else {
-            //  no businesshour then its within business hour
-            resolve(false);
+            reject();
           }
         })
         .catch((err) => {

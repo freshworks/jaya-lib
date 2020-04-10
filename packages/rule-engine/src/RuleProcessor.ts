@@ -3,7 +3,7 @@ import { Event } from '@freshworks-jaya/marketplace-models';
 import { ActorType, ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { Block, Condition, MatchType, Rule, Trigger, TriggerAction, TriggerActor } from './models/rule';
 import { Integrations } from './models/rule-engine';
-
+import { Promise } from 'bluebird';
 import ruleConfig from './RuleConfig';
 
 export class RuleProcessor {
@@ -14,7 +14,7 @@ export class RuleProcessor {
     productEventData: ProductEventData,
     condition: Condition,
     integrations: Integrations,
-  ): Promise<boolean> {
+  ): Promise<void> {
     const conditionFunc = ruleConfig.conditions && ruleConfig.conditions[condition.key];
 
     if (conditionFunc) {
@@ -24,67 +24,33 @@ export class RuleProcessor {
   }
 
   /**
-   * Checks if all the conditions in the block are matching.
-   */
-  public static blockMatchAll(
-    productEventData: ProductEventData,
-    conditions: Condition[],
-    integrations: Integrations,
-  ): boolean {
-    for (let i = 0; conditions && i < conditions.length; i += 1) {
-      const condition = conditions[i];
-      const conditionMatchResult: Promise<boolean> = this.isConditionMatching(
-        productEventData,
-        condition,
-        integrations,
-      );
-
-      if (!conditionMatchResult) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  /**
-   * Check if any of the conditions in a block are matching.
-   */
-  public static blockMatchAny(
-    productEventData: ProductEventData,
-    conditions: Condition[],
-    integrations: Integrations,
-  ): boolean {
-    for (let i = 0; conditions && i < conditions.length; i += 1) {
-      const condition = conditions[i];
-      const conditionMatchResult: Promise<boolean> = this.isConditionMatching(
-        productEventData,
-        condition,
-        integrations,
-      );
-
-      if (conditionMatchResult) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  /**
    * Check if all the conditions in block are matching.
    */
-  public static isBlockMatching(productEventData: ProductEventData, block: Block, integrations: Integrations): boolean {
+  public static isBlockMatching(
+    productEventData: ProductEventData,
+    block: Block,
+    integrations: Integrations,
+  ): Promise<void> {
     // Block is matching when there are no block conditions
     if (!block || !block.conditions || !block.conditions.length) {
-      return true;
+      return Promise.resolve();
     }
 
     switch (block.matchType) {
       case MatchType.All:
-        return this.blockMatchAll(productEventData, block.conditions, integrations);
+        Promise.all(
+          block.conditions.map((condition) => {
+            return this.isConditionMatching(productEventData, condition, integrations);
+          }),
+        ).then(() => {
+          return Promise.resolve();
+        });
       case MatchType.Any:
-        return this.blockMatchAny(productEventData, block.conditions, integrations);
+        return Promise.any(
+          block.conditions.map((condition) => {
+            return this.isConditionMatching(productEventData, condition, integrations);
+          }),
+        );
       default:
         throw new Error('Invalid conditions matchType');
     }
@@ -138,53 +104,33 @@ export class RuleProcessor {
   }
 
   /**
-   * Returns true if all blocks in a rule are matching; false otherwise.
-   */
-  public static ruleMatchAll(productEventData: ProductEventData, blocks: Block[], integrations: Integrations): boolean {
-    for (let i = 0; blocks && i < blocks.length; i += 1) {
-      const block = blocks[i];
-      const blockMatchResult: boolean = this.isBlockMatching(productEventData, block, integrations);
-
-      if (!blockMatchResult) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /**
-   * Returns true if any block in a rule is matching; false if none are matching.
-   */
-  public static ruleMatchAny(productEventData: ProductEventData, blocks: Block[], integrations: Integrations): boolean {
-    for (let i = 0; blocks && i < blocks.length; i += 1) {
-      const block = blocks[i];
-      const blockMatchResult: boolean = this.isBlockMatching(productEventData, block, integrations);
-
-      if (blockMatchResult) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
    * Check if all blocks in a rule are matching.
    */
   public static isRuleBlocksMatching(
     productEventData: ProductEventData,
     rule: Rule,
     integrations: Integrations,
-  ): boolean {
+  ): Promise<void> {
     // Rule is matching if there are no blocks
     if (!rule.blocks || !rule.blocks.length) {
-      return true;
+      return Promise.resolve();
     }
 
     switch (rule.matchType) {
       case MatchType.All:
-        return this.ruleMatchAll(productEventData, rule.blocks, integrations);
+        Promise.all(
+          rule.blocks.map((block) => {
+            return this.isBlockMatching(productEventData, block, integrations);
+          }),
+        ).then(() => {
+          return Promise.resolve();
+        });
       case MatchType.Any:
-        return this.ruleMatchAny(productEventData, rule.blocks, integrations);
+        return Promise.any(
+          rule.blocks.map((block) => {
+            return this.isBlockMatching(productEventData, block, integrations);
+          }),
+        );
       default:
         throw new Error('Invalid blocks matchType');
     }
@@ -198,12 +144,12 @@ export class RuleProcessor {
     productEventData: ProductEventData,
     rule: Rule,
     integrations: Integrations,
-  ): boolean {
+  ): Promise<void> {
     const isTriggerConditionMatch: boolean = this.isTriggerConditionMatching(event, productEventData, rule.triggers);
 
     // Rule does not match if trigger conditions don't match
     if (!isTriggerConditionMatch) {
-      return false;
+      return Promise.reject('noTriggerConditionMatch');
     }
 
     return this.isRuleBlocksMatching(productEventData, rule, integrations);
@@ -219,26 +165,24 @@ export class RuleProcessor {
   /**
    * Iterates through each rule and return the actions of the first matching rule.
    */
-  public static getFirstMatchingRule(
+  public static async getFirstMatchingRule(
     event: Event,
     productEventData: ProductEventData,
     rules: Rule[],
     integrations: Integrations,
-  ): Rule | null {
+  ): Promise<Rule> {
     let firstMatchingRule: Rule | null = null;
 
     for (let i = 0; rules && i < rules.length; i += 1) {
       const currentRule = rules[i];
-
-      if (
-        this.isEnabledNonTimerRule(currentRule) &&
-        this.isRuleMatching(event, productEventData, currentRule, integrations)
-      ) {
-        firstMatchingRule = currentRule;
-        break;
+      if (this.isEnabledNonTimerRule(currentRule)) {
+        try {
+          await this.isRuleMatching(event, productEventData, currentRule, integrations);
+          firstMatchingRule = currentRule;
+          break;
+        } catch (err) {}
       }
     }
-
-    return firstMatchingRule;
+    return firstMatchingRule ? Promise.resolve(firstMatchingRule) : Promise.reject('no matching rule');
   }
 }

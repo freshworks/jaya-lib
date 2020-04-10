@@ -1,4 +1,5 @@
 import { Integrations } from '../../models/rule-engine';
-export default (op1: string, op2: string, integrations: Integrations): Promise<boolean> => {
-  return Promise.resolve(op1.endsWith(op2));
+import { Utils } from '../../Utils';
+export default (op1: string, op2: string, integrations: Integrations): Promise<void> => {
+  return Utils.promisify(op1.endsWith(op2));
 };

@@ -8,7 +8,7 @@ export type PluginActions = {
 };
 
 export type PluginOperators = {
-  [key: string]: (op1: string, op2: string, integrations: Integrations) => Promise<boolean>;
+  [key: string]: (op1: string, op2: string, integrations: Integrations) => Promise<void>;
 };
 
 export type PluginTriggerActions = {
@@ -20,7 +20,7 @@ export type PluginConditions = {
     condition: Condition,
     productEventData: ProductEventData,
     integrations: Integrations,
-  ) => Promise<boolean>;
+  ) => Promise<void>;
 };
 
 export interface RulePlugin {
