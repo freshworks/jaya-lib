@@ -67,7 +67,7 @@ export class Utils {
     const freshchatApiToken = integrations.freshchatv1.token;
     return new Promise((resolve, reject) => {
       axios
-        .get(freshchatApiUrl, {
+        .get(`${freshchatApiUrl}/operating_hours_v2`, {
           headers: {
             Authorization: freshchatApiToken,
           },
