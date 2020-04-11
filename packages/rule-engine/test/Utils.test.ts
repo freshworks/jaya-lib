@@ -72,13 +72,15 @@ describe('Utils test', () => {
     });
 
     it('should evaluate EQUALS condition', async () => {
-      assert.equal(
-        Promise.resolve(),
-        Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'a', (integrations as any) as Integrations),
+      Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'a', (integrations as any) as Integrations).then(
+        () => {
+          assert.ok('a is equal a');
+        },
       );
-      assert.equal(
-        Promise.reject(),
-        Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'b', (integrations as any) as Integrations),
+      Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'b', (integrations as any) as Integrations).catch(
+        () => {
+          assert.ok('a is not equal b');
+        },
       );
     });
 

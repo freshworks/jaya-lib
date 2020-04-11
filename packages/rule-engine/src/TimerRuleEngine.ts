@@ -54,9 +54,13 @@ export class TimerRuleEngine {
       const rule = rules[ruleIndex];
 
       const modelProperties = this.getModelProperties(payload.data);
-
+      let isMatchingTimerRule = false;
       // Check for timer rules that are enabled and are matching the trigger conditions.
-      if (this.isMatchingTimerRule(payload.event, payload.data, rule, integrations)) {
+      try {
+        await this.isMatchingTimerRule(payload.event, payload.data, rule, integrations);
+        isMatchingTimerRule = true;
+      } catch (err) {}
+      if (isMatchingTimerRule) {
         const jobId = `${modelProperties.app_id}_${modelProperties.conversation_id}_${ruleIndex}`;
 
         // Fetch an existing schedule for the same current rule,

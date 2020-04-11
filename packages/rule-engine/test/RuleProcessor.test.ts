@@ -166,36 +166,36 @@ describe('RuleProcessor test', () => {
     ];
 
     it('should not return any rule when no rules are passed', () => {
-      assert.notOk(
-        RuleProcessor.getFirstMatchingRule(
-          Event.MessageCreate,
-          (productEventData as any) as ProductEventData,
-          [],
-          (integrations as any) as Integrations,
-        ),
-      );
+      RuleProcessor.getFirstMatchingRule(
+        Event.MessageCreate,
+        (productEventData as any) as ProductEventData,
+        [],
+        (integrations as any) as Integrations,
+      ).catch((err) => {
+        assert.equal(err, 'no matching rule');
+      });
     });
 
     it('should not match a rule', () => {
-      assert.notOk(
-        RuleProcessor.getFirstMatchingRule(
-          Event.MessageCreate,
-          (productEventData as any) as ProductEventData,
-          (notMatchingRules as any) as Rule[],
-          (integrations as any) as Integrations,
-        ),
-      );
+      RuleProcessor.getFirstMatchingRule(
+        Event.MessageCreate,
+        (productEventData as any) as ProductEventData,
+        (notMatchingRules as any) as Rule[],
+        (integrations as any) as Integrations,
+      ).catch((err) => {
+        assert.equal(err, 'no matching rule');
+      });
     });
 
     it('should match a rule', () => {
-      assert.ok(
-        RuleProcessor.getFirstMatchingRule(
-          Event.MessageCreate,
-          (productEventData as any) as ProductEventData,
-          (matchingRules as any) as Rule[],
-          (integrations as any) as Integrations,
-        ),
-      );
+      RuleProcessor.getFirstMatchingRule(
+        Event.MessageCreate,
+        (productEventData as any) as ProductEventData,
+        (matchingRules as any) as Rule[],
+        (integrations as any) as Integrations,
+      ).then((rule) => {
+        assert.equal(rule.name, matchingRules[0].name);
+      });
     });
   });
 
@@ -256,25 +256,25 @@ describe('RuleProcessor test', () => {
     };
 
     it('should not match the trigger actor', () => {
-      assert.notOk(
-        RuleProcessor.isRuleMatching(
-          Event.MessageCreate,
-          (productEventData as any) as ProductEventData,
-          (ruleFailUserTriggerCondition as any) as Rule,
-          (integrations as any) as Integrations,
-        ),
-      );
+      RuleProcessor.isRuleMatching(
+        Event.MessageCreate,
+        (productEventData as any) as ProductEventData,
+        (ruleFailUserTriggerCondition as any) as Rule,
+        (integrations as any) as Integrations,
+      ).catch((err) => {
+        assert.ok(err);
+      });
     });
 
     it('should not match the trigger action', () => {
-      assert.notOk(
-        RuleProcessor.isRuleMatching(
-          Event.MessageCreate,
-          (productEventData as any) as ProductEventData,
-          (ruleFailActionTriggerCondition as any) as Rule,
-          (integrations as any) as Integrations,
-        ),
-      );
+      RuleProcessor.isRuleMatching(
+        Event.MessageCreate,
+        (productEventData as any) as ProductEventData,
+        (ruleFailActionTriggerCondition as any) as Rule,
+        (integrations as any) as Integrations,
+      ).catch((err) => {
+        assert.ok(err);
+      });
     });
   });
 
@@ -386,33 +386,33 @@ describe('RuleProcessor test', () => {
     };
 
     it('should return true when no blocks are there', () => {
-      assert.isTrue(
-        RuleProcessor.isRuleBlocksMatching(
-          (productEventData as any) as ProductEventData,
-          (ruleWithoutBlocks as any) as Rule,
-          (integrations as any) as Integrations,
-        ),
-      );
+      RuleProcessor.isRuleBlocksMatching(
+        (productEventData as any) as ProductEventData,
+        (ruleWithoutBlocks as any) as Rule,
+        (integrations as any) as Integrations,
+      ).then(() => {
+        assert.ok('true when no blocks are there');
+      });
     });
 
     it('should return true when blocks is an empty array', () => {
-      assert.isTrue(
-        RuleProcessor.isRuleBlocksMatching(
-          (productEventData as any) as ProductEventData,
-          (ruleWithEmptyArrayBlocks as any) as Rule,
-          (integrations as any) as Integrations,
-        ),
-      );
+      RuleProcessor.isRuleBlocksMatching(
+        (productEventData as any) as ProductEventData,
+        (ruleWithEmptyArrayBlocks as any) as Rule,
+        (integrations as any) as Integrations,
+      ).then(() => {
+        assert.ok('true when blocks is an empty array');
+      });
     });
 
     it('should return true all blocks are matching', () => {
-      assert.isTrue(
-        RuleProcessor.isRuleBlocksMatching(
-          (productEventData as any) as ProductEventData,
-          (ruleWithBlockMatchAll as any) as Rule,
-          (integrations as any) as Integrations,
-        ),
-      );
+      RuleProcessor.isRuleBlocksMatching(
+        (productEventData as any) as ProductEventData,
+        (ruleWithBlockMatchAll as any) as Rule,
+        (integrations as any) as Integrations,
+      ).then(() => {
+        assert.ok('true when all blocks are matching');
+      });
     });
 
     it('should throw an error for invalid matchtype', () => {
@@ -428,31 +428,6 @@ describe('RuleProcessor test', () => {
     });
   });
 
-  // describe('ruleMatchAll', () => {
-  //   const blocksMatchAllFail = [
-  //     {
-  //       matchType: 'ANY',
-  //       conditions: [
-  //         {
-  //           key: 'CHANNEL',
-  //           operator: 'NOT_EQUALS',
-  //           value: '6ae7cb7a-68cb-4713-9f3d-16db9a177d76',
-  //         },
-  //       ],
-  //     },
-  //   ];
-
-  //   it('should return false even if one block is not matching', () => {
-  //     assert.isFalse(
-  //       RuleProcessor.ruleMatchAll(
-  //         (productEventData as any) as ProductEventData,
-  //         (blocksMatchAllFail as any) as Block[],
-  //         (integrations as any) as Integrations,
-  //       ),
-  //     );
-  //   });
-  // });
-
   describe('isTriggerActorMatch', () => {
     it('should return false if trigger actor is not matching', () => {
       assert.isFalse(
@@ -463,32 +438,32 @@ describe('RuleProcessor test', () => {
 
   describe('isBlockMatching', () => {
     it('should return true if no block is there', () => {
-      assert.isTrue(
-        RuleProcessor.isBlockMatching(
-          (productEventData as any) as ProductEventData,
-          (null as any) as Block,
-          (integrations as any) as Integrations,
-        ),
-      );
+      RuleProcessor.isBlockMatching(
+        (productEventData as any) as ProductEventData,
+        (null as any) as Block,
+        (integrations as any) as Integrations,
+      ).then(() => {
+        assert.ok('returns true if no block is there');
+      });
     });
 
     it('should return true if all blocks are matching', () => {
-      assert.isTrue(
-        RuleProcessor.isBlockMatching(
-          (productEventData as any) as ProductEventData,
-          ({
-            matchType: 'ALL',
-            conditions: [
-              {
-                key: 'CHANNEL',
-                operator: 'EQUALS',
-                value: '6ae7cb7a-68cb-4713-9f3d-16db9a177d76',
-              },
-            ],
-          } as any) as Block,
-          (integrations as any) as Integrations,
-        ),
-      );
+      RuleProcessor.isBlockMatching(
+        (productEventData as any) as ProductEventData,
+        ({
+          matchType: 'ALL',
+          conditions: [
+            {
+              key: 'CHANNEL',
+              operator: 'EQUALS',
+              value: '6ae7cb7a-68cb-4713-9f3d-16db9a177d76',
+            },
+          ],
+        } as any) as Block,
+        (integrations as any) as Integrations,
+      ).then(() => {
+        assert.ok('return true if all blocks are matching');
+      });
     });
 
     it('should throw an error when match type is invalid', () => {
@@ -530,75 +505,4 @@ describe('RuleProcessor test', () => {
       }
     });
   });
-
-  // describe('blockMatchAll', () => {
-  //   it('should return false when match all conditions fails in first condition', () => {
-  //     assert.isFalse(
-  //       RuleProcessor.blockMatchAll(
-  //         (productEventData as any) as ProductEventData,
-  //         ([
-  //           {
-  //             key: 'MESSAGE_TEXT',
-  //             operator: 'ENDS_WITH',
-  //             value: 'hi',
-  //           },
-  //           {
-  //             key: 'MESSAGE_TEXT',
-  //             operator: 'STARTS_WITH',
-  //             value: 'hi',
-  //           },
-  //           {
-  //             key: 'MESSAGE_TEXT',
-  //             operator: 'CONTAINS',
-  //             value: 'hi',
-  //           },
-  //           {
-  //             key: 'MESSAGE_TEXT',
-  //             operator: 'SET',
-  //           },
-  //           {
-  //             key: 'MESSAGE_TEXT',
-  //             operator: 'DOES_NOT_CONTAIN',
-  //             value: 'no',
-  //           },
-  //           {
-  //             key: 'ASSIGNED_GROUP',
-  //             operator: 'NOT_SET',
-  //           },
-  //           {
-  //             key: 'ASSIGNED_AGENT',
-  //             operator: 'NOT_SET',
-  //           },
-  //           {
-  //             key: 'RESPONSE_DUE_TYPE',
-  //             operator: 'EQUALS',
-  //             value: 'NO_RESPONSE_DUE',
-  //           },
-  //           {
-  //             key: 'STATUS',
-  //             operator: 'EQUALS',
-  //             value: 'NEW',
-  //           },
-  //           {
-  //             key: 'USER_PROPERTY',
-  //             operator: 'EQUALS',
-  //             value: {
-  //               propertyKey: 'fc_user_timezone',
-  //               propertyValue: 'Asia/Calcutta',
-  //             },
-  //           },
-  //           {
-  //             key: 'USER_PROPERTY',
-  //             operator: 'NOT_EQUALS',
-  //             value: {
-  //               propertyKey: 'plan',
-  //               propertyValue: 'garden',
-  //             },
-  //           },
-  //         ] as any) as Condition[],
-  //         (integrations as any) as Integrations,
-  //       ),
-  //     );
-  //   });
-  // });
 });
