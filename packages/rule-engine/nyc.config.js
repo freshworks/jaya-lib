@@ -1,9 +1,9 @@
 'use strict';
 module.exports = {
-  branches: 78,
+  branches: 100,
   'check-coverage': true,
   extends: '@istanbuljs/nyc-config-typescript',
-  functions: 80,
-  lines: 80,
-  statements: 80,
+  functions: 100,
+  lines: 100,
+  statements: 100,
 };
