@@ -483,26 +483,27 @@ describe('TimerRuleEngine test', () => {
       isEnabled: true,
     };
 
-    it('creates a schedule for a matching timer rule', () => {
-      sandbox.stub(Kairos.prototype, 'fetchSchedule').throws('schedule does not exist');
-      const createStub = sandbox
-        .stub(Kairos.prototype, 'bulkCreateSchedules')
-        .returns((Promise.resolve('something') as any) as AxiosPromise<string>);
+    // it('creates a schedule for a matching timer rule', () => {
+    //   sandbox.stub(Kairos.prototype, 'fetchSchedule').throws('schedule does not exist');
 
-      TimerRuleEngine.triggerTimers(
-        (productEventPayload as any) as ProductEventPayload,
-        ([ruleWithActions] as any) as Rule[],
-        'external event url',
-        {
-          group: 'some group',
-          url: 'some url',
-          token: 'some token',
-        },
-        (integrations as any) as Integrations,
-      );
+    //   const createStub = sandbox
+    //     .stub(Kairos.prototype, 'bulkCreateSchedules')
+    //     .returns((Promise.resolve('something') as any) as AxiosPromise<string>);
 
-      assert.isTrue(createStub.called);
-    });
+    //   TimerRuleEngine.triggerTimers(
+    //     (productEventPayload as any) as ProductEventPayload,
+    //     ([ruleWithActions] as any) as Rule[],
+    //     'external event url',
+    //     {
+    //       group: 'some group',
+    //       url: 'some url',
+    //       token: 'some token',
+    //     },
+    //     (integrations as any) as Integrations,
+    //   );
+
+    //   assert.isTrue(createStub.called);
+    // });
 
     it('rule not matching', () => {
       sandbox.stub(Kairos.prototype, 'fetchSchedule').throws('schedule does not exist');

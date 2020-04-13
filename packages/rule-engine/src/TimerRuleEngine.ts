@@ -93,7 +93,7 @@ export class TimerRuleEngine {
       try {
         await scheduler.bulkCreateSchedules(schedulesToCreate);
       } catch (err) {
-        throw new Error('Error creating bulk schedules');
+        return Promise.reject('Error creating bulk schedules');
       }
     }
 
@@ -151,12 +151,11 @@ export class TimerRuleEngine {
     }, []);
 
     if (jobsToDelete && jobsToDelete.length) {
-      try {
-        const scheduler = new Kairos(kairosCredentials);
-        await scheduler.bulkDeleteSchedules(jobsToDelete);
-      } catch (err) {
-        throw new Error('Bulk delete of schedules failed');
-      }
+      const scheduler = new Kairos(kairosCredentials);
+      return scheduler.bulkDeleteSchedules(jobsToDelete).then(
+        () => Promise.resolve(),
+        () => Promise.reject('Error during bulkDeleteSchedules'),
+      );
     }
 
     return Promise.resolve();
