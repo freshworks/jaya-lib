@@ -15,9 +15,11 @@ export class RuleProcessor {
     condition: Condition,
     integrations: Integrations,
   ): Promise<void> {
+    console.log('invalidateTimers enter', JSON.stringify(condition));
     const conditionFunc = ruleConfig.conditions && ruleConfig.conditions[condition.key];
 
     if (conditionFunc) {
+      console.log('conditionFunc', JSON.stringify(conditionFunc));
       return conditionFunc(condition, productEventData, integrations);
     }
     throw new Error('Invalid condition key');
@@ -31,6 +33,7 @@ export class RuleProcessor {
     block: Block,
     integrations: Integrations,
   ): Promise<void> {
+    console.log('isBlockMatching enter', JSON.stringify(block));
     // Block is matching when there are no block conditions
     if (!block || !block.conditions || !block.conditions.length) {
       return Promise.resolve();
@@ -38,14 +41,17 @@ export class RuleProcessor {
 
     switch (block.matchType) {
       case MatchType.All:
+        console.log('block.matchType all');
         Promise.all(
           block.conditions.map((condition) => {
             return this.isConditionMatching(productEventData, condition, integrations);
           }),
         ).then(() => {
+          console.log('block.matchType all isConditionMatching success');
           return Promise.resolve();
         });
       case MatchType.Any:
+        console.log('block.matchType all');
         return Promise.any(
           block.conditions.map((condition) => {
             return this.isConditionMatching(productEventData, condition, integrations);
@@ -87,6 +93,7 @@ export class RuleProcessor {
     productEventData: ProductEventData,
     triggers: Trigger[],
   ): boolean {
+    console.log('isTriggerConditionMatching enter', JSON.stringify(triggers));
     let isMatch = false;
 
     for (let i = 0; triggers && i < triggers.length; i += 1) {
@@ -100,6 +107,7 @@ export class RuleProcessor {
         break;
       }
     }
+    console.log('isTriggerConditionMatching isMatch', JSON.stringify(isMatch));
     return isMatch;
   }
 
@@ -111,6 +119,7 @@ export class RuleProcessor {
     rule: Rule,
     integrations: Integrations,
   ): Promise<void> {
+    console.log('invalidateTimers enter', JSON.stringify(rule));
     // Rule is matching if there are no blocks
     if (!rule.blocks || !rule.blocks.length) {
       return Promise.resolve();
@@ -118,14 +127,17 @@ export class RuleProcessor {
 
     switch (rule.matchType) {
       case MatchType.All:
+        console.log('rule.matchType all');
         Promise.all(
           rule.blocks.map((block) => {
             return this.isBlockMatching(productEventData, block, integrations);
           }),
         ).then(() => {
+          console.log('rule.matchType all isBlockMatching');
           return Promise.resolve();
         });
       case MatchType.Any:
+        console.log('rule.matchType any');
         return Promise.any(
           rule.blocks.map((block) => {
             return this.isBlockMatching(productEventData, block, integrations);
@@ -145,8 +157,9 @@ export class RuleProcessor {
     rule: Rule,
     integrations: Integrations,
   ): Promise<void> {
+    console.log('isRuleMatching enter');
     const isTriggerConditionMatch: boolean = this.isTriggerConditionMatching(event, productEventData, rule.triggers);
-
+    console.log('isTriggerConditionMatch', isTriggerConditionMatch);
     // Rule does not match if trigger conditions don't match
     if (!isTriggerConditionMatch) {
       return Promise.reject('noTriggerConditionMatch');
@@ -171,14 +184,17 @@ export class RuleProcessor {
     rules: Rule[],
     integrations: Integrations,
   ): Promise<Rule> {
+    console.log('getFirstMatchingRule enter');
     let firstMatchingRule: Rule | null = null;
 
     for (let i = 0; rules && i < rules.length; i += 1) {
       const currentRule = rules[i];
       if (this.isEnabledNonTimerRule(currentRule)) {
+        console.log('isEnabledNonTimerRule enter', JSON.stringify(currentRule));
         try {
           await this.isRuleMatching(event, productEventData, currentRule, integrations);
           firstMatchingRule = currentRule;
+          console.log('firstMatchingRule =', JSON.stringify(firstMatchingRule));
           break;
         } catch (err) {}
       }

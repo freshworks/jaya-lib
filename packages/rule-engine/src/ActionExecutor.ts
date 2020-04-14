@@ -89,13 +89,16 @@ export class ActionExecutor {
    */
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   public static async handleActions(integrations: Integrations, actions: Action[], productEventData: ProductEventData) {
+    console.log('handleActions enter', JSON.stringify(actions));
     this.setupPlaceholders(productEventData);
 
     for (let i = 0; actions && i < actions.length; i += 1) {
       try {
         const action = actions[i];
         await this.handleAction(integrations, action, productEventData);
+        console.log('handleAction success', JSON.stringify(action));
       } catch (err) {
+        console.log('handleAction err', JSON.stringify(err));
         throw new Error('Error processing action');
       }
     }

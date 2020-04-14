@@ -41,6 +41,7 @@ export class RuleEngine {
     integrations: Integrations,
     kairosCredentials?: KairosCredentials,
   ): Promise<void> => {
+    console.log('processProductEvent enter');
     if (options.isSchedulerEnabled && kairosCredentials) {
       try {
         // Invalidate exising schedules
@@ -49,6 +50,7 @@ export class RuleEngine {
         // Process all timer rules.
         await TimerRuleEngine.triggerTimers(payload, rules, externalEventUrl, kairosCredentials, integrations);
       } catch (err) {
+        console.log('invalidateTimers or triggerTimers err', JSON.stringify(err));
         return Promise.reject(err);
       }
     }
@@ -61,11 +63,13 @@ export class RuleEngine {
         rules,
         integrations,
       );
+      console.log('firstMatchingRule', JSON.stringify(firstMatchingRule));
       // Perform all actions sequentially in order.
       if (firstMatchingRule.actions && firstMatchingRule.actions.length) {
         await ActionExecutor.handleActions(integrations, firstMatchingRule.actions, payload.data);
       }
     } catch (err) {
+      console.log('firstMatchingRule or handleActions err', JSON.stringify(err));
       return Promise.reject(err);
     }
 
