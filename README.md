@@ -1,4 +1,5 @@
 # jaya-lib
+![Build](https://github.com/freshdesk/jaya-lib/workflows/Build/badge.svg?branch=master)
 
 ## About
 jaya-lib is a collection of libraries primarily used by JAYA Automations (Freshchat Marketplace App).

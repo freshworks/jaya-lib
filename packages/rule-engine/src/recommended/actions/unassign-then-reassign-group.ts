@@ -19,7 +19,7 @@ export default (
         conversationId,
         modelProperties.assigned_group_id,
         'group',
-        ConversationStatus.Assigned,
+        ConversationStatus.New,
       );
     });
   }
