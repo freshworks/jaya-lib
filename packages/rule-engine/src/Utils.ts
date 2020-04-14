@@ -5,6 +5,17 @@ import usernameNouns from './constants/username-nouns';
 
 export class Utils {
   /**
+   * Sleeps for a while.
+   */
+  public static sleep(delayInMillis: number): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, delayInMillis);
+    });
+  }
+
+  /**
    * Returns true if username is generated
    */
   public static isUsernameGenerated(username: string): boolean {

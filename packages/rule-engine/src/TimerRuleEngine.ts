@@ -4,6 +4,7 @@ import { ActionExecutor } from './ActionExecutor';
 import { Rule } from './models/rule';
 import { RuleProcessor } from './RuleProcessor';
 import { KairosCredentials, RuleEngineExternalEventPayload, FreshchatCredentials } from './models/rule-engine';
+import { Utils } from './Utils';
 
 export class TimerRuleEngine {
   /**
@@ -124,6 +125,7 @@ export class TimerRuleEngine {
     payload: ProductEventPayload,
     rules: Rule[],
     kairosCredentials: KairosCredentials,
+    invalidationDelayMillis: number,
   ): Promise<void> {
     const modelProperties = payload.data.conversation || payload.data.message;
 
@@ -142,6 +144,7 @@ export class TimerRuleEngine {
 
     if (jobsToDelete && jobsToDelete.length) {
       try {
+        await Utils.sleep(invalidationDelayMillis);
         const scheduler = new Kairos(kairosCredentials);
         await scheduler.bulkDeleteSchedules(jobsToDelete);
       } catch (err) {

@@ -43,7 +43,7 @@ export class RuleEngine {
   ): void => {
     if (options.isSchedulerEnabled && kairosCredentials) {
       // Invalidate exising schedules
-      TimerRuleEngine.invalidateTimers(payload, rules, kairosCredentials);
+      TimerRuleEngine.invalidateTimers(payload, rules, kairosCredentials, options.invalidationDelayInMillis);
 
       // Process all timer rules.
       TimerRuleEngine.triggerTimers(payload, rules, externalEventUrl, kairosCredentials);

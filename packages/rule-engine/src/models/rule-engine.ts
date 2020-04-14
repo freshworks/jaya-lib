@@ -1,6 +1,7 @@
 import { ExternalEventPayload, ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 
 export interface RuleEngineOptions {
+  invalidationDelayInMillis: number;
   isSchedulerEnabled: boolean;
 }
 
