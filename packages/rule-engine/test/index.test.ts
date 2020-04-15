@@ -148,17 +148,40 @@ describe('RuleEngine test', () => {
   });
 
   describe('processProductEvent', () => {
-    it('triggers processProductEvent function with params', () => {
+    it('triggers processProductEvent function with params and no matching rule', () => {
       const ruleEngine = new RuleEngine();
-      ruleEngine.processProductEvent(
-        (productEventPayload as any) as ProductEventPayload,
-        (rules as any) as Rule[],
-        {
-          isSchedulerEnabled: false,
-        },
-        'some-external-event-url',
-        (integrations as any) as Integrations,
-      );
+      ruleEngine
+        .processProductEvent(
+          (productEventPayload as any) as ProductEventPayload,
+          (rules as any) as Rule[],
+          {
+            isSchedulerEnabled: false,
+          },
+          'some-external-event-url',
+          (integrations as any) as Integrations,
+        )
+        .catch((error) => {
+          assert.equal('no matching rule', error);
+        });
+    });
+
+    it('triggers processProductEvent function with params and matching rule', () => {
+      const ruleCopy = rules;
+      ruleCopy[0].blocks[0].conditions[0].operator = 'EQUALS';
+      const ruleEngine = new RuleEngine();
+      ruleEngine
+        .processProductEvent(
+          (productEventPayload as any) as ProductEventPayload,
+          (rules as any) as Rule[],
+          {
+            isSchedulerEnabled: false,
+          },
+          'some-external-event-url',
+          (integrations as any) as Integrations,
+        )
+        .then(() => {
+          assert.ok('triggers processProductEvent function with params and matching rule');
+        });
     });
   });
 });

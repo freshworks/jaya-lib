@@ -262,7 +262,7 @@ describe('RuleProcessor test', () => {
         (ruleFailUserTriggerCondition as any) as Rule,
         (integrations as any) as Integrations,
       ).catch((err) => {
-        assert.ok(err);
+        assert.equal('noTriggerConditionMatch', err);
       });
     });
 
@@ -273,7 +273,7 @@ describe('RuleProcessor test', () => {
         (ruleFailActionTriggerCondition as any) as Rule,
         (integrations as any) as Integrations,
       ).catch((err) => {
-        assert.ok(err);
+        assert.equal('noTriggerConditionMatch', err);
       });
     });
   });
@@ -385,33 +385,33 @@ describe('RuleProcessor test', () => {
       invalidators: null,
     };
 
-    it('should return true when no blocks are there', () => {
+    it('should return resolved promise when no blocks are there', () => {
       RuleProcessor.isRuleBlocksMatching(
         (productEventData as any) as ProductEventData,
         (ruleWithoutBlocks as any) as Rule,
         (integrations as any) as Integrations,
       ).then(() => {
-        assert.ok('true when no blocks are there');
+        assert.ok('returns resolved promise when no blocks are there');
       });
     });
 
-    it('should return true when blocks is an empty array', () => {
+    it('should return resolved promise when blocks is an empty array', () => {
       RuleProcessor.isRuleBlocksMatching(
         (productEventData as any) as ProductEventData,
         (ruleWithEmptyArrayBlocks as any) as Rule,
         (integrations as any) as Integrations,
       ).then(() => {
-        assert.ok('true when blocks is an empty array');
+        assert.ok('returns resolved promise when blocks is an empty array');
       });
     });
 
-    it('should return true all blocks are matching', () => {
+    it('should return resolved promise all blocks are matching', () => {
       RuleProcessor.isRuleBlocksMatching(
         (productEventData as any) as ProductEventData,
         (ruleWithBlockMatchAll as any) as Rule,
         (integrations as any) as Integrations,
       ).then(() => {
-        assert.ok('true when all blocks are matching');
+        assert.ok('returns resolved promise when all blocks are matching');
       });
     });
 
@@ -437,17 +437,17 @@ describe('RuleProcessor test', () => {
   });
 
   describe('isBlockMatching', () => {
-    it('should return true if no block is there', () => {
+    it('should return resolved promise if no block is there', () => {
       RuleProcessor.isBlockMatching(
         (productEventData as any) as ProductEventData,
         (null as any) as Block,
         (integrations as any) as Integrations,
       ).then(() => {
-        assert.ok('returns true if no block is there');
+        assert.ok('returns resolved promise if no block is there');
       });
     });
 
-    it('should return true if all blocks are matching', () => {
+    it('should return resolved promise if all blocks are matching', () => {
       RuleProcessor.isBlockMatching(
         (productEventData as any) as ProductEventData,
         ({
@@ -462,7 +462,26 @@ describe('RuleProcessor test', () => {
         } as any) as Block,
         (integrations as any) as Integrations,
       ).then(() => {
-        assert.ok('return true if all blocks are matching');
+        assert.ok('returns resolved promise if all blocks are matching');
+      });
+    });
+
+    it('should return rejected promise if no blocks are matching', () => {
+      RuleProcessor.isBlockMatching(
+        (productEventData as any) as ProductEventData,
+        ({
+          matchType: 'ALL',
+          conditions: [
+            {
+              key: 'CHANNEL',
+              operator: 'EQUALS',
+              value: 'not-macthing-value',
+            },
+          ],
+        } as any) as Block,
+        (integrations as any) as Integrations,
+      ).catch(() => {
+        assert.ok('returns rejected promise if no blocks are matching');
       });
     });
 
