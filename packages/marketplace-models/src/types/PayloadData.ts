@@ -18,6 +18,17 @@ export enum ActorType {
   System = 'system',
   User = 'user',
 }
+
+export enum ActorSubType {
+  Agent = 'agent',
+  AgentGroupMapping = 'agent_group_mapping',
+  AssignmentRule = 'assignment_rule',
+  AutoResolve = 'auto_resolve',
+  Bot = 'bot',
+  Intelliassign = 'intelli_assign',
+  User = 'user',
+}
+
 export enum ResponseDueType {
   FirstResponseDue = 'FIRST_RESPONSE_DUE',
   NoResponseDue = 'NO_RESPONSE_DUE',
@@ -97,6 +108,7 @@ export interface Actor {
   id: string;
   last_name: string;
   phone: string;
+  sub_type?: ActorSubType;
   type: ActorType;
 }
 

@@ -144,6 +144,7 @@ describe('RuleEngine test', () => {
         (productEventPayload as any) as ProductEventPayload,
         (rules as any) as Rule[],
         {
+          invalidationDelayInMillis: 2000,
           isSchedulerEnabled: false,
         },
         'some-external-event-url',
