@@ -20,8 +20,7 @@ export class ActionExecutor {
     if (actionFunc) {
       return actionFunc(integrations, productEventData, action.value);
     }
-
-    throw new Error('Invalid action type');
+    return Promise.reject('Invalid action type');
   }
 
   /**
@@ -87,8 +86,11 @@ export class ActionExecutor {
   /**
    * Iterates through all the actions and performs each one as configured.
    */
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  public static async handleActions(integrations: Integrations, actions: Action[], productEventData: ProductEventData) {
+  public static async handleActions(
+    integrations: Integrations,
+    actions: Action[],
+    productEventData: ProductEventData,
+  ): Promise<void> {
     this.setupPlaceholders(productEventData);
 
     for (let i = 0; actions && i < actions.length; i += 1) {
@@ -96,7 +98,7 @@ export class ActionExecutor {
         const action = actions[i];
         await this.handleAction(integrations, action, productEventData);
       } catch (err) {
-        throw new Error('Error processing action');
+        Promise.reject(`Error processing action => ${err}`);
       }
     }
   }
