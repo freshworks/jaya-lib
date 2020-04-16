@@ -46,7 +46,6 @@ export class TimerRuleEngine {
     kairosCredentials: KairosCredentials,
     integrations: Integrations,
   ): Promise<void> {
-    console.log('triggerTimers enter');
     let schedulesToCreate: KairosScheduleOptions[] = [];
     const scheduler = new Kairos(kairosCredentials);
 
@@ -61,7 +60,6 @@ export class TimerRuleEngine {
         await this.isMatchingTimerRule(payload.event, payload.data, rule, integrations);
         isMatchingTimerRule = true;
       } catch (err) {}
-      console.log('isMatchingTimerRule', isMatchingTimerRule);
       if (isMatchingTimerRule) {
         const jobId = `${modelProperties.app_id}_${modelProperties.conversation_id}_${ruleIndex}`;
 
@@ -70,7 +68,6 @@ export class TimerRuleEngine {
         try {
           existingSchedule = (await scheduler.fetchSchedule(jobId)) as KairosSchedule;
         } catch (err) {}
-        console.log('existingSchedule', JSON.stringify(existingSchedule));
         // If there are no existing schedules, create schedule object
         // and push it into the schedules array for bulk scheduling later.
         if (!existingSchedule) {
@@ -90,13 +87,10 @@ export class TimerRuleEngine {
         }
       }
     }
-    console.log('schedulesToCreate', JSON.stringify(schedulesToCreate));
     if (schedulesToCreate.length) {
       try {
         await scheduler.bulkCreateSchedules(schedulesToCreate);
-        console.log('bulkCreateSchedules success');
       } catch (err) {
-        console.log('bulkCreateSchedules err', JSON.stringify(err));
         return Promise.reject('Error creating bulk schedules');
       }
     }
@@ -139,7 +133,6 @@ export class TimerRuleEngine {
     rules: Rule[],
     kairosCredentials: KairosCredentials,
   ): Promise<void> {
-    console.log('invalidateTimers enter', JSON.stringify(rules));
     const modelProperties = payload.data.conversation || payload.data.message;
 
     const jobsToDelete = rules.reduce((jobIds: string[], rule, ruleIndex) => {
@@ -155,7 +148,6 @@ export class TimerRuleEngine {
       return jobIds;
     }, []);
 
-    console.log('jobsToDelete', JSON.stringify(jobsToDelete));
     if (jobsToDelete && jobsToDelete.length) {
       const scheduler = new Kairos(kairosCredentials);
       return scheduler.bulkDeleteSchedules(jobsToDelete).then(
@@ -163,7 +155,6 @@ export class TimerRuleEngine {
         () => Promise.reject('Error during bulkDeleteSchedules'),
       );
     }
-    console.log('invalidateTimers end');
     return Promise.resolve();
   }
 }
