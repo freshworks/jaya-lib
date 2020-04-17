@@ -72,8 +72,8 @@ export class Utils {
             Authorization: freshchatApiToken,
           },
         })
-        .then((response: { data: BusinessHour[] }) => {
-          const matchingBusinessHour = response.data.find((businessHour) => {
+        .then((response: { data: { operatingHours: BusinessHour[] } }) => {
+          const matchingBusinessHour = response.data.operatingHours.find((businessHour) => {
             return businessHour.operatingHoursId === parseInt(businessHourId, 10);
           });
           if (matchingBusinessHour) {

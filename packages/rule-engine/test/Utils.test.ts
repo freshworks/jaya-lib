@@ -133,7 +133,9 @@ describe('Utils test', () => {
         workingDaily: true,
       };
 
-      nock('https://test.freshchat.com/v1').get('/operating_hours_v2').reply(200, [businessHour]);
+      nock('https://test.freshchat.com/v1')
+        .get('/operating_hours_v2')
+        .reply(200, { operatingHours: [businessHour] });
     });
 
     afterEach(() => {
