@@ -70,6 +70,7 @@ export class Utils {
         .get(`${freshchatApiUrl}/operating_hours_v2`, {
           headers: {
             Authorization: freshchatApiToken,
+            'Content-Type': 'application/json',
           },
         })
         .then((response: { data: { operatingHours: BusinessHour[] } }) => {
