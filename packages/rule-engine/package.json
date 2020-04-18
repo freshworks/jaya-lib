@@ -9,6 +9,8 @@
     "access": "public"
   },
   "scripts": {
+    "clean": "rm -rf lib coverage .nyc_output",
+    "watch": "tsc --watch --incremental",
     "coverage": "codecov",
     "test": "nyc --reporter=lcov mocha",
     "build": "tsc",

@@ -9,6 +9,8 @@
     "access": "public"
   },
   "scripts": {
+    "clean": "rm -rf lib coverage .nyc_output",
+    "watch": "tsc --watch --incremental",
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\"",
     "build:check": "tsc --noEmit",
