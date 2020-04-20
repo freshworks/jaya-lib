@@ -6,12 +6,11 @@
     "packages/*"
   ],
   "scripts": {
+    "clean": "lerna run clean --parallel",
     "build": "lerna run build --no-private",
+    "watch": "lerna run watch --parallel",
     "test": "lerna run test --no-private --stream --concurrency 1",
-    "lint": "eslint '*/**/*.ts' --quiet --fix",
-    "lint:watch": "esw '*/**/*.ts' --fix -w",
-    "tsc": "tsc -b ./packages/rule-engine ./packages/marketplace-models ./packages/freshchat-api ./packages/kairos-api",
-    "tsc:watch": "tsc -b ./packages/rule-engine ./packages/marketplace-models ./packages/freshchat-api ./packages/kairos-api -w"
+    "lint": "eslint '*/**/*.ts' --quiet --fix"
   },
   "devDependencies": {
     "@types/node": "^13.11.0",
