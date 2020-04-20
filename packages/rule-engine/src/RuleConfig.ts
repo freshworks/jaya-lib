@@ -1,4 +1,11 @@
-import { RulePlugin, PluginActions, PluginOperators, PluginTriggerActions, PluginConditions } from './models/plugin';
+import {
+  RulePlugin,
+  PluginActions,
+  PluginOperators,
+  PluginTriggerActions,
+  PluginConditions,
+  PluginTriggerActors,
+} from './models/plugin';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 
 class RuleConfig {
@@ -8,6 +15,8 @@ class RuleConfig {
 
   triggerActions?: PluginTriggerActions = {};
 
+  triggerActors?: PluginTriggerActors = {};
+
   conditions?: PluginConditions = {};
 
   placeholders?: PlaceholdersMap = {};
@@ -16,6 +25,7 @@ class RuleConfig {
     this.actions = {};
     this.operators = {};
     this.triggerActions = {};
+    this.triggerActors = {};
     this.conditions = {};
     this.placeholders = {};
   };
@@ -34,6 +44,10 @@ class RuleConfig {
 
       if (rulePlugin.triggerActions) {
         this.triggerActions = { ...this.triggerActions, ...rulePlugin.triggerActions };
+      }
+
+      if (rulePlugin.triggerActors) {
+        this.triggerActors = { ...this.triggerActors, ...rulePlugin.triggerActors };
       }
 
       if (rulePlugin.conditions) {

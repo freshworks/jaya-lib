@@ -115,8 +115,12 @@ describe('RuleEngine test', () => {
       timerValue: 5,
       triggers: [
         {
-          action: 'MESSAGE_CREATE',
-          actor: 'AGENT',
+          actor: {
+            type: 'AGENT',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
         },
       ],
       matchType: 'ANY',

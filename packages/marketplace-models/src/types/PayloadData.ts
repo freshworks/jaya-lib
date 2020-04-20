@@ -24,6 +24,16 @@ export enum ResponseDueType {
   ResponseDue = 'RESPONSE_DUE',
 }
 
+export enum ActorSubType {
+  Agent = 'agent',
+  AgentGroupMapping = 'agent_group_mapping',
+  AssignmentRule = 'assignment_rule',
+  AutoResolve = 'auto_resolve',
+  Bot = 'bot',
+  Intelliassign = 'intelli_assign',
+  User = 'user',
+}
+
 export interface Group {
   description: string;
   id: string;
@@ -97,6 +107,7 @@ export interface Actor {
   id: string;
   last_name: string;
   phone: string;
+  sub_type: ActorSubType;
   type: ActorType;
 }
 

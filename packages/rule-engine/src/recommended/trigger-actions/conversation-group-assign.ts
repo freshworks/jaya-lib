@@ -1,5 +1,43 @@
-import { Event, ProductEventData } from '@freshworks-jaya/marketplace-models';
+import { Event, ProductEventData, ConversationStatus } from '@freshworks-jaya/marketplace-models';
+import { TriggerAction } from '../../models/rule';
 
-export default (productEvent: Event, productEventData: ProductEventData): boolean => {
-  return productEvent === Event.ConversationUpdate && !!productEventData.changes.model_changes.assigned_group_id[1];
+const isChangeMatching = (changedAssignee: string, assignChangeValue: string | null): boolean => {
+  if (assignChangeValue === 'ANY') {
+    return true;
+  }
+
+  return (
+    (assignChangeValue === 'ASSIGNED' && !!changedAssignee) ||
+    (assignChangeValue === 'UNASSIGNED' && !changedAssignee) ||
+    assignChangeValue === changedAssignee
+  );
+};
+
+const isTriggerChangeMatching = (productEventData: ProductEventData, triggerAction: TriggerAction): boolean => {
+  if (!productEventData.changes.model_changes.status) {
+    return false;
+  }
+
+  if (!triggerAction.change) {
+    return false;
+  }
+
+  const conversationAssignChangeTuple = productEventData.changes.model_changes.assigned_group_id;
+
+  return (
+    conversationAssignChangeTuple[0] !== conversationAssignChangeTuple[1] &&
+    isChangeMatching(conversationAssignChangeTuple[0], triggerAction.change.from) &&
+    isChangeMatching(conversationAssignChangeTuple[1], triggerAction.change.to)
+  );
+};
+
+export default (productEvent: Event, productEventData: ProductEventData, triggerAction: TriggerAction): boolean => {
+  const isProductEventMatch = productEvent === Event.ConversationUpdate;
+  let isTriggerChangeMatch = false;
+
+  if (isProductEventMatch && triggerAction.change) {
+    isTriggerChangeMatch = isTriggerChangeMatching(productEventData, triggerAction);
+  }
+
+  return isTriggerChangeMatch;
 };

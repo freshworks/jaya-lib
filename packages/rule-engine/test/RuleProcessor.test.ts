@@ -103,8 +103,12 @@ describe('RuleProcessor test', () => {
         actions: [],
         triggers: [
           {
-            actor: 'AGENT',
-            action: 'MESSAGE_CREATE',
+            actor: {
+              type: 'AGENT',
+            },
+            action: {
+              type: 'MESSAGE_CREATE',
+            },
           },
         ],
         blocks: [
@@ -132,8 +136,12 @@ describe('RuleProcessor test', () => {
         actions: [],
         triggers: [
           {
-            actor: 'AGENT',
-            action: 'MESSAGE_CREATE',
+            actor: {
+              type: 'AGENT',
+            },
+            action: {
+              type: 'MESSAGE_CREATE',
+            },
           },
         ],
         blocks: [
@@ -189,8 +197,12 @@ describe('RuleProcessor test', () => {
       actions: [],
       triggers: [
         {
-          actor: 'USER',
-          action: 'MESSAGE_CREATE',
+          actor: {
+            type: 'USER',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
         },
       ],
       blocks: [
@@ -216,8 +228,12 @@ describe('RuleProcessor test', () => {
       actions: [],
       triggers: [
         {
-          actor: 'AGENT',
-          action: 'CONVERSATION_CREATE',
+          actor: {
+            type: 'USER',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
         },
       ],
       blocks: [
@@ -283,8 +299,12 @@ describe('RuleProcessor test', () => {
       actions: [],
       triggers: [
         {
-          actor: 'AGENT',
-          action: 'INVALID_ACTION',
+          actor: {
+            type: 'AGENT',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
         },
       ],
       matchType: 'ANY',
@@ -299,8 +319,12 @@ describe('RuleProcessor test', () => {
       actions: [],
       triggers: [
         {
-          actor: 'AGENT',
-          action: 'INVALID_ACTION',
+          actor: {
+            type: 'AGENT',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
         },
       ],
       blocks: [],
@@ -316,8 +340,12 @@ describe('RuleProcessor test', () => {
       actions: [],
       triggers: [
         {
-          actor: 'AGENT',
-          action: 'INVALID_ACTION',
+          actor: {
+            type: 'AGENT',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
         },
       ],
       blocks: [
@@ -344,8 +372,12 @@ describe('RuleProcessor test', () => {
       actions: [],
       triggers: [
         {
-          actor: 'AGENT',
-          action: 'INVALID_ACTION',
+          actor: {
+            type: 'AGENT',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
         },
       ],
       blocks: [
@@ -432,7 +464,10 @@ describe('RuleProcessor test', () => {
   describe('isTriggerActorMatch', () => {
     it('should return false if trigger actor is not matching', () => {
       assert.isFalse(
-        RuleProcessor.isTriggerActorMatch('SYSTEM' as TriggerActor, (productEventData as any) as ProductEventData),
+        RuleProcessor.isTriggerActorMatch(
+          ({ type: 'SYSTEM' } as any) as TriggerActor,
+          (productEventData as any) as ProductEventData,
+        ),
       );
     });
   });

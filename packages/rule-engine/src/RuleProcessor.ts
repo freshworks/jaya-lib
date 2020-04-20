@@ -1,6 +1,6 @@
 // Simple library to process the rules
 import { Event } from '@freshworks-jaya/marketplace-models';
-import { ActorType, ProductEventData } from '@freshworks-jaya/marketplace-models';
+import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { Block, Condition, MatchType, Rule, Trigger, TriggerAction, TriggerActor } from './models/rule';
 
 import ruleConfig from './RuleConfig';
@@ -73,21 +73,22 @@ export class RuleProcessor {
    * Checks if the given actor matches for the actor received from payload.
    */
   public static isTriggerActorMatch(actor: TriggerActor, productEventData: ProductEventData): boolean {
-    return (
-      (actor === TriggerActor.Agent && productEventData.actor.type === ActorType.Agent) ||
-      (actor === TriggerActor.User && productEventData.actor.type === ActorType.User) ||
-      (actor === TriggerActor.System && productEventData.actor.type === ActorType.System)
-    );
+    const triggerActorFunc = ruleConfig.triggerActors && ruleConfig.triggerActors[actor.type];
+
+    if (triggerActorFunc) {
+      return triggerActorFunc(productEventData, actor);
+    }
+    throw new Error('Invalid trigger actor');
   }
 
   /**
    * Checks if the given action matches for the action received from payload.
    */
   public static isTriggerActionMatch(action: TriggerAction, event: Event, productEventData: ProductEventData): boolean {
-    const triggerActionFunc = ruleConfig.triggerActions && ruleConfig.triggerActions[action];
+    const triggerActionFunc = ruleConfig.triggerActions && ruleConfig.triggerActions[action.type];
 
     if (triggerActionFunc) {
-      return triggerActionFunc(event, productEventData);
+      return triggerActionFunc(event, productEventData, action);
     }
     throw new Error('Invalid trigger action');
   }
