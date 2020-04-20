@@ -1,7 +1,7 @@
 import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import {
   RuleEngineOptions,
-  FreshchatCredentials,
+  Integrations,
   RuleEngineExternalEventPayload,
   KairosCredentials,
 } from './models/rule-engine';
@@ -33,40 +33,54 @@ export class RuleEngine {
 
   executeActions = ActionExecutor.handleActions;
 
-  processProductEvent = (
+  processProductEvent = async (
     payload: ProductEventPayload,
     rules: Rule[],
     options: RuleEngineOptions,
     externalEventUrl: string,
-    freshchatCredentials: FreshchatCredentials,
+    integrations: Integrations,
     kairosCredentials?: KairosCredentials,
-  ): void => {
+  ): Promise<void> => {
     if (options.isSchedulerEnabled && kairosCredentials) {
-      // Invalidate exising schedules
-      TimerRuleEngine.invalidateTimers(payload, rules, kairosCredentials);
+      try {
+        // Invalidate exising schedules
+        await TimerRuleEngine.invalidateTimers(payload, rules, kairosCredentials);
 
-      // Process all timer rules.
-      TimerRuleEngine.triggerTimers(payload, rules, externalEventUrl, kairosCredentials);
+        // Process all timer rules.
+        await TimerRuleEngine.triggerTimers(payload, rules, externalEventUrl, kairosCredentials, integrations);
+      } catch (err) {
+        return Promise.reject(err);
+      }
     }
 
-    // Process regular rules and get the actions of the first matching rule.
-    const firstMatchingRule: Rule | null = RuleProcessor.getFirstMatchingRule(payload.event, payload.data, rules);
-
-    // Perform all actions sequentially in order.
-    if (firstMatchingRule && firstMatchingRule.actions && firstMatchingRule.actions.length) {
-      ActionExecutor.handleActions(freshchatCredentials, firstMatchingRule.actions, payload.data);
+    try {
+      // Process regular rules and get the actions of the first matching rule.
+      const firstMatchingRule = await RuleProcessor.getFirstMatchingRule(
+        payload.event,
+        payload.data,
+        rules,
+        integrations,
+      );
+      // Perform all actions sequentially in order.
+      if (firstMatchingRule.actions && firstMatchingRule.actions.length) {
+        await ActionExecutor.handleActions(integrations, firstMatchingRule.actions, payload.data);
+      }
+    } catch (err) {
+      return Promise.reject(err);
     }
+
+    return Promise.resolve();
   };
 
   processExternalEvent = (
     payload: RuleEngineExternalEventPayload,
     rules: Rule[],
     options: RuleEngineOptions,
-    freshchatCredentials: FreshchatCredentials,
+    integrations: Integrations,
     kairosCredentials?: KairosCredentials,
   ): void => {
     if (options.isSchedulerEnabled && kairosCredentials) {
-      TimerRuleEngine.executeTimerActions(payload, rules, kairosCredentials, freshchatCredentials);
+      TimerRuleEngine.executeTimerActions(payload, rules, kairosCredentials, integrations);
     }
   };
 }

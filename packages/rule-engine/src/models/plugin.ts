@@ -1,18 +1,14 @@
 import { Event, ProductEventData } from '@freshworks-jaya/marketplace-models';
-import { Condition, TriggerActor, TriggerAction } from './rule';
+import { Condition } from './rule';
+import { Integrations, TriggerAction, TriggerActor } from './rule-engine';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 
 export type PluginActions = {
-  [key: string]: (
-    freshchatApiUrl: string,
-    freshchatApiToken: string,
-    payload: ProductEventData,
-    actionValue: unknown,
-  ) => Promise<unknown>;
+  [key: string]: (integrations: Integrations, payload: ProductEventData, actionValue: unknown) => Promise<unknown>;
 };
 
 export type PluginOperators = {
-  [key: string]: (op1: string, op2: string) => boolean;
+  [key: string]: (op1: string, op2: string, integrations: Integrations) => Promise<void>;
 };
 
 export type PluginTriggerActions = {
@@ -24,7 +20,11 @@ export type PluginTriggerActors = {
 };
 
 export type PluginConditions = {
-  [key: string]: (condition: Condition, productEventData: ProductEventData) => boolean;
+  [key: string]: (
+    condition: Condition,
+    productEventData: ProductEventData,
+    integrations: Integrations,
+  ) => Promise<void>;
 };
 
 export interface RulePlugin {

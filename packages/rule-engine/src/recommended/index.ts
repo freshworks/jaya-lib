@@ -10,6 +10,8 @@ import operatorEquals from './operators/equals';
 import operatorNotAtAllEquals from './operators/not-equals';
 import operatorSet from './operators/set';
 import operatorNotSet from './operators/not-set';
+import operatorWithinBusinessHrs from './operators/within-business-hours';
+import operatorOutsideBusinessHrs from './operators/outside-business-hours';
 
 // Import all trigger actions
 import triggerActionConversationAgentAssign from './trigger-actions/conversation-agent-assign';
@@ -40,6 +42,7 @@ import conditionAssignedGroup from './conditions/assigned-group';
 import conditionAssignedAgent from './conditions/assigned-agent';
 import conditionResponseDueType from './conditions/response-due-type';
 import conditionUserProperty from './conditions/user-property';
+import conditionBusinessHour from './conditions/business-hour';
 
 const recommendedPlugins: RulePlugin[] = [
   {
@@ -59,6 +62,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionKey.AssignedGroup]: conditionAssignedGroup,
       [ConditionKey.ResponseDueType]: conditionResponseDueType,
       [ConditionKey.UserProperty]: conditionUserProperty,
+      [ConditionKey.BusinessHours]: conditionBusinessHour,
     },
     operators: {
       [ConditionOperator.StartsWith]: operatorStartsWith,
@@ -69,6 +73,8 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionOperator.NotEquals]: operatorNotAtAllEquals,
       [ConditionOperator.Set]: operatorSet,
       [ConditionOperator.NotSet]: operatorNotSet,
+      [ConditionOperator.WithinBusinessHours]: operatorWithinBusinessHrs,
+      [ConditionOperator.OutsideBusinessHours]: operatorOutsideBusinessHrs,
     },
     triggerActions: {
       [TriggerActionType.ConversationAgentAssign]: triggerActionConversationAgentAssign,

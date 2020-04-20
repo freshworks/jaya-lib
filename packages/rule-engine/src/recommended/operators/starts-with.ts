@@ -1,3 +1,5 @@
-export default (op1: string, op2: string): boolean => {
-  return op1.startsWith(op2);
+import { Integrations } from '../../models/rule-engine';
+import { Utils } from '../../Utils';
+export default (op1: string, op2: string, integrations: Integrations): Promise<void> => {
+  return Utils.promisify(op1.startsWith(op2));
 };

@@ -1,7 +1,7 @@
 // Simple library to handle the actions to be performed
 import { ProductEventData, User, ActorType, Agent, Group } from '@freshworks-jaya/marketplace-models';
 import { Action } from './models/rule';
-import { FreshchatCredentials } from './models/rule-engine';
+import { Integrations } from './models/rule-engine';
 import ruleConfig from './RuleConfig';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Utils } from './Utils';
@@ -11,18 +11,16 @@ export class ActionExecutor {
    * Calls the appropriate method to perform the action.
    */
   public static handleAction(
-    apiUrl: string,
-    apiToken: string,
+    integrations: Integrations,
     action: Action,
     productEventData: ProductEventData,
   ): Promise<unknown> {
     const actionFunc = ruleConfig.actions && ruleConfig.actions[action.type];
 
     if (actionFunc) {
-      return actionFunc(apiUrl, apiToken, productEventData, action.value);
+      return actionFunc(integrations, productEventData, action.value);
     }
-
-    throw new Error('Invalid action type');
+    return Promise.reject('Invalid action type');
   }
 
   /**
@@ -88,20 +86,19 @@ export class ActionExecutor {
   /**
    * Iterates through all the actions and performs each one as configured.
    */
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   public static async handleActions(
-    freshchatCredentials: FreshchatCredentials,
+    integrations: Integrations,
     actions: Action[],
     productEventData: ProductEventData,
-  ) {
+  ): Promise<void> {
     this.setupPlaceholders(productEventData);
 
     for (let i = 0; actions && i < actions.length; i += 1) {
       try {
         const action = actions[i];
-        await this.handleAction(freshchatCredentials.url, freshchatCredentials.token, action, productEventData);
+        await this.handleAction(integrations, action, productEventData);
       } catch (err) {
-        throw new Error('Error processing action');
+        Promise.reject(`Error processing action => ${err}`);
       }
     }
   }
