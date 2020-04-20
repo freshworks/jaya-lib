@@ -3,7 +3,7 @@ import { Event, ProductEventPayload, ProductEventData, ModelProperties } from '@
 import { ActionExecutor } from './ActionExecutor';
 import { Rule } from './models/rule';
 import { RuleProcessor } from './RuleProcessor';
-import { KairosCredentials, RuleEngineExternalEventPayload, FreshchatCredentials } from './models/rule-engine';
+import { KairosCredentials, RuleEngineExternalEventPayload, Integrations } from './models/rule-engine';
 
 export class TimerRuleEngine {
   /**
@@ -16,8 +16,17 @@ export class TimerRuleEngine {
   /**
    * Checks if the rule is a timer rule and is enabled.
    */
-  public static isMatchingTimerRule(event: Event, productEventData: ProductEventData, rule: Rule): boolean {
-    return rule.isTimer && rule.isEnabled && RuleProcessor.isRuleMatching(event, productEventData, rule);
+  public static isMatchingTimerRule(
+    event: Event,
+    productEventData: ProductEventData,
+    rule: Rule,
+    integrations: Integrations,
+  ): Promise<void> {
+    if (rule.isTimer && rule.isEnabled) {
+      return RuleProcessor.isRuleMatching(event, productEventData, rule, integrations);
+    } else {
+      return Promise.reject();
+    }
   }
 
   /**
@@ -35,6 +44,7 @@ export class TimerRuleEngine {
     rules: Rule[],
     externalEventUrl: string,
     kairosCredentials: KairosCredentials,
+    integrations: Integrations,
   ): Promise<void> {
     let schedulesToCreate: KairosScheduleOptions[] = [];
     const scheduler = new Kairos(kairosCredentials);
@@ -44,9 +54,13 @@ export class TimerRuleEngine {
       const rule = rules[ruleIndex];
 
       const modelProperties = this.getModelProperties(payload.data);
-
+      let isMatchingTimerRule = false;
       // Check for timer rules that are enabled and are matching the trigger conditions.
-      if (this.isMatchingTimerRule(payload.event, payload.data, rule)) {
+      try {
+        await this.isMatchingTimerRule(payload.event, payload.data, rule, integrations);
+        isMatchingTimerRule = true;
+      } catch (err) {}
+      if (isMatchingTimerRule) {
         const jobId = `${modelProperties.app_id}_${modelProperties.conversation_id}_${ruleIndex}`;
 
         // Fetch an existing schedule for the same current rule,
@@ -54,7 +68,6 @@ export class TimerRuleEngine {
         try {
           existingSchedule = (await scheduler.fetchSchedule(jobId)) as KairosSchedule;
         } catch (err) {}
-
         // If there are no existing schedules, create schedule object
         // and push it into the schedules array for bulk scheduling later.
         if (!existingSchedule) {
@@ -74,12 +87,11 @@ export class TimerRuleEngine {
         }
       }
     }
-
     if (schedulesToCreate.length) {
       try {
         await scheduler.bulkCreateSchedules(schedulesToCreate);
       } catch (err) {
-        throw new Error('Error creating bulk schedules');
+        return Promise.reject('Error creating bulk schedules');
       }
     }
 
@@ -93,7 +105,7 @@ export class TimerRuleEngine {
     externalEventPayload: RuleEngineExternalEventPayload,
     rules: Rule[],
     kairosCredentials: KairosCredentials,
-    freshchatCredentials: FreshchatCredentials,
+    integrations: Integrations,
   ): Promise<void> {
     const scheduler = new Kairos(kairosCredentials);
 
@@ -109,11 +121,7 @@ export class TimerRuleEngine {
 
     // Execute actions
     if (timerRule && Array.isArray(timerRule.actions)) {
-      ActionExecutor.handleActions(
-        freshchatCredentials,
-        timerRule.actions,
-        externalEventPayload.data.originalPayload.data,
-      );
+      ActionExecutor.handleActions(integrations, timerRule.actions, externalEventPayload.data.originalPayload.data);
     }
   }
 
@@ -141,14 +149,12 @@ export class TimerRuleEngine {
     }, []);
 
     if (jobsToDelete && jobsToDelete.length) {
-      try {
-        const scheduler = new Kairos(kairosCredentials);
-        await scheduler.bulkDeleteSchedules(jobsToDelete);
-      } catch (err) {
-        throw new Error('Bulk delete of schedules failed');
-      }
+      const scheduler = new Kairos(kairosCredentials);
+      return scheduler.bulkDeleteSchedules(jobsToDelete).then(
+        () => Promise.resolve(),
+        () => Promise.reject('Error during bulkDeleteSchedules'),
+      );
     }
-
     return Promise.resolve();
   }
 }

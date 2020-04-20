@@ -2,6 +2,7 @@ import { RuleEngine, Rule } from '../src/index';
 import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import 'mocha';
 import { assert } from 'chai';
+import { Integrations } from '../src/models/rule-engine';
 
 describe('RuleEngine test', () => {
   const productEventPayload = {
@@ -90,6 +91,15 @@ describe('RuleEngine test', () => {
     timestamp: 1586149300632,
   };
 
+  const integrations = {
+    freshchatv2: {
+      url: 'https://api.freshchat.com/v2',
+    },
+    freshchatv1: {
+      url: 'https://api.freshchat.com/app/services/app/v1',
+    },
+  };
+
   const rules = [
     {
       blocks: [
@@ -138,20 +148,40 @@ describe('RuleEngine test', () => {
   });
 
   describe('processProductEvent', () => {
-    it('triggers processProductEvent function with params', () => {
+    it('triggers processProductEvent function with params and no matching rule', () => {
       const ruleEngine = new RuleEngine();
-      ruleEngine.processProductEvent(
-        (productEventPayload as any) as ProductEventPayload,
-        (rules as any) as Rule[],
-        {
-          isSchedulerEnabled: false,
-        },
-        'some-external-event-url',
-        {
-          url: 'some-freshchat-url',
-          token: 'some-freshchat-token',
-        },
-      );
+      ruleEngine
+        .processProductEvent(
+          (productEventPayload as any) as ProductEventPayload,
+          (rules as any) as Rule[],
+          {
+            isSchedulerEnabled: false,
+          },
+          'some-external-event-url',
+          (integrations as any) as Integrations,
+        )
+        .catch((error) => {
+          assert.equal('no matching rule', error);
+        });
+    });
+
+    it('triggers processProductEvent function with params and matching rule', () => {
+      const ruleCopy = rules;
+      ruleCopy[0].blocks[0].conditions[0].operator = 'EQUALS';
+      const ruleEngine = new RuleEngine();
+      ruleEngine
+        .processProductEvent(
+          (productEventPayload as any) as ProductEventPayload,
+          (rules as any) as Rule[],
+          {
+            isSchedulerEnabled: false,
+          },
+          'some-external-event-url',
+          (integrations as any) as Integrations,
+        )
+        .then(() => {
+          assert.ok('triggers processProductEvent function with params and matching rule');
+        });
     });
   });
 });

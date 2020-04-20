@@ -4,7 +4,12 @@ export interface RuleEngineOptions {
   isSchedulerEnabled: boolean;
 }
 
-export interface FreshchatCredentials {
+export interface Integrations {
+  freshchatv1: ProductCredentials;
+  freshchatv2: ProductCredentials;
+}
+
+export interface ProductCredentials {
   token: string;
   url: string;
 }
