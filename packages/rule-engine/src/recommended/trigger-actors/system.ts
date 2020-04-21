@@ -32,8 +32,8 @@ export default (productEventData: ProductEventData, triggerActor: TriggerActor):
   // Todo: check for cause if it is present
   let isActorCauseMatch = true;
 
-  if (triggerActor.cause && productEventData.actor['sub_type'] && actorCauseDict[triggerActor.cause]) {
-    isActorCauseMatch = actorCauseDict[triggerActor.cause](productEventData.actor['sub_type']);
+  if (triggerActor['cause'] && productEventData.actor['sub_type'] && actorCauseDict[triggerActor['cause']]) {
+    isActorCauseMatch = actorCauseDict[triggerActor['cause']](productEventData.actor['sub_type']);
   }
 
   return isActorTypeMatch && isActorCauseMatch;
