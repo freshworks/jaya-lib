@@ -21,15 +21,10 @@ const isTriggerChangeMatching = (productEventData: ProductEventData, triggerActi
     return false;
   }
 
-  if (!triggerAction.change) {
-    return false;
-  }
-
   const conversationStatusChangeTuple = productEventData.changes.model_changes.status;
   const triggerActionStatusChange = triggerAction.change as ConversationStatusChange;
 
   return (
-    conversationStatusChangeTuple[0] !== conversationStatusChangeTuple[1] &&
     isChangeMatching(conversationStatusChangeTuple[0], triggerActionStatusChange.from) &&
     isChangeMatching(conversationStatusChangeTuple[1], triggerActionStatusChange.to)
   );

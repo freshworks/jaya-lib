@@ -14,7 +14,7 @@ const isChangeMatching = (changedAssignee: string, assignChangeValue: string | n
 };
 
 const isTriggerChangeMatching = (productEventData: ProductEventData, triggerAction: TriggerAction): boolean => {
-  if (!productEventData.changes.model_changes.status) {
+  if (!productEventData.changes.model_changes.assigned_agent_id) {
     return false;
   }
 
@@ -25,7 +25,6 @@ const isTriggerChangeMatching = (productEventData: ProductEventData, triggerActi
   const conversationAssignChangeTuple = productEventData.changes.model_changes.assigned_agent_id;
 
   return (
-    conversationAssignChangeTuple[0] !== conversationAssignChangeTuple[1] &&
     isChangeMatching(conversationAssignChangeTuple[0], triggerAction.change.from) &&
     isChangeMatching(conversationAssignChangeTuple[1], triggerAction.change.to)
   );
