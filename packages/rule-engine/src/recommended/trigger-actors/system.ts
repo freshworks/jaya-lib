@@ -30,9 +30,9 @@ const actorCauseDict: {
 function isActorCauseMatching(triggerActorCause: string, actorSubType: string): boolean {
   switch (triggerActorCause) {
     case 'INTELLI_ASSIGN':
-      return actorSubType === 'intelli_assign';
+      return actorSubType === ActorSubType.Intelliassign;
     case 'ASSIGNMENT_RULE':
-      return actorSubType === 'assignment_rule';
+      return actorSubType === ActorSubType.AssignmentRule;
     default:
       return false;
   }
@@ -43,9 +43,9 @@ export default (productEventData: ProductEventData, triggerActor: TriggerActor):
   // Todo: check for cause if it is present
   let isActorCauseMatch = true;
 
-  // if (triggerActor.cause && productEventData.actor.sub_type && actorCauseDict[triggerActor.cause]) {
-  //   isActorCauseMatch = actorCauseDict[triggerActor.cause](productEventData.actor.sub_type);
-  // }
+  if (triggerActor.cause && productEventData.actor.sub_type && actorCauseDict[triggerActor.cause]) {
+    isActorCauseMatch = actorCauseDict[triggerActor.cause](productEventData.actor.sub_type);
+  }
 
   if (triggerActor.cause && productEventData.actor.sub_type) {
     isActorCauseMatch = isActorCauseMatching(triggerActor.cause as string, productEventData.actor.sub_type as string);
