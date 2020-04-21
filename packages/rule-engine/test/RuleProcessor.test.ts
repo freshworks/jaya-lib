@@ -538,6 +538,20 @@ describe('RuleProcessor test', () => {
         ),
       );
     });
+
+    it('system intelliassign as trigger actor should match', () => {
+      assert.isTrue(
+        RuleProcessor.isTriggerActorMatch(
+          ({ type: 'SYSTEM', cause: 'INTELLI_ASSIGN' } as any) as TriggerActor,
+          ({
+            actor: {
+              type: 'system',
+              sub_type: 'intelli_assign',
+            },
+          } as any) as ProductEventData,
+        ),
+      );
+    });
   });
 
   describe('isBlockMatching', () => {
