@@ -7,33 +7,33 @@ export default (productEventData: ProductEventData, triggerActor: TriggerActor):
   let isActorCauseMatch = true;
 
   const actorCauseDict: {
-    [key: string]: (productEventActor: Actor) => boolean;
+    [key: string]: (actorSubType: ActorSubType) => boolean;
   } = {
-    [TriggerActorCause.Agent]: (productEventActor: Actor): boolean => {
-      return productEventActor.sub_type === ActorSubType.Agent;
+    [TriggerActorCause.Agent]: (actorSubType: ActorSubType): boolean => {
+      return actorSubType === ActorSubType.Agent;
     },
-    [TriggerActorCause.AgentGroupMapping]: (productEventActor: Actor): boolean => {
-      return productEventActor.sub_type === ActorSubType.AgentGroupMapping;
+    [TriggerActorCause.AgentGroupMapping]: (actorSubType: ActorSubType): boolean => {
+      return actorSubType === ActorSubType.AgentGroupMapping;
     },
-    [TriggerActorCause.AssignmentRule]: (productEventActor: Actor): boolean => {
-      return productEventActor.sub_type === ActorSubType.AssignmentRule;
+    [TriggerActorCause.AssignmentRule]: (actorSubType: ActorSubType): boolean => {
+      return actorSubType === ActorSubType.AssignmentRule;
     },
-    [TriggerActorCause.AutoResolve]: (productEventActor: Actor): boolean => {
-      return productEventActor.sub_type === ActorSubType.AutoResolve;
+    [TriggerActorCause.AutoResolve]: (actorSubType: ActorSubType): boolean => {
+      return actorSubType === ActorSubType.AutoResolve;
     },
-    [TriggerActorCause.Bot]: (productEventActor: Actor): boolean => {
-      return productEventActor.sub_type === ActorSubType.Bot;
+    [TriggerActorCause.Bot]: (actorSubType: ActorSubType): boolean => {
+      return actorSubType === ActorSubType.Bot;
     },
-    [TriggerActorCause.IntelliAssign]: (productEventActor: Actor): boolean => {
-      return productEventActor.sub_type === ActorSubType.Intelliassign;
+    [TriggerActorCause.IntelliAssign]: (actorSubType: ActorSubType): boolean => {
+      return actorSubType === ActorSubType.Intelliassign;
     },
-    [TriggerActorCause.User]: (productEventActor: Actor): boolean => {
-      return productEventActor.sub_type === ActorSubType.User;
+    [TriggerActorCause.User]: (actorSubType: ActorSubType): boolean => {
+      return actorSubType === ActorSubType.User;
     },
   };
 
   if (triggerActor.cause && actorCauseDict[triggerActor.cause]) {
-    isActorCauseMatch = actorCauseDict[triggerActor.cause](productEventData.actor);
+    isActorCauseMatch = actorCauseDict[triggerActor.cause](productEventData.actor.sub_type);
   }
 
   return isActorTypeMatch && isActorCauseMatch;
