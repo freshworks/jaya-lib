@@ -43,7 +43,7 @@
   "dependencies": {
     "@freshworks-jaya/freshchat-api": "^0.1.0",
     "@freshworks-jaya/kairos-api": "^0.1.0",
-    "@freshworks-jaya/marketplace-models": "^0.1.0",
+    "@freshworks-jaya/marketplace-models": "0.1.0-alpha.0",
     "@freshworks-jaya/utilities": "^0.1.0",
     "axios": "^0.19.2",
     "bluebird": "^3.7.2"
