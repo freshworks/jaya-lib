@@ -113,8 +113,12 @@ describe('RuleProcessor test', () => {
         actions: [],
         triggers: [
           {
-            actor: 'AGENT',
-            action: 'MESSAGE_CREATE',
+            actor: {
+              type: 'AGENT',
+            },
+            action: {
+              type: 'MESSAGE_CREATE',
+            },
           },
         ],
         blocks: [
@@ -142,8 +146,12 @@ describe('RuleProcessor test', () => {
         actions: [],
         triggers: [
           {
-            actor: 'AGENT',
-            action: 'MESSAGE_CREATE',
+            actor: {
+              type: 'AGENT',
+            },
+            action: {
+              type: 'MESSAGE_CREATE',
+            },
           },
         ],
         blocks: [
@@ -206,8 +214,12 @@ describe('RuleProcessor test', () => {
       actions: [],
       triggers: [
         {
-          actor: 'USER',
-          action: 'MESSAGE_CREATE',
+          actor: {
+            type: 'USER',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
         },
       ],
       blocks: [
@@ -233,8 +245,12 @@ describe('RuleProcessor test', () => {
       actions: [],
       triggers: [
         {
-          actor: 'AGENT',
-          action: 'CONVERSATION_CREATE',
+          actor: {
+            type: 'USER',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
         },
       ],
       blocks: [
@@ -278,13 +294,12 @@ describe('RuleProcessor test', () => {
     });
   });
 
-  describe('isTriggerActionMath', () => {
+  describe('isTriggerActionMatch', () => {
     it('should throw an exception for invalid actor', () => {
       try {
         RuleProcessor.isTriggerActionMatch(
           ({
-            actor: 'AGENT',
-            action: 'INVALID_ACTION',
+            type: 'INVALID_ACTION_TYPE',
           } as any) as TriggerAction,
           Event.MessageCreate,
           (productEventData as any) as ProductEventData,
@@ -292,6 +307,76 @@ describe('RuleProcessor test', () => {
       } catch (err) {
         assert.ok(err);
       }
+    });
+
+    it('should match the trigger action for conversation status updated', () => {
+      const isMatch = RuleProcessor.isTriggerActionMatch(
+        ({
+          type: 'CONVERSATION_STATUS_UPDATE',
+          change: {
+            from: 'ASSIGNED',
+            to: 'NEW',
+          },
+        } as any) as TriggerAction,
+        Event.ConversationUpdate,
+        ({
+          actor: {
+            last_name: 'Rajkumar',
+            first_name: 'Arun',
+            email: 'arun.rajkumar@freshworks.com',
+            type: 'agent',
+            avatar: {
+              url:
+                'https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/fcb80e8034a0573c0a7cc62e8bad2320543cc3d25331762d72b601490b1d305f/f_marketingpicFull/u_511f4df397673630823df3cf364152b62cc8159e0232403603c3e81c431178f1/img_1585901259097.png',
+            },
+            id: '652ac361-304e-47af-9c8f-598e649570a6',
+            phone: '9003011800',
+          },
+          changes: {
+            model_changes: {
+              status: ['ASSIGN', 'NEW'],
+            },
+          },
+          event: 'onConversationUpdate',
+        } as any) as ProductEventData,
+      );
+
+      assert.isTrue(isMatch);
+    });
+
+    it('should not match the trigger action for conversation assigned_agent_id updated', () => {
+      const isMatch = RuleProcessor.isTriggerActionMatch(
+        ({
+          type: 'CONVERSATION_STATUS_UPDATE',
+          change: {
+            from: 'ASSIGNED',
+            to: 'NEW',
+          },
+        } as any) as TriggerAction,
+        Event.ConversationUpdate,
+        ({
+          actor: {
+            last_name: 'Rajkumar',
+            first_name: 'Arun',
+            email: 'arun.rajkumar@freshworks.com',
+            type: 'agent',
+            avatar: {
+              url:
+                'https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/fcb80e8034a0573c0a7cc62e8bad2320543cc3d25331762d72b601490b1d305f/f_marketingpicFull/u_511f4df397673630823df3cf364152b62cc8159e0232403603c3e81c431178f1/img_1585901259097.png',
+            },
+            id: '652ac361-304e-47af-9c8f-598e649570a6',
+            phone: '9003011800',
+          },
+          changes: {
+            model_changes: {
+              assigned_agent_id: [null, 'alajsldjfalsdjflkasjdklf'],
+            },
+          },
+          event: 'onConversationUpdate',
+        } as any) as ProductEventData,
+      );
+
+      assert.isFalse(isMatch);
     });
   });
 
@@ -302,8 +387,12 @@ describe('RuleProcessor test', () => {
       actions: [],
       triggers: [
         {
-          actor: 'AGENT',
-          action: 'INVALID_ACTION',
+          actor: {
+            type: 'AGENT',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
         },
       ],
       matchType: 'ANY',
@@ -318,8 +407,12 @@ describe('RuleProcessor test', () => {
       actions: [],
       triggers: [
         {
-          actor: 'AGENT',
-          action: 'INVALID_ACTION',
+          actor: {
+            type: 'AGENT',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
         },
       ],
       blocks: [],
@@ -335,8 +428,12 @@ describe('RuleProcessor test', () => {
       actions: [],
       triggers: [
         {
-          actor: 'AGENT',
-          action: 'INVALID_ACTION',
+          actor: {
+            type: 'AGENT',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
         },
       ],
       blocks: [
@@ -363,8 +460,12 @@ describe('RuleProcessor test', () => {
       actions: [],
       triggers: [
         {
-          actor: 'AGENT',
-          action: 'INVALID_ACTION',
+          actor: {
+            type: 'AGENT',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
         },
       ],
       blocks: [
@@ -431,7 +532,24 @@ describe('RuleProcessor test', () => {
   describe('isTriggerActorMatch', () => {
     it('should return false if trigger actor is not matching', () => {
       assert.isFalse(
-        RuleProcessor.isTriggerActorMatch('SYSTEM' as TriggerActor, (productEventData as any) as ProductEventData),
+        RuleProcessor.isTriggerActorMatch(
+          ({ type: 'SYSTEM' } as any) as TriggerActor,
+          (productEventData as any) as ProductEventData,
+        ),
+      );
+    });
+
+    it('system intelliassign as trigger actor should match', () => {
+      assert.isTrue(
+        RuleProcessor.isTriggerActorMatch(
+          ({ type: 'SYSTEM', cause: 'INTELLI_ASSIGN' } as any) as TriggerActor,
+          ({
+            actor: {
+              type: 'system',
+              sub_type: 'intelli_assign',
+            },
+          } as any) as ProductEventData,
+        ),
       );
     });
   });

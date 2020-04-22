@@ -154,8 +154,12 @@ describe('TimerRuleEngine test', () => {
       timerValue: 5,
       invalidators: [
         {
-          actor: 'USER',
-          action: 'MESSAGE_CREATE',
+          actor: {
+            type: 'USER',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
         },
       ],
     };
@@ -167,8 +171,12 @@ describe('TimerRuleEngine test', () => {
       timerValue: 5,
       invalidators: [
         {
-          actor: 'AGENT',
-          action: 'MESSAGE_CREATE',
+          actor: {
+            type: 'AGENT',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
         },
       ],
     };
@@ -325,8 +333,12 @@ describe('TimerRuleEngine test', () => {
       timerValue: 5,
       triggers: [
         {
-          action: 'MESSAGE_CREATE',
-          actor: 'AGENT',
+          actor: {
+            type: 'AGENT',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
         },
       ],
       matchType: 'ANY',
@@ -441,8 +453,12 @@ describe('TimerRuleEngine test', () => {
       timerValue: 5,
       triggers: [
         {
-          action: 'MESSAGE_CREATE',
-          actor: 'AGENT',
+          actor: {
+            type: 'AGENT',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
         },
       ],
       matchType: 'ANY',
@@ -474,8 +490,12 @@ describe('TimerRuleEngine test', () => {
       timerValue: 5,
       triggers: [
         {
-          action: 'MESSAGE_CREATE',
-          actor: 'AGENT',
+          actor: {
+            type: 'AGENT',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
         },
       ],
       matchType: 'ANY',

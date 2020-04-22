@@ -1,6 +1,7 @@
 import { Event, ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { Condition } from './rule';
 import { Integrations } from './rule-engine';
+import { TriggerAction, TriggerActor } from './rule';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 
 export type PluginActions = {
@@ -12,7 +13,11 @@ export type PluginOperators = {
 };
 
 export type PluginTriggerActions = {
-  [key: string]: (productEvent: Event, productEventData: ProductEventData) => boolean;
+  [key: string]: (productEvent: Event, productEventData: ProductEventData, triggerAction: TriggerAction) => boolean;
+};
+
+export type PluginTriggerActors = {
+  [key: string]: (productEventData: ProductEventData, triggerActor: TriggerActor) => boolean;
 };
 
 export type PluginConditions = {
@@ -29,4 +34,5 @@ export interface RulePlugin {
   operators?: PluginOperators;
   placeholders?: PlaceholdersMap;
   triggerActions?: PluginTriggerActions;
+  triggerActors?: PluginTriggerActors;
 }

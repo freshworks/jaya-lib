@@ -1,5 +1,5 @@
 import { RulePlugin } from '../models/plugin';
-import { ConditionOperator, TriggerAction, ActionType, ConditionKey } from '../models/rule';
+import { ConditionOperator, ActionType, ConditionKey, TriggerActionType, TriggerActorType } from '../models/rule';
 
 // Import all operators
 import operatorStartsWith from './operators/starts-with';
@@ -17,10 +17,14 @@ import operatorOutsideBusinessHrs from './operators/outside-business-hours';
 import triggerActionConversationAgentAssign from './trigger-actions/conversation-agent-assign';
 import triggerActionConversationCreate from './trigger-actions/conversation-create';
 import triggerActionConversationGroupAssign from './trigger-actions/conversation-group-assign';
-import triggerActionConversationReopen from './trigger-actions/conversation-reopen';
-import triggerActionConversationResolve from './trigger-actions/conversation-resolve';
+import triggerActionConversationStatusUpdate from './trigger-actions/conversation-status-update';
 import triggerActionMessageCreate from './trigger-actions/message-create';
 import triggerActionPrivateNoteCreate from './trigger-actions/private-note-create';
+
+// Import all trigger actors
+import triggerActorAgent from './trigger-actors/agent';
+import triggerActorUser from './trigger-actors/user';
+import triggerActorSystem from './trigger-actors/system';
 
 // Import all actions
 import actionReopen from './actions/reopen';
@@ -73,13 +77,17 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionOperator.OutsideBusinessHours]: operatorOutsideBusinessHrs,
     },
     triggerActions: {
-      [TriggerAction.ConversationCreate]: triggerActionConversationCreate,
-      [TriggerAction.ConversationReopen]: triggerActionConversationReopen,
-      [TriggerAction.ConversationResolve]: triggerActionConversationResolve,
-      [TriggerAction.ConversationGroupAssign]: triggerActionConversationGroupAssign,
-      [TriggerAction.ConversationAgentAssign]: triggerActionConversationAgentAssign,
-      [TriggerAction.MessageCreate]: triggerActionMessageCreate,
-      [TriggerAction.PrivateNoteCreate]: triggerActionPrivateNoteCreate,
+      [TriggerActionType.ConversationAgentAssign]: triggerActionConversationAgentAssign,
+      [TriggerActionType.ConversationCreate]: triggerActionConversationCreate,
+      [TriggerActionType.ConversationGroupAssign]: triggerActionConversationGroupAssign,
+      [TriggerActionType.ConversationStatusUpdate]: triggerActionConversationStatusUpdate,
+      [TriggerActionType.MessageCreate]: triggerActionMessageCreate,
+      [TriggerActionType.PrivateNoteCreate]: triggerActionPrivateNoteCreate,
+    },
+    triggerActors: {
+      [TriggerActorType.Agent]: triggerActorAgent,
+      [TriggerActorType.System]: triggerActorSystem,
+      [TriggerActorType.User]: triggerActorUser,
     },
   },
 ];

@@ -2,20 +2,31 @@ export enum MatchType {
   All = 'ALL',
   Any = 'ANY',
 }
-export enum TriggerActor {
+export enum TriggerActorType {
   Agent = 'AGENT',
   System = 'SYSTEM',
   User = 'USER',
 }
-export enum TriggerAction {
+
+export enum TriggerActorCause {
+  Agent = 'AGENT',
+  AgentGroupMapping = 'AGENT_GROUP_MAPPING',
+  AssignmentRule = 'ASSIGNMENT_RULE',
+  AutoResolve = 'AUTO_RESOLVE',
+  Bot = 'BOT',
+  IntelliAssign = 'INTELLI_ASSIGN',
+  User = 'USER',
+}
+
+export enum TriggerActionType {
   ConversationAgentAssign = 'CONVERSATION_AGENT_ASSIGN',
   ConversationCreate = 'CONVERSATION_CREATE',
   ConversationGroupAssign = 'CONVERSATION_GROUP_ASSIGN',
-  ConversationReopen = 'CONVERSATION_REOPEN',
-  ConversationResolve = 'CONVERSATION_RESOLVE',
+  ConversationStatusUpdate = 'CONVERSATION_STATUS_UPDATE',
   MessageCreate = 'MESSAGE_CREATE',
   PrivateNoteCreate = 'PRIVATE_NOTE_CREATE',
 }
+
 export enum ActionType {
   AssignToAgent = 'ASSIGN_TO_AGENT',
   AssignToGroup = 'ASSIGN_TO_GROUP',
@@ -50,6 +61,31 @@ export enum ResponseDueTypeValue {
   FirstResponseDue = 'FIRST_RESPONSE_DUE',
   NoResponseDue = 'NO_RESPONSE_DUE',
   ResponseDue = 'RESPONSE_DUE',
+}
+
+export enum ConversationStatusChangeValue {
+  Any = 'ANY',
+  Assigned = 'ASSIGNED',
+  New = 'NEW',
+  Resolved = 'RESOLVED',
+}
+
+export interface ConversationStatusChange {
+  from: ConversationStatusChangeValue | null;
+  to: ConversationStatusChangeValue | null;
+}
+
+export interface TriggerAction {
+  change?: {
+    from: string | null;
+    to: string | null;
+  };
+  type: TriggerActionType;
+}
+
+export interface TriggerActor {
+  cause?: TriggerActorCause;
+  type: TriggerActorType;
 }
 
 export interface Trigger {
