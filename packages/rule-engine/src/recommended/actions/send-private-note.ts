@@ -15,7 +15,7 @@ export default (
   const modelProperties = productEventData.conversation || productEventData.message;
   const conversationId = modelProperties.conversation_id;
 
-  return freshchat.sendNormalReplyText(
+  return freshchat.sendPrivateNote(
     conversationId,
     findAndReplacePlaceholders(actionValue as string, ruleConfig.placeholders as PlaceholdersMap),
   );
