@@ -32,6 +32,7 @@ import actionResolve from './actions/resolve';
 import actionAssignToGroup from './actions/assign-to-group';
 import actionAssignToAgent from './actions/assign-to-agent';
 import actionSendMessage from './actions/send-message';
+import actionSendPrivateNote from './actions/send-private-note';
 import actionUnassignThenReassignGroup from './actions/unassign-then-reassign-group';
 
 // Import all conditions
@@ -43,6 +44,7 @@ import conditionAssignedAgent from './conditions/assigned-agent';
 import conditionResponseDueType from './conditions/response-due-type';
 import conditionUserProperty from './conditions/user-property';
 import conditionBusinessHour from './conditions/business-hour';
+import sendPrivateNote from './actions/send-private-note';
 
 const recommendedPlugins: RulePlugin[] = [
   {
@@ -52,6 +54,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ActionType.AssignToGroup]: actionAssignToGroup,
       [ActionType.AssignToAgent]: actionAssignToAgent,
       [ActionType.SendMessage]: actionSendMessage,
+      [ActionType.SendPrivateNote]: sendPrivateNote,
       [ActionType.UnassignThenReassignGroup]: actionUnassignThenReassignGroup,
     },
     conditions: {

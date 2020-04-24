@@ -51,13 +51,20 @@ export default class Freshchat {
   /**
    * Calls Freshchat conversation API to create message.
    */
-  postMessage(conversationId: string, message: string, messageType: 'normal' | 'private'): AxiosPromise<Message> {
+  postMessage(
+    conversationId: string,
+    message: string,
+    messageType: 'normal' | 'private',
+    actorType?: 'agent' | 'bot',
+    actorId?: string,
+  ): AxiosPromise<Message> {
     const postMessageApiUrl = `${this.apiUrl}/conversations/${conversationId}/messages`;
 
     return axios.post(
       postMessageApiUrl,
       JSON.stringify({
-        actor_type: 'bot',
+        actor_id: actorId,
+        actor_type: actorType || 'bot',
         message_parts: [
           {
             text: {
@@ -70,6 +77,11 @@ export default class Freshchat {
       { headers: this.headers },
     );
   }
+
+  /**
+   * Calls Freshchat conversation API to create message.
+   */
+  // sendNormalMessage
 
   /**
    * Calls Freshchat Conversation API to resolve/reopen a conversation.
@@ -87,5 +99,33 @@ export default class Freshchat {
       }),
       { headers: this.headers },
     );
+  }
+
+  /**
+   * Send a Private Note.
+   */
+  sendPrivateNote(conversationId: string, message: string, agentId?: string): AxiosPromise<Message> {
+    const getAgentApiUrl = `${this.apiUrl}/agents?items_per_page=1`;
+
+    if (agentId) {
+      return this.postMessage(conversationId, message, 'private', 'agent', agentId);
+    } else {
+      return axios
+        .get(getAgentApiUrl, { headers: this.headers })
+        .then((response) => {
+          const accountOwnerId = response.data.agents[0].id;
+          return this.postMessage(conversationId, message, 'private', 'agent', accountOwnerId);
+        })
+        .catch((err) => {
+          return err;
+        });
+    }
+  }
+
+  /**
+   * Send Normal Reply.
+   */
+  sendNormalReplyText(conversationId: string, message: string, agentId?: string): AxiosPromise<Message> {
+    return this.postMessage(conversationId, message, 'normal', agentId ? 'agent' : 'bot', agentId);
   }
 }

@@ -33,6 +33,7 @@ export enum ActionType {
   ReOpen = 'REOPEN',
   Resolve = 'RESOLVE',
   SendMessage = 'SEND_MESSAGE',
+  SendPrivateNote = 'SEND_PRIVATE_NOTE',
   UnassignThenReassignGroup = 'UNASSIGN_THEN_REASSIGN_GROUP',
 }
 export enum ConditionKey {
