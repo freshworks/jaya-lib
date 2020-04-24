@@ -45,5 +45,15 @@ describe('api.message-create', () => {
     it('should sent POST reqeust to /conversations/1', () => {
       expect(freshchat.postMessage('1', 'Hello', MessageType.Normal)).to.be.eventually.equal(res);
     });
+
+    it('should send a normal reply text', () => {
+      expect(freshchat.sendNormalReplyText('1', 'Hello')).to.be.eventually.equal(res);
+    });
+
+    it('should send a normal reply text', () => {
+      res.actor_id = '<some-agent-id>';
+      res.actor_type = ActorType.Agent;
+      expect(freshchat.sendNormalReplyText('1', 'Hello', '<some-agent-id>')).to.be.eventually.equal(res);
+    });
   });
 });
