@@ -12,12 +12,10 @@ export default (
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
+  const modelProperties = productEventData.conversation || productEventData.message;
 
   return freshchat
-    .getAverageWaitTimeGivenGroupId(
-      productEventData.conversation.assigned_group_id ? productEventData.conversation.assigned_group_id : 'null',
-      30,
-    )
+    .getAverageWaitTimeGivenGroupId(modelProperties.assigned_group_id ? modelProperties.assigned_group_id : 'null', 30)
     .then((value) => {
       const averageWaitTimeInMinutes = Math.floor(value / 60).toString();
 
