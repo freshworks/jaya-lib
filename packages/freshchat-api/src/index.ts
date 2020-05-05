@@ -1,9 +1,11 @@
 import axios, { AxiosPromise } from 'axios';
 import { Message } from './interfaces/Message';
 import { Conversation, ConversationStatus } from './interfaces/Conversation';
+import { DashboardHistorical } from './interfaces/DashboardHistorical';
 
 export * from './interfaces/Conversation';
 export * from './interfaces/Message';
+export * from './interfaces/DashboardHistorical';
 
 export default class Freshchat {
   private get headers(): {
@@ -17,6 +19,70 @@ export default class Freshchat {
   }
 
   constructor(private apiUrl: string, private apiToken: string) {}
+
+  /**
+   * Calls Freshchat Dashboard Historical API to fetch average wait time.
+   */
+  getAverageWaitTimeGivenGroupId(groupId: string, durationInDays: number): Promise<number> {
+    const dashboardMetricsApiUrl = `${this.apiUrl}/metrics/historical`;
+
+    const today = new Date();
+    const pastDate = new Date();
+    pastDate.setTime(today.getTime() - durationInDays * 24 * 60 * 60 * 1000);
+
+    return axios
+      .get(dashboardMetricsApiUrl, {
+        headers: this.headers,
+        params: {
+          aggregator: 'avg',
+          end: today.toISOString(),
+          group_by: 'group',
+          metric: 'conversation_metrics.wait_time',
+          start: pastDate.toISOString(),
+        },
+      })
+      .then((response: { data: DashboardHistorical }) => {
+        const matchingGroupData = response.data.data.find((grouping) => {
+          return grouping.groupings[0].value === groupId;
+        });
+
+        if (matchingGroupData) {
+          return parseInt(matchingGroupData.series[0].values[0].value, 10);
+        } else {
+          return 0;
+        }
+      });
+  }
+
+  /**
+   * Calls Freshchat Dashboard Historical API to fetch unassigned count.
+   */
+  getUnassignedCountGivenGroupId(groupId: string, unassignedDuration: number): Promise<number> {
+    const dashboardMetricsApiUrl = `${this.apiUrl}/metrics/historical`;
+
+    return axios
+      .get(dashboardMetricsApiUrl, {
+        headers: this.headers,
+        params: {
+          end: new Date().toISOString(),
+          group_by: 'group',
+          metric: 'conversation_metrics.created_x_mins_ago_and_unassigned',
+          start: new Date().toISOString(),
+          x_time: unassignedDuration,
+        },
+      })
+      .then((response: { data: DashboardHistorical }) => {
+        const matchingGroupData = response.data.data.find((grouping) => {
+          return grouping.groupings[0].value === groupId;
+        });
+
+        if (matchingGroupData) {
+          return parseInt(matchingGroupData.series[0].values[0].value, 10);
+        } else {
+          return 0;
+        }
+      });
+  }
 
   /**
    * Calls Freshchat Conversation API to assign a conversation to agent/group.
