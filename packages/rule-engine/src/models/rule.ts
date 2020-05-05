@@ -34,6 +34,7 @@ export enum ActionType {
   Resolve = 'RESOLVE',
   SendMessage = 'SEND_MESSAGE',
   SendPrivateNote = 'SEND_PRIVATE_NOTE',
+  SetAverageWaitTime = 'SET_AVERAGE_WAIT_TIME_IN_PLACEHOLDERS',
   UnassignThenReassignGroup = 'UNASSIGN_THEN_REASSIGN_GROUP',
 }
 export enum ConditionKey {

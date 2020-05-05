@@ -34,6 +34,7 @@ import actionAssignToAgent from './actions/assign-to-agent';
 import actionSendMessage from './actions/send-message';
 import actionSendPrivateNote from './actions/send-private-note';
 import actionUnassignThenReassignGroup from './actions/unassign-then-reassign-group';
+import actionSetAverageWaitTimeInPlaceholders from './actions/set-average-wait-time-in-placeholders';
 
 // Import all conditions
 import conditionMessageText from './conditions/message-text';
@@ -44,7 +45,6 @@ import conditionAssignedAgent from './conditions/assigned-agent';
 import conditionResponseDueType from './conditions/response-due-type';
 import conditionUserProperty from './conditions/user-property';
 import conditionBusinessHour from './conditions/business-hour';
-import sendPrivateNote from './actions/send-private-note';
 
 const recommendedPlugins: RulePlugin[] = [
   {
@@ -54,8 +54,9 @@ const recommendedPlugins: RulePlugin[] = [
       [ActionType.AssignToGroup]: actionAssignToGroup,
       [ActionType.AssignToAgent]: actionAssignToAgent,
       [ActionType.SendMessage]: actionSendMessage,
-      [ActionType.SendPrivateNote]: sendPrivateNote,
+      [ActionType.SendPrivateNote]: actionSendPrivateNote,
       [ActionType.UnassignThenReassignGroup]: actionUnassignThenReassignGroup,
+      [ActionType.SetAverageWaitTime]: actionSetAverageWaitTimeInPlaceholders,
     },
     conditions: {
       [ConditionKey.MessageText]: conditionMessageText,
