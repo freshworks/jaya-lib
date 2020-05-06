@@ -23,12 +23,12 @@ export default class Freshchat {
   /**
    * Calls Freshchat Dashboard Historical API to fetch average wait time.
    */
-  getAverageWaitTimeGivenGroupId(groupId: string, durationInDays: number): Promise<number> {
+  getAverageWaitTimeGivenGroupId(groupId: string, durationInHours: number): Promise<number> {
     const dashboardMetricsApiUrl = `${this.apiUrl}/metrics/historical`;
 
     const today = new Date();
     const pastDate = new Date();
-    pastDate.setTime(today.getTime() - durationInDays * 24 * 60 * 60 * 1000);
+    pastDate.setTime(today.getTime() - durationInHours * 60 * 60 * 1000);
 
     return axios
       .get(dashboardMetricsApiUrl, {
