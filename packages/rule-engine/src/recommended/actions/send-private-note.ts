@@ -16,10 +16,10 @@ export default (
   const modelProperties = productEventData.conversation || productEventData.message;
   const conversationId = modelProperties.conversation_id;
 
-  Utils.setupDynamicPlaceholders(actionValue as string, productEventData, integrations);
-
-  return freshchat.sendPrivateNote(
-    conversationId,
-    findAndReplacePlaceholders(actionValue as string, ruleConfig.placeholders as PlaceholdersMap),
-  );
+  return Utils.setupDynamicPlaceholders(actionValue as string, productEventData, integrations).then(() => {
+    return freshchat.sendPrivateNote(
+      conversationId,
+      findAndReplacePlaceholders(actionValue as string, ruleConfig.placeholders as PlaceholdersMap),
+    );
+  });
 };
