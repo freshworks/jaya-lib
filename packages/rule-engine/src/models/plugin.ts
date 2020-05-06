@@ -28,9 +28,14 @@ export type PluginConditions = {
   ) => Promise<void>;
 };
 
+export type PluginDynamicPlaceholders = {
+  [key: string]: (productEventData: ProductEventData, integrations: Integrations) => Promise<string>;
+};
+
 export interface RulePlugin {
   actions?: PluginActions;
   conditions?: PluginConditions;
+  dynamicPlaceholders?: PluginDynamicPlaceholders;
   operators?: PluginOperators;
   placeholders?: PlaceholdersMap;
   triggerActions?: PluginTriggerActions;

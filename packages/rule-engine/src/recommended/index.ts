@@ -34,7 +34,6 @@ import actionAssignToAgent from './actions/assign-to-agent';
 import actionSendMessage from './actions/send-message';
 import actionSendPrivateNote from './actions/send-private-note';
 import actionUnassignThenReassignGroup from './actions/unassign-then-reassign-group';
-import actionSetAverageWaitTimeInPlaceholders from './actions/set-average-wait-time-in-placeholders';
 
 // Import all conditions
 import conditionMessageText from './conditions/message-text';
@@ -46,6 +45,9 @@ import conditionResponseDueType from './conditions/response-due-type';
 import conditionUserProperty from './conditions/user-property';
 import conditionBusinessHour from './conditions/business-hour';
 
+// Import all dynamic placeholders
+import dynamicPlaceholderAverageWaitTime from './dynamic-placeholders/average-wait-time';
+
 const recommendedPlugins: RulePlugin[] = [
   {
     actions: {
@@ -56,7 +58,6 @@ const recommendedPlugins: RulePlugin[] = [
       [ActionType.SendMessage]: actionSendMessage,
       [ActionType.SendPrivateNote]: actionSendPrivateNote,
       [ActionType.UnassignThenReassignGroup]: actionUnassignThenReassignGroup,
-      [ActionType.SetAverageWaitTime]: actionSetAverageWaitTimeInPlaceholders,
     },
     conditions: {
       [ConditionKey.MessageText]: conditionMessageText,
@@ -67,6 +68,9 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionKey.ResponseDueType]: conditionResponseDueType,
       [ConditionKey.UserProperty]: conditionUserProperty,
       [ConditionKey.BusinessHours]: conditionBusinessHour,
+    },
+    dynamicPlaceholders: {
+      'metrics.average_wait_time': dynamicPlaceholderAverageWaitTime,
     },
     operators: {
       [ConditionOperator.StartsWith]: operatorStartsWith,

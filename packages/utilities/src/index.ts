@@ -7,7 +7,25 @@ const replaceAll = (str: string, find: string, replace: string): string => {
   return str.replace(new RegExp(find, 'g'), replace);
 };
 
-const findMatchingPlaceholders = (message: string, placeholdersMap: PlaceholdersMap): null | string[] => {
+const findMatchingKeys = (message: string, placeholdersMap: { [key: string]: unknown }): null | string[] => {
+  // Construct regex string with placeholders like so.
+  // agent\\.first_name|agent\\.last_name|agent\\.id
+  const placeholdersRegExpString = Object.keys(placeholdersMap)
+    .map((placeholder) => {
+      return placeholder.replace('.', '\\.');
+    })
+    .join('|');
+
+  // Regex to find all placeholder keys in a given string with the format:
+  // {<placeholder>|<altValue}
+  // Eg. {metrics.average_wait_time}
+  const regExpString = `(?<=\\{)(${placeholdersRegExpString})(?=(?:\\|[\\w\\s]+)?\\})`;
+  const placeholdersRegExp = new RegExp(regExpString, 'gm');
+
+  return message.match(placeholdersRegExp);
+};
+
+const findMatchingPlaceholders = (message: string, placeholdersMap: { [key: string]: unknown }): null | string[] => {
   // Construct regex string with placeholders like so.
   // agent\\.first_name|agent\\.last_name|agent\\.id
   const placeholdersRegExpString = Object.keys(placeholdersMap)
@@ -56,4 +74,4 @@ const findAndReplacePlaceholders = (message: string, placeholdersMap: Placeholde
   return result;
 };
 
-export { findAndReplacePlaceholders, findMatchingPlaceholders, BusinessHour, isOutsideBusinessHours };
+export { findAndReplacePlaceholders, findMatchingPlaceholders, findMatchingKeys, BusinessHour, isOutsideBusinessHours };

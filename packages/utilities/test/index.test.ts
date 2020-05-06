@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import 'mocha';
-import { findAndReplacePlaceholders } from '../src/index';
+import { findAndReplacePlaceholders, findMatchingKeys } from '../src/index';
 
 describe('Utils test', () => {
   describe('findAndReplacePlaceholders', () => {
@@ -32,6 +32,12 @@ describe('Utils test', () => {
     it('should not replace {user.first_name} when the placeholder key is not available in placeholders', () => {
       const message = 'Welcome {user.first_name}';
       assert.equal(message, findAndReplacePlaceholders(message, {}));
+    });
+
+    it('should find matching keys', () => {
+      const message = '{user.first_name}, your wait time is {metrics.average_wait_time|nothing}';
+      const result = findMatchingKeys(message, { 'metrics.average_wait_time': true });
+      assert.equal(result && result[0], 'metrics.average_wait_time');
     });
   });
 });
