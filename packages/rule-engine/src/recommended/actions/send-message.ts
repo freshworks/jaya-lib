@@ -3,6 +3,7 @@ import Freshchat from '@freshworks-jaya/freshchat-api';
 import ruleConfig from '../../RuleConfig';
 import { findAndReplacePlaceholders, PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Integrations } from '../../models/rule-engine';
+import { Utils } from '../../Utils';
 
 export default (
   integrations: Integrations,
@@ -15,8 +16,10 @@ export default (
   const modelProperties = productEventData.conversation || productEventData.message;
   const conversationId = modelProperties.conversation_id;
 
-  return freshchat.sendNormalReplyText(
-    conversationId,
-    findAndReplacePlaceholders(actionValue as string, ruleConfig.placeholders as PlaceholdersMap),
-  );
+  return Utils.setupDynamicPlaceholders(actionValue as string, productEventData, integrations).then(() => {
+    return freshchat.sendNormalReplyText(
+      conversationId,
+      findAndReplacePlaceholders(actionValue as string, ruleConfig.placeholders as PlaceholdersMap),
+    );
+  });
 };

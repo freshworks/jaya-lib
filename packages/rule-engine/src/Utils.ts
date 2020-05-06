@@ -4,9 +4,55 @@ import usernameVerbs from './constants/username-verbs';
 import usernameNouns from './constants/username-nouns';
 import { Integrations } from './models/rule-engine';
 import axios from 'axios';
-import { BusinessHour } from '@freshworks-jaya/utilities';
+import { BusinessHour, findMatchingKeys, PlaceholdersMap } from '@freshworks-jaya/utilities';
+import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 
 export class Utils {
+  public static async setupDynamicPlaceholders(
+    text: string,
+    productEventData: ProductEventData,
+    integrations: Integrations,
+  ): Promise<void> {
+    // Step 1: Extract dynamic placeholder keys from text
+    // Step 2: Fetch data required by all matching keys
+    // Step 3: Setup key-value pairs in placeholders object using ruleConfig
+
+    if (ruleConfig.dynamicPlaceholders) {
+      // Step 1
+      // ------
+      // Will receive an array like ['metrics.average_wait_time']
+      const matchingDynamicPlaceholderKeys = findMatchingKeys(text, ruleConfig.dynamicPlaceholders);
+
+      // Step 2
+      // ------
+      if (matchingDynamicPlaceholderKeys) {
+        for (let i = 0, len = matchingDynamicPlaceholderKeys.length; i < len; i++) {
+          const dynamicPlaceholderKey = matchingDynamicPlaceholderKeys[i];
+          const placeholders: PlaceholdersMap = {};
+
+          if (ruleConfig.placeholders && ruleConfig.placeholders[dynamicPlaceholderKey]) {
+            continue;
+          }
+
+          try {
+            const value = await ruleConfig.dynamicPlaceholders[dynamicPlaceholderKey](productEventData, integrations);
+            placeholders[dynamicPlaceholderKey] = value;
+
+            // Step 3
+            // ------
+            ruleConfig.registerPlugins([
+              {
+                placeholders,
+              },
+            ]);
+          } catch (err) {}
+        }
+      }
+    }
+
+    return Promise.resolve();
+  }
+
   /**
    * Returns true if username is generated
    */
