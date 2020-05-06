@@ -12,6 +12,8 @@ import operatorSet from './operators/set';
 import operatorNotSet from './operators/not-set';
 import operatorWithinBusinessHrs from './operators/within-business-hours';
 import operatorOutsideBusinessHrs from './operators/outside-business-hours';
+import operatorLessThan from './operators/less-than';
+import operatorGreaterThan from './operators/greater-than';
 
 // Import all trigger actions
 import triggerActionConversationAgentAssign from './trigger-actions/conversation-agent-assign';
@@ -44,6 +46,7 @@ import conditionAssignedAgent from './conditions/assigned-agent';
 import conditionResponseDueType from './conditions/response-due-type';
 import conditionUserProperty from './conditions/user-property';
 import conditionBusinessHour from './conditions/business-hour';
+import conditionUnassignedCount from './conditions/unassigned-count';
 
 // Import all dynamic placeholders
 import dynamicPlaceholderAverageWaitTime from './dynamic-placeholders/average-wait-time';
@@ -67,6 +70,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionKey.AssignedGroup]: conditionAssignedGroup,
       [ConditionKey.ResponseDueType]: conditionResponseDueType,
       [ConditionKey.UserProperty]: conditionUserProperty,
+      [ConditionKey.UnassignedCount]: conditionUnassignedCount,
       [ConditionKey.BusinessHours]: conditionBusinessHour,
     },
     dynamicPlaceholders: {
@@ -78,6 +82,8 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionOperator.Contains]: operatorContains,
       [ConditionOperator.DoesNotContain]: operatorDoesNotContain,
       [ConditionOperator.Equals]: operatorEquals,
+      [ConditionOperator.GreaterThan]: operatorLessThan,
+      [ConditionOperator.LessThan]: operatorLessThan,
       [ConditionOperator.NotEquals]: operatorNotAtAllEquals,
       [ConditionOperator.Set]: operatorSet,
       [ConditionOperator.NotSet]: operatorNotSet,

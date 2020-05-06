@@ -44,6 +44,7 @@ export enum ConditionKey {
   MessageText = 'MESSAGE_TEXT',
   ResponseDueType = 'RESPONSE_DUE_TYPE',
   Status = 'STATUS',
+  UnassignedCount = 'UNASSIGNED_COUNT',
   UserProperty = 'USER_PROPERTY',
 }
 export enum ConditionOperator {
@@ -51,6 +52,8 @@ export enum ConditionOperator {
   DoesNotContain = 'DOES_NOT_CONTAIN',
   EndsWith = 'ENDS_WITH',
   Equals = 'EQUALS',
+  GreaterThan = 'GREATER_THAN',
+  LessThan = 'LESS_THAN',
   NotEquals = 'NOT_EQUALS',
   NotSet = 'NOT_SET',
   OutsideBusinessHours = 'OUTSIDE_BUSINESS_HOURS',
