@@ -15,7 +15,7 @@ export default (
   const modelProperties = productEventData.conversation || productEventData.message;
 
   return freshchat
-    .getUnassignedCountGivenGroupId(modelProperties.assigned_group_id || 'null', 0)
+    .getUnassignedCountGivenGroupId(modelProperties.assigned_group_id || 'null', 1)
     .then((unassignedCount) => {
       return Utils.evaluateCondition(
         condition.operator,
