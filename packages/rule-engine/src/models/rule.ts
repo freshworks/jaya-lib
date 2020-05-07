@@ -108,15 +108,10 @@ export interface UserConditionValue {
   propertyValue: string;
 }
 
-export interface QuickReplyValue {
-  message: string;
-  responses: string[];
-}
-
 export interface Condition {
   key: ConditionKey;
   operator: ConditionOperator;
-  value: string | UserConditionValue | ResponseDueTypeValue | QuickReplyValue;
+  value: string | UserConditionValue | ResponseDueTypeValue;
 }
 
 export interface Block {
