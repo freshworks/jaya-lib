@@ -82,7 +82,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionOperator.Contains]: operatorContains,
       [ConditionOperator.DoesNotContain]: operatorDoesNotContain,
       [ConditionOperator.Equals]: operatorEquals,
-      [ConditionOperator.GreaterThan]: operatorLessThan,
+      [ConditionOperator.GreaterThan]: operatorGreaterThan,
       [ConditionOperator.LessThan]: operatorLessThan,
       [ConditionOperator.NotEquals]: operatorNotAtAllEquals,
       [ConditionOperator.Set]: operatorSet,
