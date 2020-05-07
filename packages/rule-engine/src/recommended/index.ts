@@ -36,6 +36,7 @@ import actionAssignToAgent from './actions/assign-to-agent';
 import actionSendMessage from './actions/send-message';
 import actionSendPrivateNote from './actions/send-private-note';
 import actionUnassignThenReassignGroup from './actions/unassign-then-reassign-group';
+import actionSendQuickreply from './actions/send-quickreply';
 
 // Import all conditions
 import conditionMessageText from './conditions/message-text';
@@ -60,6 +61,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ActionType.AssignToAgent]: actionAssignToAgent,
       [ActionType.SendMessage]: actionSendMessage,
       [ActionType.SendPrivateNote]: actionSendPrivateNote,
+      [ActionType.SendQuickreply]: actionSendQuickreply,
       [ActionType.UnassignThenReassignGroup]: actionUnassignThenReassignGroup,
     },
     conditions: {

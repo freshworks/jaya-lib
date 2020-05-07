@@ -34,6 +34,7 @@ export enum ActionType {
   Resolve = 'RESOLVE',
   SendMessage = 'SEND_MESSAGE',
   SendPrivateNote = 'SEND_PRIVATE_NOTE',
+  SendQuickreply = 'SEND_QUICKREPLY',
   UnassignThenReassignGroup = 'UNASSIGN_THEN_REASSIGN_GROUP',
 }
 export enum ConditionKey {
@@ -107,10 +108,15 @@ export interface UserConditionValue {
   propertyValue: string;
 }
 
+export interface QuickReplyValue {
+  message: string;
+  responses: string[];
+}
+
 export interface Condition {
   key: ConditionKey;
   operator: ConditionOperator;
-  value: string | UserConditionValue | ResponseDueTypeValue;
+  value: string | UserConditionValue | ResponseDueTypeValue | QuickReplyValue;
 }
 
 export interface Block {
