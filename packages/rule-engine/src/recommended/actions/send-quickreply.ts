@@ -13,7 +13,7 @@ export default (
   const modelProperties = productEventData.conversation || productEventData.message;
   const conversationId = modelProperties.conversation_id;
   const quickreplyValue = actionValue as string;
-  const responses = quickreplyValue.split(',');
+  const responses = quickreplyValue.split(',').map((response) => response.trim());
 
   return freshchat.sendQuickreply(conversationId, ' ', responses);
 };
