@@ -2,6 +2,7 @@ import axios, { AxiosPromise } from 'axios';
 import { Message } from './interfaces/Message';
 import { Conversation, ConversationStatus } from './interfaces/Conversation';
 import { DashboardHistorical } from './interfaces/DashboardHistorical';
+import { ReplyPart } from './interfaces/ReplyPart';
 
 export * from './interfaces/Conversation';
 export * from './interfaces/Message';
@@ -123,6 +124,7 @@ export default class Freshchat {
     messageType: 'normal' | 'private',
     actorType?: 'agent' | 'bot',
     actorId?: string,
+    replyParts?: ReplyPart[],
   ): AxiosPromise<Message> {
     const postMessageApiUrl = `${this.apiUrl}/conversations/${conversationId}/messages`;
 
@@ -139,6 +141,7 @@ export default class Freshchat {
           },
         ],
         message_type: messageType,
+        reply_parts: replyParts,
       }),
       { headers: this.headers },
     );
@@ -186,6 +189,27 @@ export default class Freshchat {
           return err;
         });
     }
+  }
+
+  /**
+   * Send a quickreply message
+   */
+  sendQuickreply(conversationId: string, message: string, responses: string[]): AxiosPromise<Message> {
+    const quickReplyParts = responses.map((response) => {
+      return {
+        quick_reply_button: {
+          label: response,
+        },
+      };
+    });
+
+    return this.postMessage(conversationId, message, 'normal', 'bot', '', [
+      {
+        collection: {
+          sub_parts: quickReplyParts,
+        },
+      },
+    ]);
   }
 
   /**
