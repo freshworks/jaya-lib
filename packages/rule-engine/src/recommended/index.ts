@@ -14,6 +14,7 @@ import operatorWithinBusinessHrs from './operators/within-business-hours';
 import operatorOutsideBusinessHrs from './operators/outside-business-hours';
 import operatorLessThan from './operators/less-than';
 import operatorGreaterThan from './operators/greater-than';
+import operatorMatchRegex from './operators/match-regex';
 
 // Import all trigger actions
 import triggerActionConversationAgentAssign from './trigger-actions/conversation-agent-assign';
@@ -91,6 +92,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionOperator.NotSet]: operatorNotSet,
       [ConditionOperator.WithinBusinessHours]: operatorWithinBusinessHrs,
       [ConditionOperator.OutsideBusinessHours]: operatorOutsideBusinessHrs,
+      [ConditionOperator.MatchRegex]: operatorMatchRegex,
     },
     triggerActions: {
       [TriggerActionType.ConversationAgentAssign]: triggerActionConversationAgentAssign,

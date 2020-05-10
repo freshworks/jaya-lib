@@ -55,6 +55,7 @@ export enum ConditionOperator {
   Equals = 'EQUALS',
   GreaterThan = 'GREATER_THAN',
   LessThan = 'LESS_THAN',
+  MatchRegex = 'MATCH_REGEX',
   NotEquals = 'NOT_EQUALS',
   NotSet = 'NOT_SET',
   OutsideBusinessHours = 'OUTSIDE_BUSINESS_HOURS',

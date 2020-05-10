@@ -5,9 +5,27 @@ import usernameNouns from './constants/username-nouns';
 import { Integrations } from './models/rule-engine';
 import axios from 'axios';
 import { BusinessHour, findMatchingKeys, PlaceholdersMap } from '@freshworks-jaya/utilities';
-import { ProductEventData } from '@freshworks-jaya/marketplace-models';
+import { MessagePart, ProductEventData } from '@freshworks-jaya/marketplace-models';
 
 export class Utils {
+  /**
+   * Gets a concatenated string of messageParts with type 'text'.
+   */
+  public static getMessagePartsTextContent(messageParts: MessagePart[]): string {
+    let messageContent = '';
+
+    if (messageParts && messageParts.length) {
+      messageContent = messageParts
+        .filter((messagePart) => messagePart.text)
+        .map((messagePart) => {
+          return messagePart.text && messagePart.text.content;
+        })
+        .join(' ');
+    }
+
+    return messageContent;
+  }
+
   public static async setupDynamicPlaceholders(
     text: string,
     productEventData: ProductEventData,
