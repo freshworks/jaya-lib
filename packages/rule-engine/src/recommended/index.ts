@@ -38,6 +38,7 @@ import actionSendMessage from './actions/send-message';
 import actionSendPrivateNote from './actions/send-private-note';
 import actionUnassignThenReassignGroup from './actions/unassign-then-reassign-group';
 import actionSendQuickreply from './actions/send-quickreply';
+import actionUpdateUserProperty from './actions/update-user-property';
 
 // Import all conditions
 import conditionMessageText from './conditions/message-text';
@@ -64,6 +65,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ActionType.SendPrivateNote]: actionSendPrivateNote,
       [ActionType.SendQuickreply]: actionSendQuickreply,
       [ActionType.UnassignThenReassignGroup]: actionUnassignThenReassignGroup,
+      [ActionType.UpdateUserProperty]: actionUpdateUserProperty,
     },
     conditions: {
       [ConditionKey.MessageText]: conditionMessageText,
