@@ -38,7 +38,7 @@ export class RuleProcessor {
 
     switch (block.matchType) {
       case MatchType.All:
-        Promise.all(
+        return Promise.all(
           block.conditions.map((condition) => {
             return this.isConditionMatching(productEventData, condition, integrations);
           }),
@@ -123,7 +123,7 @@ export class RuleProcessor {
 
     switch (rule.matchType) {
       case MatchType.All:
-        Promise.all(
+        return Promise.all(
           rule.blocks.map((block) => {
             return this.isBlockMatching(productEventData, block, integrations);
           }),
