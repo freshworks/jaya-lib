@@ -35,8 +35,8 @@ export class ActionExecutor {
     const { channel } = productEventData.associations;
     const group = productEventData.associations.group || ({} as Group);
     const conversation = productEventData.conversation || productEventData.message;
-    const messageText =
-      conversation.messages && Utils.getMessagePartsTextContent(conversation.messages[0].message_parts);
+    // const messageText =
+    //   conversation.messages && Utils.getMessagePartsTextContent(conversation.messages[0].message_parts);
 
     // Register static placeholders
     const placeholders = {
@@ -54,7 +54,7 @@ export class ActionExecutor {
       'group.description': group.description,
       'group.id': group.id,
       'group.name': group.name,
-      'message.text': messageText,
+      // 'message.text': messageText,
       'user.email': user.email,
       'user.first_name': user.first_name,
       'user.id': user.id,
