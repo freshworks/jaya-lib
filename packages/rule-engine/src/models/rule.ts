@@ -36,6 +36,7 @@ export enum ActionType {
   SendPrivateNote = 'SEND_PRIVATE_NOTE',
   SendQuickreply = 'SEND_QUICKREPLY',
   UnassignThenReassignGroup = 'UNASSIGN_THEN_REASSIGN_GROUP',
+  UpdateUserProperty = 'UPDATE_USER_PROPERTY',
 }
 export enum ConditionKey {
   AssignedAgent = 'ASSIGNED_AGENT',

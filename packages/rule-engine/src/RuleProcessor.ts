@@ -38,13 +38,17 @@ export class RuleProcessor {
 
     switch (block.matchType) {
       case MatchType.All:
-        Promise.all(
+        return Promise.all(
           block.conditions.map((condition) => {
             return this.isConditionMatching(productEventData, condition, integrations);
           }),
-        ).then(() => {
-          return Promise.resolve();
-        });
+        )
+          .then(() => {
+            return Promise.resolve();
+          })
+          .catch(() => {
+            return Promise.reject('Some conditions did not match');
+          });
       case MatchType.Any:
         return Promise.any(
           block.conditions.map((condition) => {
@@ -119,13 +123,17 @@ export class RuleProcessor {
 
     switch (rule.matchType) {
       case MatchType.All:
-        Promise.all(
+        return Promise.all(
           rule.blocks.map((block) => {
             return this.isBlockMatching(productEventData, block, integrations);
           }),
-        ).then(() => {
-          return Promise.resolve();
-        });
+        )
+          .then(() => {
+            return Promise.resolve();
+          })
+          .catch(() => {
+            return Promise.reject('Some blocks did not match');
+          });
       case MatchType.Any:
         return Promise.any(
           rule.blocks.map((block) => {
