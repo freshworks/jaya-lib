@@ -7,6 +7,7 @@ import { ReplyPart } from './interfaces/ReplyPart';
 export * from './interfaces/Conversation';
 export * from './interfaces/Message';
 export * from './interfaces/DashboardHistorical';
+export * from './interfaces/User';
 
 export default class Freshchat {
   private get headers(): {
@@ -217,5 +218,24 @@ export default class Freshchat {
    */
   sendNormalReplyText(conversationId: string, message: string, agentId?: string): AxiosPromise<Message> {
     return this.postMessage(conversationId, message, 'normal', agentId ? 'agent' : 'bot', agentId);
+  }
+
+  /** Update User API */
+  updateUser(
+    userId: string,
+    properties: {
+      email?: string;
+      first_name?: string;
+      last_name?: string;
+      phone?: string;
+      properties?: {
+        name: string;
+        value: string;
+      }[];
+    },
+  ): AxiosPromise<''> {
+    const updateUserApiUrl = `${this.apiUrl}/users/${userId}`;
+
+    return axios.put(updateUserApiUrl, JSON.stringify(properties), { headers: this.headers });
   }
 }
