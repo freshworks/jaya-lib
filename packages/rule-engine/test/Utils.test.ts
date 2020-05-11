@@ -50,12 +50,6 @@ describe('Utils test', () => {
       assert.equal('one', Utils.convertOperand('one'));
     });
 
-    it('should lowercase the string', () => {
-      assert.equal('one', Utils.convertOperand('One'));
-      assert.equal('one', Utils.convertOperand('onE'));
-      assert.equal('one', Utils.convertOperand('ONE'));
-    });
-
     it('should return an empty string when param is not string', () => {
       assert.equal('', Utils.convertOperand((undefined as any) as string));
     });

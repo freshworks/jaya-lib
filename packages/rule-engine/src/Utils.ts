@@ -89,7 +89,7 @@ export class Utils {
    * Converts operand to string.
    */
   public static convertOperand(operand: string): string {
-    let retVal: string = operand && operand.toString().trim().toLowerCase();
+    let retVal: string = operand && operand.toString().trim();
 
     retVal = typeof retVal === 'string' ? retVal : '';
     return retVal;
