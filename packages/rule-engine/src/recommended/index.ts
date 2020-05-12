@@ -39,6 +39,9 @@ import actionSendPrivateNote from './actions/send-private-note';
 import actionUnassignThenReassignGroup from './actions/unassign-then-reassign-group';
 import actionSendQuickreply from './actions/send-quickreply';
 import actionUpdateUserProperty from './actions/update-user-property';
+import actionUpdateUserEmail from './actions/update-user-email';
+import actionUpdateUserPhone from './actions/update-user-phone';
+import actionUpdateUserName from './actions/update-user-name';
 
 // Import all conditions
 import conditionMessageText from './conditions/message-text';
@@ -50,6 +53,9 @@ import conditionResponseDueType from './conditions/response-due-type';
 import conditionUserProperty from './conditions/user-property';
 import conditionBusinessHour from './conditions/business-hour';
 import conditionUnassignedCount from './conditions/unassigned-count';
+import conditionUserName from './conditions/user-name';
+import conditionUserEmail from './conditions/user-email';
+import conditionUserPhone from './conditions/user-phone';
 
 // Import all dynamic placeholders
 import dynamicPlaceholderAverageWaitTime from './dynamic-placeholders/average-wait-time';
@@ -66,6 +72,9 @@ const recommendedPlugins: RulePlugin[] = [
       [ActionType.SendQuickreply]: actionSendQuickreply,
       [ActionType.UnassignThenReassignGroup]: actionUnassignThenReassignGroup,
       [ActionType.UpdateUserProperty]: actionUpdateUserProperty,
+      [ActionType.UpdateUserEmail]: actionUpdateUserEmail,
+      [ActionType.UpdateUserName]: actionUpdateUserName,
+      [ActionType.UpdateUserPhone]: actionUpdateUserPhone,
     },
     conditions: {
       [ConditionKey.MessageText]: conditionMessageText,
@@ -77,6 +86,9 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionKey.UserProperty]: conditionUserProperty,
       [ConditionKey.UnassignedCount]: conditionUnassignedCount,
       [ConditionKey.BusinessHours]: conditionBusinessHour,
+      [ConditionKey.UserName]: conditionUserName,
+      [ConditionKey.UserEmail]: conditionUserEmail,
+      [ConditionKey.UserPhone]: conditionUserPhone,
     },
     dynamicPlaceholders: {
       'metrics.average_wait_time': dynamicPlaceholderAverageWaitTime,

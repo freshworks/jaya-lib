@@ -36,6 +36,9 @@ export enum ActionType {
   SendPrivateNote = 'SEND_PRIVATE_NOTE',
   SendQuickreply = 'SEND_QUICKREPLY',
   UnassignThenReassignGroup = 'UNASSIGN_THEN_REASSIGN_GROUP',
+  UpdateUserEmail = 'UPDATE_USER_EMAIL',
+  UpdateUserName = 'UPDATE_USER_NAME',
+  UpdateUserPhone = 'UPDATE_USER_PHONE',
   UpdateUserProperty = 'UPDATE_USER_PROPERTY',
 }
 export enum ConditionKey {
@@ -47,6 +50,9 @@ export enum ConditionKey {
   ResponseDueType = 'RESPONSE_DUE_TYPE',
   Status = 'STATUS',
   UnassignedCount = 'UNASSIGNED_COUNT',
+  UserEmail = 'USER_EMAIL',
+  UserName = 'USER_NAME',
+  UserPhone = 'USER_PHONE',
   UserProperty = 'USER_PROPERTY',
 }
 export enum ConditionOperator {
