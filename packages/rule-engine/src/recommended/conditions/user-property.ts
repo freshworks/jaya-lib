@@ -15,11 +15,12 @@ const evaluateUserPropertyCondition = (
   const matchedProperty =
     userObj.properties && userObj.properties.find((property) => property.name === conditionValue.propertyKey);
 
-  if (matchedProperty) {
-    return Utils.evaluateCondition(operator, matchedProperty.value, conditionValue.propertyValue, integrations);
-  }
-
-  return Promise.reject();
+  return Utils.evaluateCondition(
+    operator,
+    (matchedProperty && matchedProperty.value) || '',
+    conditionValue.propertyValue,
+    integrations,
+  );
 };
 
 export default (
