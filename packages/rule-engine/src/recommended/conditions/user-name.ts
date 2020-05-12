@@ -8,10 +8,11 @@ export default (
   productEventData: ProductEventData,
   integrations: Integrations,
 ): Promise<void> => {
-  return Utils.evaluateCondition(
-    condition.operator,
-    productEventData.associations.user.first_name ? productEventData.associations.user.first_name : '',
-    condition.value as string,
-    integrations,
-  );
+  const userFirstName = productEventData.associations.user.first_name
+    ? productEventData.associations.user.first_name
+    : '';
+  const userLastName = productEventData.associations.user.last_name ? productEventData.associations.user.last_name : '';
+  const userName = `${userFirstName} ${userLastName}`.trim();
+
+  return Utils.evaluateCondition(condition.operator, userName, condition.value as string, integrations);
 };
