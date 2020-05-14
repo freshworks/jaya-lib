@@ -6,6 +6,12 @@ export interface MessagePart {
   collection?: {
     sub_parts: MessagePart[];
   };
+  file?: {
+    content_type: string;
+    file_size_in_bytes: number;
+    name: string;
+    url: string;
+  };
   image?: { url: string };
   quick_reply_button?: {
     custom_reply_text?: string;
