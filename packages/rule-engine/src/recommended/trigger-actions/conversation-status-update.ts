@@ -1,8 +1,13 @@
-import { Event, ProductEventData, ChangedStatus } from '@freshworks-jaya/marketplace-models';
+import {
+  Event,
+  ProductEventData,
+  ChangedStatusNew,
+  ChangedStatusDeprecated,
+} from '@freshworks-jaya/marketplace-models';
 import { TriggerAction, ConversationStatusChangeValue, ConversationStatusChange } from '../../models/rule';
 
 const isChangeMatching = (
-  changedStatus: ChangedStatus,
+  changedStatus: ChangedStatusNew | ChangedStatusDeprecated,
   statusChangeValue: ConversationStatusChangeValue | null,
 ): boolean => {
   if (statusChangeValue === ConversationStatusChangeValue.Any) {
@@ -10,9 +15,12 @@ const isChangeMatching = (
   }
 
   return (
-    (statusChangeValue === ConversationStatusChangeValue.Resolved && changedStatus === ChangedStatus.Resolve) ||
-    (statusChangeValue === ConversationStatusChangeValue.New && changedStatus === ChangedStatus.New) ||
-    (statusChangeValue === ConversationStatusChangeValue.Assigned && changedStatus === ChangedStatus.Assign)
+    (statusChangeValue === ConversationStatusChangeValue.Resolved &&
+      (changedStatus === ChangedStatusNew.Resolved || changedStatus === ChangedStatusDeprecated.Resolve)) ||
+    (statusChangeValue === ConversationStatusChangeValue.New &&
+      (changedStatus === ChangedStatusNew.New || changedStatus === ChangedStatusDeprecated.New)) ||
+    (statusChangeValue === ConversationStatusChangeValue.Assigned &&
+      (changedStatus === ChangedStatusNew.Assigned || changedStatus === ChangedStatusDeprecated.Assign))
   );
 };
 
