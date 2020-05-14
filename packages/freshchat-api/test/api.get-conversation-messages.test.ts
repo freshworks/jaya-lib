@@ -18,17 +18,6 @@ describe('api.get-conversation-messages', () => {
    *   2 messages in first page containing a link
    *   1st message is normal; 2nd message is resolve
    */
-  /**
-   * Test Case 5: fetchUntilLastResolve: true
-   *   2 messages without link
-   *   1st message is resolve; 2nd message is normal
-   */
-  /**
-   * Test Case 6: fetchUntilLastResolve: true
-   *   2 messages in first page without a link
-   *   Both messages are normal
-   *   2nd message contains meta_data isReopened: true
-   */
 
   describe('getConversationMessages message without link', () => {
     let res: GetMessagesResponse;
@@ -222,7 +211,7 @@ describe('api.get-conversation-messages', () => {
       nock.restore();
     });
 
-    // Test Case 1
+    // Test Case 4
     it('should sent GET reqeust to /conversations/1/messages', () => {
       freshchat.getConversationMessages('1', { fetchUntilLastResolve: true }).then((messages) => {
         assert.equal(messages[0].id, res.messages[0].id);
