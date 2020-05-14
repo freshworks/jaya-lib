@@ -1,5 +1,5 @@
 import axios, { AxiosPromise } from 'axios';
-import { Message } from './interfaces/Message';
+import { Message, GetMessagesResponse } from './interfaces/Message';
 import { Conversation, ConversationStatus } from './interfaces/Conversation';
 import { DashboardHistorical } from './interfaces/DashboardHistorical';
 import { ReplyPart } from './interfaces/ReplyPart';
@@ -145,6 +145,61 @@ export default class Freshchat {
         reply_parts: replyParts,
       }),
       { headers: this.headers },
+    );
+  }
+
+  // eslint-disable-next-line complexity
+  private async _getConversationMessagesByUrl(
+    urlPath: string,
+    result: Message[],
+    options?: { fetchUntilLastResolve?: boolean },
+  ): Promise<Message[]> {
+    // this.apiUrl for US is https://api.freshchat.com/v2
+    // We want to truncate the last 3 characters so that we are left with https://api.freshchat.com
+    const apiUrlDomain = this.apiUrl.slice(0, -3);
+
+    try {
+      const { data }: { data: GetMessagesResponse } = await axios.get(`${apiUrlDomain}${urlPath}`, {
+        headers: this.headers,
+      });
+
+      let isStopFurtherFetch = false;
+
+      for (let i = 0, messagesLen = data.messages.length; i < messagesLen; i++) {
+        const currentMessage = data.messages[i];
+
+        if (
+          options &&
+          options.fetchUntilLastResolve &&
+          result.length &&
+          currentMessage.meta_data &&
+          currentMessage.meta_data.isResolved
+        ) {
+          isStopFurtherFetch = true;
+          break;
+        }
+
+        result.push(currentMessage);
+      }
+
+      if (data.link && !isStopFurtherFetch) {
+        return this._getConversationMessagesByUrl(data.link.href, result, options);
+      } else {
+        return Promise.resolve(result);
+      }
+    } catch (err) {
+      return Promise.reject('Error in fetching conversations');
+    }
+  }
+
+  /**
+   * Calls Freshchat conversation api to fetch all messages in a particular conversation.
+   */
+  getConversationMessages(conversationId: string, options?: { fetchUntilLastResolve?: boolean }): Promise<Message[]> {
+    return this._getConversationMessagesByUrl(
+      `/v2/conversations/${conversationId}/messages?page=1&items_per_page=50`,
+      [] as Message[],
+      options,
     );
   }
 

@@ -1,6 +1,19 @@
 import { MessagePart } from './MessagePart';
 import { ReplyPart } from './ReplyPart';
 
+export enum MessageSource {
+  Api = 'api',
+  FbMessenger = 'fb_messenger',
+  FbNative = 'fb_native',
+  Freshdesk = 'freshdesk',
+  Invalid = 'invalid',
+  Mobile = 'mobile',
+  Smooch = 'smooch',
+  System = 'system',
+  Web = 'web',
+  Zendesk = 'zendesk',
+}
+
 export enum ActorType {
   Agent = 'agent',
   System = 'system',
@@ -21,7 +34,31 @@ export interface Message {
   conversation_id: string;
   created_time: string;
   id: string;
+  in_reply_to?: {
+    message_id: string;
+  };
   message_parts: MessagePart[];
+  message_source: MessageSource;
   message_type: MessageType;
-  reply_parts: ReplyPart[];
+  meta_data?: {
+    isReopen?: boolean;
+    isResolved?: boolean;
+  };
+  reply_parts?: ReplyPart[];
+  stepId?: string;
+}
+
+export interface MessagesLink {
+  deprecation?: string;
+  href: string;
+  hreflang?: string;
+  media?: string;
+  rel?: string;
+  title?: string;
+  type?: string;
+}
+
+export interface GetMessagesResponse {
+  link?: MessagesLink;
+  messages: Message[];
 }

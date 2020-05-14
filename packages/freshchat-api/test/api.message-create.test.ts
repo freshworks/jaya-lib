@@ -1,4 +1,4 @@
-import Freshchat, { Message, ActorType, MessageType } from '../src/index';
+import Freshchat, { Message, ActorType, MessageType, MessageSource } from '../src/index';
 import nock from 'nock';
 import 'mocha';
 import chai from 'chai';
@@ -30,6 +30,7 @@ describe('api.message-create', () => {
             },
           },
         ],
+        message_source: MessageSource.Web,
         message_type: MessageType.Normal,
         reply_parts: [],
       };
