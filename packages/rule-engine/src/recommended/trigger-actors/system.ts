@@ -9,9 +9,6 @@ import { TriggerActor, TriggerActorCauseDeprecated, TriggerActorCauseNew } from 
 const actorCauseDictDeprecated: {
   [key in TriggerActorCauseDeprecated]: (actorSubType: ActorSubTypeDeprecated) => boolean;
 } = {
-  [TriggerActorCauseDeprecated.Agent]: (actorSubType: ActorSubTypeDeprecated): boolean => {
-    return actorSubType === ActorSubTypeDeprecated.Agent;
-  },
   [TriggerActorCauseDeprecated.AgentGroupMapping]: (actorSubType: ActorSubTypeDeprecated): boolean => {
     return actorSubType === ActorSubTypeDeprecated.AgentGroupMapping;
   },
@@ -32,9 +29,6 @@ const actorCauseDictDeprecated: {
 const actorCauseDict: {
   [key in TriggerActorCauseNew]: (actorSubEntity: ActorSubEntity) => boolean;
 } = {
-  [TriggerActorCauseNew.Agent]: (actorSubType: ActorSubEntity): boolean => {
-    return actorSubType === ActorSubEntity.Agent;
-  },
   [TriggerActorCauseNew.AgentGroupMapping]: (actorSubType: ActorSubEntity): boolean => {
     return actorSubType === ActorSubEntity.AgentGroupMapping;
   },

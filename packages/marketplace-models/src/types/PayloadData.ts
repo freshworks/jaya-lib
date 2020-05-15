@@ -30,7 +30,6 @@ export enum ResponseDueType {
 }
 
 export enum ActorSubTypeDeprecated {
-  Agent = 'agent',
   AgentGroupMapping = 'agent_group_mapping',
   AssignmentRule = 'assignment_rule',
   AutoResolve = 'auto_resolve',
@@ -39,7 +38,6 @@ export enum ActorSubTypeDeprecated {
 }
 
 export enum ActorSubEntity {
-  Agent = 'agent',
   AgentGroupMapping = 'agent_group_mapping',
   AssignmentRule = 'assignment_rule',
   AutoResolve = 'auto_resolve',

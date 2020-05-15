@@ -9,7 +9,6 @@ export enum TriggerActorType {
 }
 
 export enum TriggerActorCauseDeprecated {
-  Agent = 'AGENT',
   AgentGroupMapping = 'AGENT_GROUP_MAPPING',
   AssignmentRule = 'ASSIGNMENT_RULE',
   AutoResolve = 'AUTO_RESOLVE',
@@ -18,7 +17,6 @@ export enum TriggerActorCauseDeprecated {
 }
 
 export enum TriggerActorCauseNew {
-  Agent = 'AGENT',
   AgentGroupMapping = 'AGENT_GROUP_MAPPING',
   AssignmentRule = 'ASSIGNMENT_RULE',
   AutoResolve = 'AUTO_RESOLVE',
