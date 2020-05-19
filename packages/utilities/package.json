@@ -36,10 +36,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@types/handlebars-helpers": "^0.5.2",
     "dayjs": "^1.8.23",
-    "handlebars": "^4.7.6",
-    "handlebars-helpers": "^0.10.0",
     "timezone-support": "^2.0.2"
   }
 }

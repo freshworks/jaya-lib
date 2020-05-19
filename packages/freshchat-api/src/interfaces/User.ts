@@ -1,6 +1,6 @@
 export interface User {
   avatar?: {
-    url: string;
+    url?: string;
   };
   created_time: string;
   email?: string;
@@ -12,7 +12,7 @@ export interface User {
     name: string;
     value: string;
   }[];
-  reference_id: string;
+  reference_id?: string;
   social_profiles?: {
     id: string;
     type: string;
