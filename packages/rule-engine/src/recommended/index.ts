@@ -59,6 +59,7 @@ import conditionUserPhone from './conditions/user-phone';
 
 // Import all dynamic placeholders
 import dynamicPlaceholderAverageWaitTime from './dynamic-placeholders/average-wait-time';
+import dynamicPlaceholderTranscript from './dynamic-placeholders/transcript';
 
 const recommendedPlugins: RulePlugin[] = [
   {
@@ -91,6 +92,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionKey.UserPhone]: conditionUserPhone,
     },
     dynamicPlaceholders: {
+      'conversation.transcript': dynamicPlaceholderTranscript,
       'metrics.average_wait_time': dynamicPlaceholderAverageWaitTime,
     },
     operators: {
