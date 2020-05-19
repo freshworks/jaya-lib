@@ -21,12 +21,12 @@ export class Utils {
     return Array.from(new Set(actorIds));
   };
 
-  public static extractUserId = (messages: Message[]): string | null => {
+  public static extractUserId = (messages: Message[]): string | undefined => {
     const userMessage = messages.find(
       (message) => message.actor_type === ActorType.User && message.message_type === MessageType.Normal,
     );
 
-    return userMessage ? userMessage.actor_id : null;
+    return userMessage && userMessage.actor_id;
   };
 
   public static generateConversationHtml = (messages: Message[], agents: Agent[], user: User): string => {
