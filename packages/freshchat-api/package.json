@@ -1,6 +1,6 @@
 {
   "name": "@freshworks-jaya/freshchat-api",
-  "version": "0.7.0-alpha.0",
+  "version": "0.7.0-alpha.1",
   "description": "Provides simple interface for accessing Freshchat's public APIs",
   "repository": "git@github.com:freshdesk/jaya-lib.git",
   "main": "lib/index.js",
@@ -13,7 +13,7 @@
     "watch": "tsc --watch --incremental",
     "coverage": "codecov",
     "test": "nyc --reporter=lcov mocha",
-    "build": "tsc",
+    "build": "tsc && cpx ./src/conversation.hbs ./lib",
     "format": "prettier --write \"src/**/*.ts\"",
     "build:check": "tsc --noEmit",
     "lint": "tsc --noEmit && eslint '*/**/*.ts' --quiet --fix",
@@ -38,7 +38,8 @@
     "nyc": "^15.0.1",
     "source-map-support": "^0.5.16",
     "ts-node": "^8.8.1",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "cpx": "^1.5.0"
   },
   "dependencies": {
     "axios": "^0.19.2",
