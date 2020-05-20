@@ -29,23 +29,23 @@ const actorCauseDictDeprecated: {
 const actorCauseDict: {
   [key in TriggerActorCauseNew]: (actorSubEntity: ActorSubEntity) => boolean;
 } = {
-  [TriggerActorCauseNew.AgentGroupMapping]: (actorSubType: ActorSubEntity): boolean => {
-    return actorSubType === ActorSubEntity.AgentGroupMapping;
+  [TriggerActorCauseNew.AgentGroupMapping]: (actorSubEntity: ActorSubEntity): boolean => {
+    return actorSubEntity === ActorSubEntity.AgentGroupMapping;
   },
-  [TriggerActorCauseNew.AssignmentRule]: (actorSubType: ActorSubEntity): boolean => {
-    return actorSubType === ActorSubEntity.AssignmentRule;
+  [TriggerActorCauseNew.AssignmentRule]: (actorSubEntity: ActorSubEntity): boolean => {
+    return actorSubEntity === ActorSubEntity.AssignmentRule;
   },
-  [TriggerActorCauseNew.AutoResolve]: (actorSubType: ActorSubEntity): boolean => {
-    return actorSubType === ActorSubEntity.AutoResolve;
+  [TriggerActorCauseNew.AutoResolve]: (actorSubEntity: ActorSubEntity): boolean => {
+    return actorSubEntity === ActorSubEntity.AutoResolve;
   },
-  [TriggerActorCauseNew.ChannelGroupMapping]: (actorSubType: ActorSubEntity): boolean => {
-    return actorSubType === ActorSubEntity.ChannelGroupMapping;
+  [TriggerActorCauseNew.ChannelGroupMapping]: (actorSubEntity: ActorSubEntity): boolean => {
+    return actorSubEntity === ActorSubEntity.ChannelGroupMapping;
   },
-  [TriggerActorCauseNew.IntelliAssign]: (actorSubType: ActorSubEntity): boolean => {
-    return actorSubType === ActorSubEntity.Intelliassign;
+  [TriggerActorCauseNew.IntelliAssign]: (actorSubEntity: ActorSubEntity): boolean => {
+    return actorSubEntity === ActorSubEntity.Intelliassign;
   },
-  [TriggerActorCauseNew.User]: (actorSubType: ActorSubEntity): boolean => {
-    return actorSubType === ActorSubEntity.UserMessage;
+  [TriggerActorCauseNew.User]: (actorSubEntity: ActorSubEntity): boolean => {
+    return actorSubEntity === ActorSubEntity.UserMessage;
   },
 };
 
