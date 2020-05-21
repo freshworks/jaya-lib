@@ -30,6 +30,7 @@ export enum TriggerActionType {
 export enum ActionType {
   AssignToAgent = 'ASSIGN_TO_AGENT',
   AssignToGroup = 'ASSIGN_TO_GROUP',
+  CreateFreshdeskTicket = 'CREATE_FRESHDESK_TICKET',
   ReOpen = 'REOPEN',
   Resolve = 'RESOLVE',
   SendMessage = 'SEND_MESSAGE',

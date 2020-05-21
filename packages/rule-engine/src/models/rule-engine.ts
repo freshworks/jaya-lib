@@ -7,6 +7,7 @@ export interface RuleEngineOptions {
 export interface Integrations {
   freshchatv1: ProductCredentials;
   freshchatv2: ProductCredentials;
+  freshdesk?: ProductCredentials;
 }
 
 export interface ProductCredentials {
