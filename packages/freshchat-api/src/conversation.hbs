@@ -19,7 +19,7 @@
                       {{/if}}
                     </div>
                     <img 
-                      src=
+                      src="
                         {{#if message.actor_id}}
                           {{#with (lookup ../agents message.actor_id) as | agent |}}
                             {{#if agent.avatar.url}}
@@ -30,8 +30,7 @@
                           {{/with}}
                         {{else}}
                           https://images.freshchat.com/30x30/fresh-chat-names/anonymous.png
-                        {{/if}}
-                        
+                        {{/if}}"
                       style="width: 30px;height: 30px;border-radius: 6px 50% 50% 50%;margin-left:5px;float:right;clear:right">
                     <div style="float: right;line-height: 20.4px;border-radius: 20px 4px 20px 20px;background-color: #ffffff;max-width: 300px;padding: 12px;">
                       {{#each message.message_parts as | message_part |}}
@@ -40,7 +39,7 @@
                             {{{message_part.text.content}}}
                           {{/if}}
                           {{#if message_part.image}}
-                            <img src={{message_part.image.url}}></img>
+                            <img src="{{message_part.image.url}}" style="max-height: 300px;max-width: 300px; border-radius: 4px;">
                           {{/if}}
                           {{#if message_part.file}}
                             Attached file: {{message_part.file.name}}
@@ -49,7 +48,7 @@
                       {{/each}}
                     </div>
                     <div style="color: #999999;font-size: 11px;clear: right;">
-                      {{date message.created_time "hh:mm A, Do MMM Z"}}
+                      {{date message.created_time "hh:mm A, Do MMM [(GMT)]"}}
                     </div>
                   </div>
                 </td>
@@ -67,12 +66,12 @@
                     {{/if}}
                   </div>
                   <img 
-                    src=
+                    src="
                       {{#if ../user.avatar.url}}
                         {{../user.avatar.url}}
                       {{else}}
                         https://images.freshchat.com/30x30/fresh-chat-names/anonymous.png
-                      {{/if}}
+                      {{/if}}"
                     style="width: 30px;height: 30px;border-radius: 50% 6px 50% 50%;float:left;margin-right: 3px;">
                   <div style="border-radius: 4px 20px 20px;line-height: 21px;background: #a8ddfd;max-width: 300px;padding: 12px;float: left;">
                     {{#each message.message_parts as | message_part |}}
@@ -81,7 +80,7 @@
                           {{{message_part.text.content}}}
                         {{/if}}
                         {{#if message_part.image}}
-                          <img src={{message_part.image.url}}></img>
+                          <img src="{{message_part.image.url}}" style="max-height: 300px;max-width: 300px; border-radius: 4px;">
                         {{/if}}
                         {{#if message_part.file}}
                           Attached file: {{message_part.file.name}}
@@ -90,7 +89,7 @@
                     {{/each}}
                   </div>
                   <div style="color: #999999; font-size: 11px; clear: left;margin-left: 33px;">
-                    {{date message.created_time "hh:mm A, Do MMM Z"}}
+                    {{date message.created_time "hh:mm A, Do MMM [(GMT)]"}}
                   </div>
                 </td>
               <tr>
