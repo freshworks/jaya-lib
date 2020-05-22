@@ -12,8 +12,6 @@ export default (
 ): Promise<unknown> => {
   const freshdeskApiUrl = integrations.freshdesk && integrations.freshdesk.url;
   const freshdeskApiToken = integrations.freshdesk && integrations.freshdesk.token;
-  const modelProperties = productEventData.conversation || productEventData.message;
-  const conversationId = modelProperties.conversation_id;
 
   let ticketSubject = 'Conversation with {user.first_name|user}';
   let ticketDescription = '{transcript.since_last_resolve}';
@@ -52,6 +50,7 @@ export default (
           const freshdeskTicketId = response.data.id;
           const placeholders = {
             'freshdesk.ticket_id': freshdeskTicketId,
+            'freshdesk.ticket_url': `${freshdeskApiUrl}/helpdesk/tickets/${freshdeskTicketId}`,
           };
 
           ruleConfig.registerPlugins([

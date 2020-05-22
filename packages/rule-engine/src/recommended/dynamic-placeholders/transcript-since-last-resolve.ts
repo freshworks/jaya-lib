@@ -8,5 +8,5 @@ export default (productEventData: ProductEventData, integrations: Integrations):
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
   const modelProperties = productEventData.conversation || productEventData.message;
 
-  return freshchat.getConversationHtml(modelProperties.conversation_id, { fetchUntilLastResolve: false });
+  return freshchat.getConversationHtml(modelProperties.conversation_id, { fetchUntilLastResolve: true });
 };
