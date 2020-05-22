@@ -46,19 +46,21 @@ export default (
         'Content-Type': 'application/json',
       };
 
-      return axios.post(`${freshdeskApiUrl}/api/v2/tickets`, JSON.stringify(body), { headers }).then((response) => {
-        const freshdeskTicketId = response.data.id;
-        const placeholders = {
-          'freshdesk.ticket_id': freshdeskTicketId,
-        };
+      return axios
+        .post(`${freshdeskApiUrl}/api/channel/v2/tickets`, JSON.stringify(body), { headers })
+        .then((response) => {
+          const freshdeskTicketId = response.data.id;
+          const placeholders = {
+            'freshdesk.ticket_id': freshdeskTicketId,
+          };
 
-        ruleConfig.registerPlugins([
-          {
-            placeholders,
-          },
-        ]);
-        return Promise.resolve();
-      });
+          ruleConfig.registerPlugins([
+            {
+              placeholders,
+            },
+          ]);
+          return Promise.resolve();
+        });
     },
   );
 };
