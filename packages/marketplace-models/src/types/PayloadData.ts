@@ -3,10 +3,15 @@ export enum ConversationStatus {
   New = 'new',
   Resolved = 'resolved',
 }
-export enum ChangedStatus {
+export enum ChangedStatusDeprecated {
   Assign = 'ASSIGN',
   New = 'NEW',
   Resolve = 'RESOLVE',
+}
+export enum ChangedStatusNew {
+  Assigned = 'assigned',
+  New = 'new',
+  Resolved = 'resolved',
 }
 export enum MessageType {
   Normal = 'normal',
@@ -24,14 +29,23 @@ export enum ResponseDueType {
   ResponseDue = 'RESPONSE_DUE',
 }
 
-export enum ActorSubType {
-  Agent = 'agent',
+export enum ActorSubTypeDeprecated {
   AgentGroupMapping = 'agent_group_mapping',
   AssignmentRule = 'assignment_rule',
   AutoResolve = 'auto_resolve',
-  Bot = 'bot',
   Intelliassign = 'intelli_assign',
   User = 'user',
+}
+
+export enum ActorSubEntity {
+  AgentGroupMapping = 'agent_group_mapping',
+  AssignmentRule = 'assignment_rule',
+  AutoResolve = 'auto_resolve',
+  ChannelGroupMapping = 'channel_group_mapping',
+  FreddyBot = 'freddy_bot',
+  HallwayBot = 'hallway_bot',
+  Intelliassign = 'intelliassign',
+  UserMessage = 'user_message',
 }
 
 export interface Group {
@@ -107,7 +121,8 @@ export interface Actor {
   id: string;
   last_name: string;
   phone: string;
-  sub_type: ActorSubType;
+  sub_entity?: ActorSubEntity;
+  sub_type?: ActorSubTypeDeprecated;
   type: ActorType;
 }
 
@@ -158,7 +173,7 @@ export interface ProductEventData {
     model_changes: {
       assigned_agent_id: [string, string];
       assigned_group_id: [string, string];
-      status: [ChangedStatus, ChangedStatus];
+      status: [ChangedStatusNew | ChangedStatusDeprecated, ChangedStatusNew | ChangedStatusDeprecated];
     };
   };
   conversation: ModelProperties;

@@ -8,12 +8,19 @@ export enum TriggerActorType {
   User = 'USER',
 }
 
-export enum TriggerActorCause {
-  Agent = 'AGENT',
+export enum TriggerActorCauseDeprecated {
   AgentGroupMapping = 'AGENT_GROUP_MAPPING',
   AssignmentRule = 'ASSIGNMENT_RULE',
   AutoResolve = 'AUTO_RESOLVE',
-  Bot = 'BOT',
+  IntelliAssign = 'INTELLI_ASSIGN',
+  User = 'USER',
+}
+
+export enum TriggerActorCauseNew {
+  AgentGroupMapping = 'AGENT_GROUP_MAPPING',
+  AssignmentRule = 'ASSIGNMENT_RULE',
+  AutoResolve = 'AUTO_RESOLVE',
+  ChannelGroupMapping = 'CHANNEL_GROUP_MAPPING',
   IntelliAssign = 'INTELLI_ASSIGN',
   User = 'USER',
 }
@@ -98,7 +105,7 @@ export interface TriggerAction {
 }
 
 export interface TriggerActor {
-  cause?: TriggerActorCause;
+  cause?: TriggerActorCauseDeprecated | TriggerActorCauseNew;
   type: TriggerActorType;
 }
 
