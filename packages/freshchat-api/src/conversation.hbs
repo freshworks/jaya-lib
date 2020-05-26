@@ -1,5 +1,10 @@
 <table style="margin-left: auto;margin-right: auto;">
   <tr>
+    <td style="color: #999999;font-size: 11px;float: right;">
+      * All Timestamps in GMT
+    </td>
+  </tr>
+  <tr>
     <td>
       <table style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;margin:0px auto;background: #f4f8fa;overflow: auto;padding: 0 15px; min-width: 500px; margin: 0px;">
         {{#each (reverse messages) as | message |}}
@@ -47,7 +52,7 @@
                     {{/each}}
                   </div>
                   <div style="color: #999999;font-size: 11px;clear: right;">
-                    {{date message.created_time "hh:mm A, Do MMM [(GMT)]"}}
+                    {{date message.created_time "hh:mm A, Do MMM"}}
                   </div>
                 </div>
               </td>
@@ -87,18 +92,21 @@
                   {{/each}}
                 </div>
                 <div style="color: #999999; font-size: 11px; clear: left;margin-left: 33px;">
-                  {{date message.created_time "hh:mm A, Do MMM [(GMT)]"}}
+                  {{date message.created_time "hh:mm A, Do MMM"}}
                 </div>
               </td>
             <tr>
           {{ else if (eq message.message_source "system")}}
             <tr style="border: none;">
-              <td style="font-size:12px; color: #6f7071;text-align: center;max-width: 300px;">
+              <td style="padding: 8px; font-size:12px; color: #6f7071;text-align: center;max-width: 300px;">
                 {{#each message.message_parts as | message_part |}}
                   {{#if message_part.text}}
                     {{{message_part.text.content}}}
                   {{/if}}
                 {{/each}}
+                <span style="color: #999999; font-size: 11px;">
+                  {{date message.created_time "hh:mm A, Do MMM"}}
+                </span>
               </td>
             </tr>
           {{/if}}
