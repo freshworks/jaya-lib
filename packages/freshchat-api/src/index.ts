@@ -1,6 +1,10 @@
-/* eslint-disable no-console */
 import axios, { AxiosPromise } from 'axios';
-import { Message, GetMessagesResponse } from './interfaces/Message';
+import {
+  Message,
+  GetMessagesResponse,
+  GetConversationMessagesOptions,
+  FilterMessagesOptions,
+} from './interfaces/Message';
 import { Conversation, ConversationStatus } from './interfaces/Conversation';
 import { DashboardHistorical } from './interfaces/DashboardHistorical';
 import { ReplyPart } from './interfaces/ReplyPart';
@@ -12,10 +16,6 @@ export * from './interfaces/Conversation';
 export * from './interfaces/Message';
 export * from './interfaces/DashboardHistorical';
 export * from './interfaces/User';
-
-export interface GetConversationMessagesOptions {
-  fetchUntilLastResolve?: boolean;
-}
 
 export default class Freshchat {
   private get headers(): {
@@ -178,7 +178,7 @@ export default class Freshchat {
 
         if (
           options &&
-          options.fetchUntilLastResolve &&
+          options.isFetchUntilLastResolve &&
           result.length &&
           currentMessage.meta_data &&
           currentMessage.meta_data.isResolved
@@ -318,25 +318,35 @@ export default class Freshchat {
     return Promise.all(agentIds.map((agentId) => this.getAgentById(agentId)));
   }
 
-  async getConversationHtml(conversationId: string, options?: GetConversationMessagesOptions): Promise<string> {
+  async getConversationHtml(
+    conversationId: string,
+    options?: GetConversationMessagesOptions,
+    filterMessagesOptions?: FilterMessagesOptions,
+  ): Promise<string> {
     try {
       // Step 1: Get conversation messages
       const messages = await this.getConversationMessages(conversationId, options);
 
+      // Step 2: Filter messages
+      const filteredMessages = Utils.filterMessages(messages, filterMessagesOptions);
+
       // Step 2: Extract list of agentIds
-      const agentIds = Utils.extractAgentIds(messages);
+      const agentIds = Utils.extractAgentIds(filteredMessages);
 
       // Step 3: Get agents by id
       const agents = await this.getAgentsById(agentIds);
 
       // Step 4: Extract userId
-      const userId = Utils.extractUserId(messages);
+      const userId = Utils.extractUserId(filteredMessages);
 
       // Step 5: Get user by id
-      const user = await this.getUserById(userId as string);
+      let user: User | null = null;
+      if (userId) {
+        user = await this.getUserById(userId);
+      }
 
       // Step 6: Generate conversation html
-      return Promise.resolve(Utils.generateConversationHtml(messages, agents, user));
+      return Promise.resolve(Utils.generateConversationHtml(filteredMessages, agents, user as User));
     } catch (err) {
       return Promise.reject('Error fetching conversationHtml');
     }

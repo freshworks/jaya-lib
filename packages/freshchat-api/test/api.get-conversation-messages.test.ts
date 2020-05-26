@@ -10,14 +10,15 @@ describe('api.get-conversation-messages', () => {
   // Test Case 1: 1 normal message without link
   /**
    * Test Case 2: 1 normal message without link
-   *   fetchUntilLastResolve: false
+   *   isFetchUntilLastResolve: false
    */
   // Test Case 3: 2 normal messages with items_per_page 1.
   /**
-   * Test Case 4: fetchUntilLastResolve: true
+   * Test Case 4: isFetchUntilLastResolve: true
    *   2 messages in first page containing a link
    *   1st message is normal; 2nd message is resolve
    */
+  /** Test Case 5: only system messages in conversation */
 
   describe('getConversationMessages message without link', () => {
     let res: GetMessagesResponse;
@@ -66,7 +67,7 @@ describe('api.get-conversation-messages', () => {
 
     // Test Case 2
     it('should sent GET reqeust to /conversations/1/messages with fetchUntilLastResolve:false', () => {
-      freshchat.getConversationMessages('1', { fetchUntilLastResolve: false }).then((messages) => {
+      freshchat.getConversationMessages('1', { isFetchUntilLastResolve: false }).then((messages) => {
         assert.equal(messages[0].id, res.messages[0].id);
       });
     });
@@ -213,7 +214,7 @@ describe('api.get-conversation-messages', () => {
 
     // Test Case 4
     it('should sent GET reqeust to /conversations/1/messages', () => {
-      freshchat.getConversationMessages('1', { fetchUntilLastResolve: true }).then((messages) => {
+      freshchat.getConversationMessages('1', { isFetchUntilLastResolve: true }).then((messages) => {
         assert.equal(messages[0].id, res.messages[0].id);
         assert.equal(messages.length, 1);
       });

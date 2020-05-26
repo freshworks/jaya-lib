@@ -3,7 +3,7 @@ import path from 'path';
 import Handlebars from 'handlebars';
 import Helpers from 'handlebars-helpers';
 
-import { Message, ActorType, MessageType } from './interfaces/Message';
+import { Message, ActorType, MessageType, FilterMessagesOptions, MessageSource } from './interfaces/Message';
 import { Agent } from './interfaces/Agent';
 import { User } from './interfaces/User';
 
@@ -14,17 +14,41 @@ Handlebars.registerHelper(Helpers(['comparison', 'string', 'array']));
 Handlebars.registerHelper('date', helperDate);
 
 export class Utils {
+  public static filterMessages = (messages: Message[], filterMessagesOptions?: FilterMessagesOptions): Message[] => {
+    if (!filterMessagesOptions) {
+      return messages;
+    }
+
+    return messages.filter((message) => {
+      if (filterMessagesOptions.isExcludePrivate && message.message_type === MessageType.Private) {
+        return false;
+      }
+
+      if (filterMessagesOptions.isExcludeSystem && message.message_source === MessageSource.System) {
+        return false;
+      }
+
+      if (
+        filterMessagesOptions.isExcludeNormal &&
+        message.message_source !== MessageSource.System &&
+        message.message_type !== MessageType.Private
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+  };
+
   public static extractAgentIds = (messages: Message[]): string[] => {
     const actorIds = messages
-      .filter((message) => message.actor_type === ActorType.Agent && message.message_type === MessageType.Normal)
+      .filter((message) => message.actor_type === ActorType.Agent)
       .map((message) => message.actor_id);
     return Array.from(new Set(actorIds));
   };
 
   public static extractUserId = (messages: Message[]): string | undefined => {
-    const userMessage = messages.find(
-      (message) => message.actor_type === ActorType.User && message.message_type === MessageType.Normal,
-    );
+    const userMessage = messages.find((message) => message.actor_type === ActorType.User);
 
     return userMessage && userMessage.actor_id;
   };

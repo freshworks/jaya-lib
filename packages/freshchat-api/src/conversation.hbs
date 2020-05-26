@@ -3,79 +3,37 @@
     <td>
       <table style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;margin:0px auto;background: #f4f8fa;overflow: auto;padding: 0 15px; min-width: 500px; margin: 0px;">
         {{#each (reverse messages) as | message |}}
-          {{#if (or (eq message.message_type "normal") (eq message.message_type "system"))}}
           {{!-- agent message --}}
-            {{#if (or (eq message.actor_type "agent") (isFalsey message.actor_type))}}
-              <tr style="border: none;">
-                <td style="padding: 10px 20px;color: #3f3f46;">
-                  <div style="float:right">
-                    <div style="font-size: 12px;font-weight: 500;float: right; color: #6f7071; margin-right: 33px;">
-                      {{#if message.actor_id}}
-                        {{#with (lookup ../agents message.actor_id) as | agent |}}
-                          {{agent.first_name}}
-                        {{/with}}
-                      {{else}}
-                        Bot
-                      {{/if}}
-                    </div>
-                    <img 
-                      src="
-                        {{#if message.actor_id}}
-                          {{#with (lookup ../agents message.actor_id) as | agent |}}
-                            {{#if agent.avatar.url}}
-                              {{agent.avatar.url}}
-                            {{else}}
-                              https://images.freshchat.com/30x30/fresh-chat-names/Alphabets/{{truncate agent.first_name 1}}.png
-                            {{/if}}
-                          {{/with}}
-                        {{else}}
-                          https://images.freshchat.com/30x30/fresh-chat-names/anonymous.png
-                        {{/if}}"
-                      style="width: 30px;height: 30px;border-radius: 6px 50% 50% 50%;margin-left:5px;float:right;clear:right">
-                    <div style="float: right;line-height: 20.4px;border-radius: 20px 4px 20px 20px;background-color: #ffffff;max-width: 300px;padding: 12px;">
-                      {{#each message.message_parts as | message_part |}}
-                        <div style="font-size: 13.6px">
-                          {{#if message_part.text}}
-                            {{{message_part.text.content}}}
-                          {{/if}}
-                          {{#if message_part.image}}
-                            <img src="{{message_part.image.url}}" style="max-height: 300px;max-width: 300px; border-radius: 4px;">
-                          {{/if}}
-                          {{#if message_part.file}}
-                            Attached file: {{message_part.file.name}}
-                          {{/if}}
-                        </div>
-                      {{/each}}
-                    </div>
-                    <div style="color: #999999;font-size: 11px;clear: right;">
-                      {{date message.created_time "hh:mm A, Do MMM [(GMT)]"}}
-                    </div>
-                  </div>
-                </td>
-              <tr>
-            {{/if}}
-            {{!-- user message --}}
-            {{#if (and (eq message.actor_type "user") (eq message.message_type "normal"))}}
-              <tr style="border: none;">
-                <td style="padding: 10px 20px;color: #333;color: #3f3f46;">
-                  <div style="padding:0 5px 0 0;font-size:12px; color: #6f7071;margin-left: 33px;">
-                    {{#if ../user.first_name}}
-                      {{../user.first_name}}
+          {{#if (and (isnt message.message_source "system") (or (eq message.actor_type "agent") (eq message.message_type "system")))}}
+            <tr style="border: none;">
+              <td style="padding: 10px 20px;color: #3f3f46;">
+                <div style="float:right">
+                  <div style="font-size: 12px;font-weight: 500;float: right; color: #6f7071; margin-right: 33px;">
+                    {{#if message.actor_id}}
+                      {{#with (lookup ../agents message.actor_id) as | agent |}}
+                        {{agent.first_name}}
+                      {{/with}}
                     {{else}}
-                      User
+                      Bot
                     {{/if}}
                   </div>
                   <img 
                     src="
-                      {{#if ../user.avatar.url}}
-                        {{../user.avatar.url}}
+                      {{#if message.actor_id}}
+                        {{#with (lookup ../agents message.actor_id) as | agent |}}
+                          {{#if agent.avatar.url}}
+                            {{agent.avatar.url}}
+                          {{else}}
+                            https://images.freshchat.com/30x30/fresh-chat-names/Alphabets/{{truncate agent.first_name 1}}.png
+                          {{/if}}
+                        {{/with}}
                       {{else}}
                         https://images.freshchat.com/30x30/fresh-chat-names/anonymous.png
                       {{/if}}"
-                    style="width: 30px;height: 30px;border-radius: 50% 6px 50% 50%;float:left;margin-right: 3px;">
-                  <div style="border-radius: 4px 20px 20px;line-height: 21px;background: #a8ddfd;max-width: 300px;padding: 12px;float: left;">
+                    style="width: 30px;height: 30px;border-radius: 6px 50% 50% 50%;margin-left:5px;float:right;clear:right">
+                  <div style="float: right;line-height: 20.4px;border-radius: 20px 4px 20px 20px;background-color: #ffffff;max-width: 300px;padding: 12px;{{#if (eq message.message_type "private")}}background-color: #fff0b2!important;border: 1px solid #d8cb5f;border-radius: 3px!important;box-shadow: none;padding: 10px 15px;{{/if}}">
                     {{#each message.message_parts as | message_part |}}
-                      <div>
+                      <div style="font-size: 13.6px">
                         {{#if message_part.text}}
                           {{{message_part.text.content}}}
                         {{/if}}
@@ -88,12 +46,61 @@
                       </div>
                     {{/each}}
                   </div>
-                  <div style="color: #999999; font-size: 11px; clear: left;margin-left: 33px;">
+                  <div style="color: #999999;font-size: 11px;clear: right;">
                     {{date message.created_time "hh:mm A, Do MMM [(GMT)]"}}
                   </div>
-                </td>
-              <tr>
-            {{/if}}
+                </div>
+              </td>
+            <tr>
+          {{!-- user message --}}
+          {{else if (and (isnt message.message_source "system") (eq message.actor_type "user") (eq message.message_type "normal"))}}
+            <tr style="border: none;">
+              <td style="padding: 10px 20px;color: #333;color: #3f3f46;">
+                <div style="padding:0 5px 0 0;font-size:12px; color: #6f7071;margin-left: 33px;">
+                  {{#if (and ../user ../user.first_name)}}
+                    {{../user.first_name}}
+                  {{else}}
+                    User
+                  {{/if}}
+                </div>
+                <img 
+                  src="
+                    {{#if (and ../user ../user.avatar.url)}}
+                      {{../user.avatar.url}}
+                    {{else}}
+                      https://images.freshchat.com/30x30/fresh-chat-names/anonymous.png
+                    {{/if}}"
+                  style="width: 30px;height: 30px;border-radius: 50% 6px 50% 50%;float:left;margin-right: 3px;">
+                <div style="border-radius: 4px 20px 20px;line-height: 21px;background: #a8ddfd;max-width: 300px;padding: 12px;float: left;">
+                  {{#each message.message_parts as | message_part |}}
+                    <div>
+                      {{#if message_part.text}}
+                        {{{message_part.text.content}}}
+                      {{/if}}
+                      {{#if message_part.image}}
+                        <img src="{{message_part.image.url}}" style="max-height: 300px;max-width: 300px; border-radius: 4px;">
+                      {{/if}}
+                      {{#if message_part.file}}
+                        Attached file: {{message_part.file.name}}
+                      {{/if}}
+                    </div>
+                  {{/each}}
+                </div>
+                <div style="color: #999999; font-size: 11px; clear: left;margin-left: 33px;">
+                  {{date message.created_time "hh:mm A, Do MMM [(GMT)]"}}
+                </div>
+              </td>
+            <tr>
+          {{ else if (eq message.message_source "system")}}
+            <tr style="border: none;">
+              <td style="font-size:12px; color: #6f7071;text-align: center;max-width: 300px;">
+                {{#each message.message_parts as | message_part |}}
+                  {{#if message_part.text}}
+                    {{{message_part.text.content}}}
+                  {{/if}}
+                {{/each}}
+              </td>
+            </tr>
           {{/if}}
         {{/each}}
       </table>

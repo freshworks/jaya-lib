@@ -1,7 +1,7 @@
 import Freshchat from '../src/index';
 import { User } from '../src/interfaces/User';
 import { Agent } from '../src/interfaces/Agent';
-import { Message } from '../src/interfaces/Message';
+import { Message, MessageSource, MessageType, ActorType } from '../src/interfaces/Message';
 import nock from 'nock';
 import 'mocha';
 import chai from 'chai';
@@ -17,7 +17,6 @@ describe('api.get-conversation-html', () => {
     let user: User;
     let agent: Agent;
     let messages: Message[];
-    let res: string;
 
     beforeEach(() => {
       // SET UP expected request
@@ -394,315 +393,6 @@ describe('api.get-conversation-html', () => {
         },
       ] as unknown) as Message[];
 
-      res = `<table style="margin-left: auto;margin-right: auto;">
-      <tr>
-        <td>
-          <table style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;margin:0px auto;background: #f4f8fa;overflow: auto;padding: 0 15px; min-width: 500px; margin: 0px;">
-                  <tr style="border: none;">
-                    <td style="padding: 10px 20px;color: #333;color: #3f3f46;">
-                      <div style="padding:0 5px 0 0;font-size:12px; color: #6f7071;margin-left: 33px;">
-                          Sudhir
-                      </div>
-                      <img 
-                        src=
-                            https://images.freshchat.com/30x30/fresh-chat-names/anonymous.png
-                        style="width: 30px;height: 30px;border-radius: 50% 6px 50% 50%;float:left;margin-right: 3px;">
-                      <div style="border-radius: 4px 20px 20px;line-height: 21px;background: #a8ddfd;max-width: 300px;padding: 12px;float: left;">
-                          <div>
-                              assignagent
-                          </div>
-                      </div>
-                      <div style="color: #999999; font-size: 11px; clear: left;margin-left: 33px;">
-                        11:50 AM, 15th May +05:30
-                      </div>
-                    </td>
-                  <tr>
-                  <tr style="border: none;">
-                    <td style="padding: 10px 20px;color: #3f3f46;">
-                      <div style="float:right">
-                        <div style="font-size: 12px;font-weight: 500;float: right; color: #6f7071; margin-right: 33px;">
-                            Bot
-                        </div>
-                        <img 
-                          src=
-                              https://images.freshchat.com/30x30/fresh-chat-names/anonymous.png
-                            
-                          style="width: 30px;height: 30px;border-radius: 6px 50% 50% 50%;margin-left:5px;float:right;clear:right">
-                        <div style="float: right;line-height: 20.4px;border-radius: 20px 4px 20px 20px;background-color: #ffffff;max-width: 300px;padding: 12px;">
-                            <div style="font-size: 13.6px">
-                                Assignment Rule assigned Arun to this conversation.
-                            </div>
-                        </div>
-                        <div style="color: #999999;font-size: 11px;clear: right;">
-                          11:50 AM, 15th May +05:30
-                        </div>
-                      </div>
-                    </td>
-                  <tr>
-                  <tr style="border: none;">
-                    <td style="padding: 10px 20px;color: #333;color: #3f3f46;">
-                      <div style="padding:0 5px 0 0;font-size:12px; color: #6f7071;margin-left: 33px;">
-                          Sudhir
-                      </div>
-                      <img 
-                        src=
-                            https://images.freshchat.com/30x30/fresh-chat-names/anonymous.png
-                        style="width: 30px;height: 30px;border-radius: 50% 6px 50% 50%;float:left;margin-right: 3px;">
-                      <div style="border-radius: 4px 20px 20px;line-height: 21px;background: #a8ddfd;max-width: 300px;padding: 12px;float: left;">
-                          <div>
-                              assigngroup
-                          </div>
-                      </div>
-                      <div style="color: #999999; font-size: 11px; clear: left;margin-left: 33px;">
-                        11:50 AM, 15th May +05:30
-                      </div>
-                    </td>
-                  <tr>
-                  <tr style="border: none;">
-                    <td style="padding: 10px 20px;color: #333;color: #3f3f46;">
-                      <div style="padding:0 5px 0 0;font-size:12px; color: #6f7071;margin-left: 33px;">
-                          Sudhir
-                      </div>
-                      <img 
-                        src=
-                            https://images.freshchat.com/30x30/fresh-chat-names/anonymous.png
-                        style="width: 30px;height: 30px;border-radius: 50% 6px 50% 50%;float:left;margin-right: 3px;">
-                      <div style="border-radius: 4px 20px 20px;line-height: 21px;background: #a8ddfd;max-width: 300px;padding: 12px;float: left;">
-                          <div>
-                              assigngroup
-                          </div>
-                      </div>
-                      <div style="color: #999999; font-size: 11px; clear: left;margin-left: 33px;">
-                        11:50 AM, 15th May +05:30
-                      </div>
-                    </td>
-                  <tr>
-                  <tr style="border: none;">
-                    <td style="padding: 10px 20px;color: #333;color: #3f3f46;">
-                      <div style="padding:0 5px 0 0;font-size:12px; color: #6f7071;margin-left: 33px;">
-                          Sudhir
-                      </div>
-                      <img 
-                        src=
-                            https://images.freshchat.com/30x30/fresh-chat-names/anonymous.png
-                        style="width: 30px;height: 30px;border-radius: 50% 6px 50% 50%;float:left;margin-right: 3px;">
-                      <div style="border-radius: 4px 20px 20px;line-height: 21px;background: #a8ddfd;max-width: 300px;padding: 12px;float: left;">
-                          <div>
-                              assigngroup
-                          </div>
-                      </div>
-                      <div style="color: #999999; font-size: 11px; clear: left;margin-left: 33px;">
-                        11:51 AM, 15th May +05:30
-                      </div>
-                    </td>
-                  <tr>
-                  <tr style="border: none;">
-                    <td style="padding: 10px 20px;color: #3f3f46;">
-                      <div style="float:right">
-                        <div style="font-size: 12px;font-weight: 500;float: right; color: #6f7071; margin-right: 33px;">
-                            Bot
-                        </div>
-                        <img 
-                          src=
-                              https://images.freshchat.com/30x30/fresh-chat-names/anonymous.png
-                            
-                          style="width: 30px;height: 30px;border-radius: 6px 50% 50% 50%;margin-left:5px;float:right;clear:right">
-                        <div style="float: right;line-height: 20.4px;border-radius: 20px 4px 20px 20px;background-color: #ffffff;max-width: 300px;padding: 12px;">
-                            <div style="font-size: 13.6px">
-                                System reopened the conversation due to user message <b>assigngroup</b>
-                            </div>
-                        </div>
-                        <div style="color: #999999;font-size: 11px;clear: right;">
-                          11:51 AM, 15th May +05:30
-                        </div>
-                      </div>
-                    </td>
-                  <tr>
-                  <tr style="border: none;">
-                    <td style="padding: 10px 20px;color: #3f3f46;">
-                      <div style="float:right">
-                        <div style="font-size: 12px;font-weight: 500;float: right; color: #6f7071; margin-right: 33px;">
-                            Bot
-                        </div>
-                        <img 
-                          src=
-                              https://images.freshchat.com/30x30/fresh-chat-names/anonymous.png
-                            
-                          style="width: 30px;height: 30px;border-radius: 6px 50% 50% 50%;margin-left:5px;float:right;clear:right">
-                        <div style="float: right;line-height: 20.4px;border-radius: 20px 4px 20px 20px;background-color: #ffffff;max-width: 300px;padding: 12px;">
-                            <div style="font-size: 13.6px">
-                                Assignment rule assigned the group Support to this conversation.
-                            </div>
-                        </div>
-                        <div style="color: #999999;font-size: 11px;clear: right;">
-                          11:51 AM, 15th May +05:30
-                        </div>
-                      </div>
-                    </td>
-                  <tr>
-                  <tr style="border: none;">
-                    <td style="padding: 10px 20px;color: #3f3f46;">
-                      <div style="float:right">
-                        <div style="font-size: 12px;font-weight: 500;float: right; color: #6f7071; margin-right: 33px;">
-                              Arrun
-                        </div>
-                        <img 
-                          src=
-                                  https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/c77f9c769eebb1eec12ea8c4370369ea53c4c54c148320debc904d36a1948336/f_marketingpicFull/u_711a45dd1db4d802f5bcf3d821e3ae093739cff445a2077a3072abc7d0a34d75/img_1589848722580.png
-                            
-                          style="width: 30px;height: 30px;border-radius: 6px 50% 50% 50%;margin-left:5px;float:right;clear:right">
-                        <div style="float: right;line-height: 20.4px;border-radius: 20px 4px 20px 20px;background-color: #ffffff;max-width: 300px;padding: 12px;">
-                            <div style="font-size: 13.6px">
-                                you say we do
-                            </div>
-                        </div>
-                        <div style="color: #999999;font-size: 11px;clear: right;">
-                          11:53 AM, 15th May +05:30
-                        </div>
-                      </div>
-                    </td>
-                  <tr>
-                  <tr style="border: none;">
-                    <td style="padding: 10px 20px;color: #333;color: #3f3f46;">
-                      <div style="padding:0 5px 0 0;font-size:12px; color: #6f7071;margin-left: 33px;">
-                          Sudhir
-                      </div>
-                      <img 
-                        src=
-                            https://images.freshchat.com/30x30/fresh-chat-names/anonymous.png
-                        style="width: 30px;height: 30px;border-radius: 50% 6px 50% 50%;float:left;margin-right: 3px;">
-                      <div style="border-radius: 4px 20px 20px;line-height: 21px;background: #a8ddfd;max-width: 300px;padding: 12px;float: left;">
-                          <div>
-                              surely that's possible.
-                          </div>
-                      </div>
-                      <div style="color: #999999; font-size: 11px; clear: left;margin-left: 33px;">
-                        11:53 AM, 15th May +05:30
-                      </div>
-                    </td>
-                  <tr>
-                  <tr style="border: none;">
-                    <td style="padding: 10px 20px;color: #333;color: #3f3f46;">
-                      <div style="padding:0 5px 0 0;font-size:12px; color: #6f7071;margin-left: 33px;">
-                          Sudhir
-                      </div>
-                      <img 
-                        src=
-                            https://images.freshchat.com/30x30/fresh-chat-names/anonymous.png
-                        style="width: 30px;height: 30px;border-radius: 50% 6px 50% 50%;float:left;margin-right: 3px;">
-                      <div style="border-radius: 4px 20px 20px;line-height: 21px;background: #a8ddfd;max-width: 300px;padding: 12px;float: left;">
-                          <div>
-                              now tell me
-                          </div>
-                      </div>
-                      <div style="color: #999999; font-size: 11px; clear: left;margin-left: 33px;">
-                        11:53 AM, 15th May +05:30
-                      </div>
-                    </td>
-                  <tr>
-                  <tr style="border: none;">
-                    <td style="padding: 10px 20px;color: #3f3f46;">
-                      <div style="float:right">
-                        <div style="font-size: 12px;font-weight: 500;float: right; color: #6f7071; margin-right: 33px;">
-                              Arrun
-                        </div>
-                        <img 
-                          src=
-                                  https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/c77f9c769eebb1eec12ea8c4370369ea53c4c54c148320debc904d36a1948336/f_marketingpicFull/u_711a45dd1db4d802f5bcf3d821e3ae093739cff445a2077a3072abc7d0a34d75/img_1589848722580.png
-                            
-                          style="width: 30px;height: 30px;border-radius: 6px 50% 50% 50%;margin-left:5px;float:right;clear:right">
-                        <div style="float: right;line-height: 20.4px;border-radius: 20px 4px 20px 20px;background-color: #ffffff;max-width: 300px;padding: 12px;">
-                            <div style="font-size: 13.6px">
-                                okay
-                            </div>
-                        </div>
-                        <div style="color: #999999;font-size: 11px;clear: right;">
-                          11:53 AM, 15th May +05:30
-                        </div>
-                      </div>
-                    </td>
-                  <tr>
-                  <tr style="border: none;">
-                    <td style="padding: 10px 20px;color: #3f3f46;">
-                      <div style="float:right">
-                        <div style="font-size: 12px;font-weight: 500;float: right; color: #6f7071; margin-right: 33px;">
-                              Arrun
-                        </div>
-                        <img 
-                          src=
-                                  https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/c77f9c769eebb1eec12ea8c4370369ea53c4c54c148320debc904d36a1948336/f_marketingpicFull/u_711a45dd1db4d802f5bcf3d821e3ae093739cff445a2077a3072abc7d0a34d75/img_1589848722580.png
-                            
-                          style="width: 30px;height: 30px;border-radius: 6px 50% 50% 50%;margin-left:5px;float:right;clear:right">
-                        <div style="float: right;line-height: 20.4px;border-radius: 20px 4px 20px 20px;background-color: #ffffff;max-width: 300px;padding: 12px;">
-                            <div style="font-size: 13.6px">
-                                I'll let this conversation autoresolve now.
-                            </div>
-                        </div>
-                        <div style="color: #999999;font-size: 11px;clear: right;">
-                          11:53 AM, 15th May +05:30
-                        </div>
-                      </div>
-                    </td>
-                  <tr>
-                  <tr style="border: none;">
-                    <td style="padding: 10px 20px;color: #3f3f46;">
-                      <div style="float:right">
-                        <div style="font-size: 12px;font-weight: 500;float: right; color: #6f7071; margin-right: 33px;">
-                              Arrun
-                        </div>
-                        <img 
-                          src=
-                                  https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/c77f9c769eebb1eec12ea8c4370369ea53c4c54c148320debc904d36a1948336/f_marketingpicFull/u_711a45dd1db4d802f5bcf3d821e3ae093739cff445a2077a3072abc7d0a34d75/img_1589848722580.png
-                            
-                          style="width: 30px;height: 30px;border-radius: 6px 50% 50% 50%;margin-left:5px;float:right;clear:right">
-                        <div style="float: right;line-height: 20.4px;border-radius: 20px 4px 20px 20px;background-color: #ffffff;max-width: 300px;padding: 12px;">
-                            <div style="font-size: 13.6px">
-                                One message here
-                            </div>
-                            <div style="font-size: 13.6px">
-                                
-    
-                            </div>
-                            <div style="font-size: 13.6px">
-                                <img src=https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/c77f9c769eebb1eec12ea8c4370369ea53c4c54c148320debc904d36a1948336/f_marketingpicFull/u_711a45dd1db4d802f5bcf3d821e3ae093739cff445a2077a3072abc7d0a34d75/img_1589724029304.png></img>
-                            </div>
-                            <div style="font-size: 13.6px">
-                                Another message here
-                            </div>
-                        </div>
-                        <div style="color: #999999;font-size: 11px;clear: right;">
-                          07:30 PM, 17th May +05:30
-                        </div>
-                      </div>
-                    </td>
-                  <tr>
-                  <tr style="border: none;">
-                    <td style="padding: 10px 20px;color: #3f3f46;">
-                      <div style="float:right">
-                        <div style="font-size: 12px;font-weight: 500;float: right; color: #6f7071; margin-right: 33px;">
-                              Arrun
-                        </div>
-                        <img 
-                          src=
-                                  https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/c77f9c769eebb1eec12ea8c4370369ea53c4c54c148320debc904d36a1948336/f_marketingpicFull/u_711a45dd1db4d802f5bcf3d821e3ae093739cff445a2077a3072abc7d0a34d75/img_1589848722580.png
-                            
-                          style="width: 30px;height: 30px;border-radius: 6px 50% 50% 50%;margin-left:5px;float:right;clear:right">
-                        <div style="float: right;line-height: 20.4px;border-radius: 20px 4px 20px 20px;background-color: #ffffff;max-width: 300px;padding: 12px;">
-                            <div style="font-size: 13.6px">
-                                This was sent on 19th May, 6.21AM
-                            </div>
-                        </div>
-                        <div style="color: #999999;font-size: 11px;clear: right;">
-                          06:21 AM, 19th May +05:30
-                        </div>
-                      </div>
-                    </td>
-                  <tr>
-          </table>
-        </td>
-      </tr>
-    </table>`;
-
       nock('https://test.freshchat.com/v2').get('/users/1').reply(200, user);
       nock('https://test.freshchat.com/v2').get('/agents/1').reply(200, agent);
       nock('https://test.freshchat.com/v2')
@@ -717,7 +407,66 @@ describe('api.get-conversation-html', () => {
     });
 
     it('should get html of entire conversation', () => {
-      expect(freshchat.getConversationHtml('1')).to.be.eventually.equal(res);
+      expect(freshchat.getConversationHtml('1')).to.eventually.be.fulfilled;
+    });
+  });
+
+  describe('getConversationHtml without user', () => {
+    let agent: Agent;
+    let messages: Message[];
+
+    beforeEach(() => {
+      agent = {
+        avatar: {
+          url: 'random-url',
+        },
+        email: 'arun.rajkumar+appathon@freshworks.com',
+        first_name: 'Arrun',
+        groups: ['e90e2b42-4054-487a-a615-bb29fe216f53'],
+        id: 'bc26517a-4d92-4c35-a496-f506fe32ba40',
+        is_deactivated: false,
+        last_name: 'Rajkummar',
+        role_id: 'OWNER',
+        skill_id: '437cee42-2958-4485-9239-70fdfd2c770a',
+        social_profiles: [],
+      };
+
+      // SET UP expected request
+      messages = [
+        {
+          actor_id: 'bc26517a-4d92-4c35-a496-f506fe32ba40',
+          actor_type: ActorType.Agent,
+          app_id: '54e8875f-214b-4574-b345-e226c92ac0ab',
+          channel_id: '1200b97d-c1bd-48a6-9394-8069fe40526a',
+          conversation_id: '748f2ce8-0813-481c-88f4-3007c384a5a4',
+          created_time: '2020-05-15T06:23:51.330Z',
+          id: '976ed434-c9f2-47fc-a8e8-d7cbc6c1039a',
+          message_parts: [
+            {
+              text: {
+                content: 'okay',
+              },
+            },
+          ],
+          message_source: MessageSource.Web,
+          message_type: MessageType.Normal,
+        },
+      ];
+
+      nock('https://test.freshchat.com/v2').get('/agents/1').reply(200, agent);
+      nock('https://test.freshchat.com/v2')
+        .get(/\/conversations\/1\/messages\?page=1.*/)
+        .reply(200, { messages: messages });
+      nock.activate();
+    });
+
+    afterEach(() => {
+      nock.cleanAll();
+      nock.restore();
+    });
+
+    it('should get html of conversation without user', () => {
+      expect(freshchat.getConversationHtml('1')).to.be.eventually.be.fulfilled;
     });
   });
 

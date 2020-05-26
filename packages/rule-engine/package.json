@@ -41,7 +41,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@freshworks-jaya/freshchat-api": "^0.7.0-alpha.2",
+    "@freshworks-jaya/freshchat-api": "^0.7.0-alpha.3",
     "@freshworks-jaya/kairos-api": "^0.1.0",
     "@freshworks-jaya/marketplace-models": "^0.1.2",
     "@freshworks-jaya/utilities": "^0.2.0",
