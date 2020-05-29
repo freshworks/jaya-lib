@@ -24,13 +24,17 @@ export class Utils {
         return false;
       }
 
-      if (filterMessagesOptions.isExcludeSystem && message.message_source === MessageSource.System) {
+      if (
+        filterMessagesOptions.isExcludeSystem &&
+        message.message_source === MessageSource.System &&
+        message.meta_data
+      ) {
         return false;
       }
 
       if (
         filterMessagesOptions.isExcludeNormal &&
-        message.message_source !== MessageSource.System &&
+        (message.message_source !== MessageSource.System || !message.meta_data) &&
         message.message_type !== MessageType.Private
       ) {
         return false;

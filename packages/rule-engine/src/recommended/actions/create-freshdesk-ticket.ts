@@ -5,6 +5,7 @@ import { Integrations } from '../../models/rule-engine';
 import axios from 'axios';
 import Freshchat, { User as FreshchatUser } from '@freshworks-jaya/freshchat-api';
 import { Utils as FreshchatUtils } from '@freshworks-jaya/freshchat-api/lib/Utils';
+import { Utils } from '../../Utils';
 
 const getTicketConversationContent = async (
   freshchat: Freshchat,
@@ -74,6 +75,7 @@ export default async (
     ticketSubject = findAndReplacePlaceholders(ticketSubject, ruleConfig.placeholders as PlaceholdersMap);
 
     const { email, first_name: name, id: userAlias, phone } = productEventData.associations.user;
+    const isUserNameGenerated = Utils.isUsernameGenerated(name || '');
     const headers = {
       Authorization: 'Basic ' + new Buffer(`${freshdeskApiToken}:X`).toString('base64'),
       'Content-Type': 'application/json',
@@ -85,7 +87,7 @@ export default async (
       JSON.stringify({
         description: ticketConversationContent.description,
         email: email ? email : `${userAlias}@aa-freshchat.com`,
-        name,
+        name: isUserNameGenerated ? undefined : name,
         phone,
         priority: 1,
         source: 7,

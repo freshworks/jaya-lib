@@ -9,7 +9,7 @@
       <table style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;margin:0px auto;background: #f4f8fa;overflow: auto;padding: 0 15px; min-width: 500px; margin: 0px;">
         {{#each (reverse messages) as | message |}}
           {{!-- agent message --}}
-          {{#if (and (isnt message.message_source "system") (or (eq message.actor_type "agent") (eq message.message_type "system")))}}
+          {{#if (and (or (isnt message.message_source "system") (isFalsey message.meta_data)) (or (eq message.actor_type "agent") (eq message.message_type "system")))}}
             <tr style="border: none;">
               <td style="padding: 10px 20px;color: #3f3f46;">
                 <div style="float:right">
@@ -38,7 +38,7 @@
                     style="width: 30px;height: 30px;border-radius: 6px 50% 50% 50%;margin-left:5px;float:right;clear:right">
                   <div style="float: right;line-height: 20.4px;border-radius: 20px 4px 20px 20px;background-color: #ffffff;max-width: 300px;padding: 12px;{{#if (eq message.message_type "private")}}background-color: #fff0b2!important;border: 1px solid #d8cb5f;border-radius: 3px!important;box-shadow: none;padding: 10px 15px;{{/if}}">
                     {{#each message.message_parts as | message_part |}}
-                      <div style="font-size: 13.6px">
+                      <div style="font-size: 13.6px; word-break: break-all;">
                         {{#if message_part.text}}
                           {{{message_part.text.content}}}
                         {{/if}}
@@ -78,7 +78,7 @@
                   style="width: 30px;height: 30px;border-radius: 50% 6px 50% 50%;float:left;margin-right: 3px;">
                 <div style="border-radius: 4px 20px 20px;line-height: 21px;background: #a8ddfd;max-width: 300px;padding: 12px;float: left;">
                   {{#each message.message_parts as | message_part |}}
-                    <div>
+                    <div style="word-break: break-all;">
                       {{#if message_part.text}}
                         {{{message_part.text.content}}}
                       {{/if}}
