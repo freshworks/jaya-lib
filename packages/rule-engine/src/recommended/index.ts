@@ -43,6 +43,7 @@ import actionUpdateUserEmail from './actions/update-user-email';
 import actionUpdateUserPhone from './actions/update-user-phone';
 import actionUpdateUserName from './actions/update-user-name';
 import actionCreateFreshdeskTicket from './actions/create-freshdesk-ticket';
+import actionSendUserEmail from './actions/send-user-email';
 
 // Import all conditions
 import conditionMessageText from './conditions/message-text';
@@ -74,6 +75,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ActionType.SendMessage]: actionSendMessage,
       [ActionType.SendPrivateNote]: actionSendPrivateNote,
       [ActionType.SendQuickreply]: actionSendQuickreply,
+      [ActionType.SendUserEmail]: actionSendUserEmail,
       [ActionType.UnassignThenReassignGroup]: actionUnassignThenReassignGroup,
       [ActionType.UpdateUserProperty]: actionUpdateUserProperty,
       [ActionType.UpdateUserEmail]: actionUpdateUserEmail,

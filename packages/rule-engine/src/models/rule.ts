@@ -43,6 +43,7 @@ export enum ActionType {
   SendMessage = 'SEND_MESSAGE',
   SendPrivateNote = 'SEND_PRIVATE_NOTE',
   SendQuickreply = 'SEND_QUICKREPLY',
+  SendUserEmail = 'SEND_USER_EMAIL',
   UnassignThenReassignGroup = 'UNASSIGN_THEN_REASSIGN_GROUP',
   UpdateUserEmail = 'UPDATE_USER_EMAIL',
   UpdateUserName = 'UPDATE_USER_NAME',
