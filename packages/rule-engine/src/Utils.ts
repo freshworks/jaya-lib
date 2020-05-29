@@ -1,7 +1,5 @@
 import { ConditionOperator } from './index';
 import ruleConfig from './RuleConfig';
-import usernameVerbs from './constants/username-verbs';
-import usernameNouns from './constants/username-nouns';
 import { Integrations } from './models/rule-engine';
 import axios from 'axios';
 import { BusinessHour, findMatchingKeys, PlaceholdersMap } from '@freshworks-jaya/utilities';
@@ -69,20 +67,6 @@ export class Utils {
     }
 
     return Promise.resolve();
-  }
-
-  /**
-   * Returns true if username is generated
-   */
-  public static isUsernameGenerated(username: string): boolean {
-    const split = username.split(/\s+/);
-
-    if (split.length !== 2) {
-      return false;
-    }
-
-    const [verb, noun] = split;
-    return !!(usernameVerbs[verb] && usernameNouns[noun]);
   }
 
   /**

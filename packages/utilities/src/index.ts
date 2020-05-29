@@ -1,7 +1,23 @@
 import { BusinessHour, isOutsideBusinessHours } from './is-outside-business-hours';
+import usernameVerbs from './constants/username-verbs';
+import usernameNouns from './constants/username-nouns';
 export interface PlaceholdersMap {
   [key: string]: string;
 }
+
+/**
+ * Returns true if username is generated
+ */
+const isUsernameGenerated = (username: string): boolean => {
+  const split = username.split(/\s+/);
+
+  if (split.length !== 2) {
+    return false;
+  }
+
+  const [verb, noun] = split;
+  return !!(usernameVerbs[verb] && usernameNouns[noun]);
+};
 
 const replaceAll = (str: string, find: string, replace: string): string => {
   return str.replace(new RegExp(find, 'g'), replace);
@@ -74,4 +90,11 @@ const findAndReplacePlaceholders = (message: string, placeholdersMap: Placeholde
   return result;
 };
 
-export { findAndReplacePlaceholders, findMatchingPlaceholders, findMatchingKeys, BusinessHour, isOutsideBusinessHours };
+export {
+  findAndReplacePlaceholders,
+  findMatchingPlaceholders,
+  findMatchingKeys,
+  BusinessHour,
+  isOutsideBusinessHours,
+  isUsernameGenerated,
+};

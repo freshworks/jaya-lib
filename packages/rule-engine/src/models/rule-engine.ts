@@ -5,8 +5,13 @@ export interface RuleEngineOptions {
 }
 
 export interface Integrations {
+  emailService?: {
+    apiKey: string;
+    url: string;
+  };
   freshchatv1: ProductCredentials;
   freshchatv2: ProductCredentials;
+  freshdesk?: ProductCredentials;
 }
 
 export interface ProductCredentials {

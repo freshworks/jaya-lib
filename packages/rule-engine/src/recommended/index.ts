@@ -42,6 +42,8 @@ import actionUpdateUserProperty from './actions/update-user-property';
 import actionUpdateUserEmail from './actions/update-user-email';
 import actionUpdateUserPhone from './actions/update-user-phone';
 import actionUpdateUserName from './actions/update-user-name';
+import actionCreateFreshdeskTicket from './actions/create-freshdesk-ticket';
+import actionSendUserEmail from './actions/send-user-email';
 
 // Import all conditions
 import conditionMessageText from './conditions/message-text';
@@ -59,6 +61,8 @@ import conditionUserPhone from './conditions/user-phone';
 
 // Import all dynamic placeholders
 import dynamicPlaceholderAverageWaitTime from './dynamic-placeholders/average-wait-time';
+import dynamicPlaceholderTranscriptFullConversation from './dynamic-placeholders/transcript-full-conversation';
+import dynamicPlaceholderTranscriptSinceLastResolve from './dynamic-placeholders/transcript-since-last-resolve';
 
 const recommendedPlugins: RulePlugin[] = [
   {
@@ -67,9 +71,11 @@ const recommendedPlugins: RulePlugin[] = [
       [ActionType.Resolve]: actionResolve,
       [ActionType.AssignToGroup]: actionAssignToGroup,
       [ActionType.AssignToAgent]: actionAssignToAgent,
+      [ActionType.CreateFreshdeskTicket]: actionCreateFreshdeskTicket,
       [ActionType.SendMessage]: actionSendMessage,
       [ActionType.SendPrivateNote]: actionSendPrivateNote,
       [ActionType.SendQuickreply]: actionSendQuickreply,
+      [ActionType.SendUserEmail]: actionSendUserEmail,
       [ActionType.UnassignThenReassignGroup]: actionUnassignThenReassignGroup,
       [ActionType.UpdateUserProperty]: actionUpdateUserProperty,
       [ActionType.UpdateUserEmail]: actionUpdateUserEmail,
@@ -92,6 +98,8 @@ const recommendedPlugins: RulePlugin[] = [
     },
     dynamicPlaceholders: {
       'metrics.average_wait_time': dynamicPlaceholderAverageWaitTime,
+      'transcript.full_conversation': dynamicPlaceholderTranscriptFullConversation,
+      'transcript.since_last_resolve': dynamicPlaceholderTranscriptSinceLastResolve,
     },
     operators: {
       [ConditionOperator.StartsWith]: operatorStartsWith,

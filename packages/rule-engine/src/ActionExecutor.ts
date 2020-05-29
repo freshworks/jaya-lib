@@ -3,7 +3,7 @@ import { ProductEventData, User, ActorType, Agent, Group } from '@freshworks-jay
 import { Action } from './models/rule';
 import { Integrations } from './models/rule-engine';
 import ruleConfig from './RuleConfig';
-import { PlaceholdersMap } from '@freshworks-jaya/utilities';
+import { isUsernameGenerated, PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Utils } from './Utils';
 
 export class ActionExecutor {
@@ -62,7 +62,7 @@ export class ActionExecutor {
       'user.phone': user.phone,
     } as PlaceholdersMap;
 
-    if (Utils.isUsernameGenerated(user.first_name || '')) {
+    if (isUsernameGenerated(user.first_name || '')) {
       placeholders['user.first_name'] = '';
     }
 

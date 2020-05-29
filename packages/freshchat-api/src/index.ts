@@ -1,8 +1,17 @@
 import axios, { AxiosPromise } from 'axios';
-import { Message, GetMessagesResponse } from './interfaces/Message';
+import {
+  Message,
+  GetMessagesResponse,
+  GetConversationMessagesOptions,
+  FilterMessagesOptions,
+} from './interfaces/Message';
 import { Conversation, ConversationStatus } from './interfaces/Conversation';
 import { DashboardHistorical } from './interfaces/DashboardHistorical';
 import { ReplyPart } from './interfaces/ReplyPart';
+import { User } from './interfaces/User';
+import { Agent } from './interfaces/Agent';
+import { Utils } from './Utils';
+import { isUsernameGenerated } from '@freshworks-jaya/utilities';
 
 export * from './interfaces/Conversation';
 export * from './interfaces/Message';
@@ -152,7 +161,7 @@ export default class Freshchat {
   private async _getConversationMessagesByUrl(
     urlPath: string,
     result: Message[],
-    options?: { fetchUntilLastResolve?: boolean },
+    options?: GetConversationMessagesOptions,
   ): Promise<Message[]> {
     // this.apiUrl for US is https://api.freshchat.com/v2
     // We want to truncate the last 3 characters so that we are left with https://api.freshchat.com
@@ -170,7 +179,7 @@ export default class Freshchat {
 
         if (
           options &&
-          options.fetchUntilLastResolve &&
+          options.isFetchUntilLastResolve &&
           result.length &&
           currentMessage.meta_data &&
           currentMessage.meta_data.isResolved
@@ -195,7 +204,7 @@ export default class Freshchat {
   /**
    * Calls Freshchat conversation api to fetch all messages in a particular conversation.
    */
-  getConversationMessages(conversationId: string, options?: { fetchUntilLastResolve?: boolean }): Promise<Message[]> {
+  getConversationMessages(conversationId: string, options?: GetConversationMessagesOptions): Promise<Message[]> {
     return this._getConversationMessagesByUrl(
       `/v2/conversations/${conversationId}/messages?page=1&items_per_page=50`,
       [] as Message[],
@@ -292,5 +301,58 @@ export default class Freshchat {
     const updateUserApiUrl = `${this.apiUrl}/users/${userId}`;
 
     return axios.put(updateUserApiUrl, JSON.stringify(properties), { headers: this.headers });
+  }
+
+  getUserById(userId: string): Promise<User> {
+    const getUserApiUrl = `${this.apiUrl}/users/${userId}`;
+
+    return axios.get(getUserApiUrl, { headers: this.headers }).then((response) => response.data);
+  }
+
+  getAgentById(agentId: string): Promise<Agent> {
+    const getAgentApiUrl = `${this.apiUrl}/agents/${agentId}`;
+
+    return axios.get(getAgentApiUrl, { headers: this.headers }).then((response) => response.data);
+  }
+
+  getAgentsById(agentIds: string[]): Promise<Agent[]> {
+    return Promise.all(agentIds.map((agentId) => this.getAgentById(agentId)));
+  }
+
+  async getConversationHtml(
+    conversationId: string,
+    options?: GetConversationMessagesOptions,
+    filterMessagesOptions?: FilterMessagesOptions,
+  ): Promise<string> {
+    try {
+      // Step 1: Get conversation messages
+      const messages = await this.getConversationMessages(conversationId, options);
+
+      // Step 2: Filter messages
+      const filteredMessages = Utils.filterMessages(messages, filterMessagesOptions);
+
+      // Step 2: Extract list of agentIds
+      const agentIds = Utils.extractAgentIds(filteredMessages);
+
+      // Step 3: Get agents by id
+      const agents = await this.getAgentsById(agentIds);
+
+      // Step 4: Extract userId
+      const userId = Utils.extractUserId(filteredMessages);
+
+      // Step 5: Get user by id
+      let user: User | null = null;
+      if (userId) {
+        user = await this.getUserById(userId);
+        if (isUsernameGenerated(user.first_name || '')) {
+          user.first_name = '';
+        }
+      }
+
+      // Step 6: Generate conversation html
+      return Promise.resolve(Utils.generateConversationHtml(filteredMessages, agents, user as User));
+    } catch (err) {
+      return Promise.reject('Error fetching conversationHtml');
+    }
   }
 }

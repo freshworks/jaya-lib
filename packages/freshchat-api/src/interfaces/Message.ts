@@ -62,3 +62,13 @@ export interface GetMessagesResponse {
   link?: MessagesLink;
   messages: Message[];
 }
+
+export interface GetConversationMessagesOptions {
+  isFetchUntilLastResolve?: boolean;
+}
+
+export interface FilterMessagesOptions {
+  isExcludeNormal?: boolean;
+  isExcludePrivate?: boolean;
+  isExcludeSystem?: boolean;
+}
