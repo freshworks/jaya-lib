@@ -21,26 +21,6 @@ describe('Utils test', () => {
       token: 'testToken',
     },
   };
-  describe('isUsernameGenerated', () => {
-    it('should return false when word count is not 2', () => {
-      assert.equal(false, Utils.isUsernameGenerated('Random'), 'length 1');
-      assert.equal(false, Utils.isUsernameGenerated(''), 'length 0');
-      assert.equal(false, Utils.isUsernameGenerated('Random User Name'), 'length 3');
-    });
-
-    it('should return true when it is a generated username', () => {
-      assert.equal(true, Utils.isUsernameGenerated('Dancing Horse'), 'generated username');
-      assert.equal(true, Utils.isUsernameGenerated('Swimming Horse'), 'generated username');
-      assert.equal(true, Utils.isUsernameGenerated('Swimming Banana'), 'generated username');
-      assert.equal(true, Utils.isUsernameGenerated('Dancing Banana'), 'generated username');
-    });
-
-    it('should return false when it is not a generated username', () => {
-      assert.equal(false, Utils.isUsernameGenerated('John Doe'), 'non generated username');
-      assert.equal(false, Utils.isUsernameGenerated('Swimming Kumar'), 'non generated username');
-      assert.equal(false, Utils.isUsernameGenerated('Thooking Banana'), 'non generated username');
-    });
-  });
 
   describe('convertOperand', () => {
     it('should trim the string', () => {

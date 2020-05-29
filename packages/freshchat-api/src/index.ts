@@ -11,6 +11,7 @@ import { ReplyPart } from './interfaces/ReplyPart';
 import { User } from './interfaces/User';
 import { Agent } from './interfaces/Agent';
 import { Utils } from './Utils';
+import { isUsernameGenerated } from '@freshworks-jaya/utilities';
 
 export * from './interfaces/Conversation';
 export * from './interfaces/Message';
@@ -343,6 +344,9 @@ export default class Freshchat {
       let user: User | null = null;
       if (userId) {
         user = await this.getUserById(userId);
+        if (isUsernameGenerated(user.first_name || '')) {
+          user.first_name = '';
+        }
       }
 
       // Step 6: Generate conversation html
