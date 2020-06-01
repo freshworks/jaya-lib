@@ -34,7 +34,7 @@ export default async (
   // Step 2: Replace placeholders in subject and body
   const emailTo = sendEmailAnyoneValue.to.map((email) => {
     return {
-      email: email,
+      email: findAndReplacePlaceholders(email, ruleConfig.placeholders as PlaceholdersMap),
     };
   });
 
