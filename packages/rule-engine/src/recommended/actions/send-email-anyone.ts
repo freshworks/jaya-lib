@@ -35,15 +35,9 @@ export default async (
       };
     });
 
-    // const emailParams = {
-    //   body: findAndReplacePlaceholders(sendEmailAnyoneValue.body, ruleConfig.placeholders as PlaceholdersMap),
-    //   subject: findAndReplacePlaceholders(sendEmailAnyoneValue.subject, ruleConfig.placeholders as PlaceholdersMap),
-    //   to: emailTo,
-    // };
-
     const emailParams = {
-      body: sendEmailAnyoneValue.body,
-      subject: sendEmailAnyoneValue.subject,
+      body: findAndReplacePlaceholders(sendEmailAnyoneValue.body, ruleConfig.placeholders as PlaceholdersMap),
+      subject: findAndReplacePlaceholders(sendEmailAnyoneValue.subject, ruleConfig.placeholders as PlaceholdersMap),
       to: emailTo,
     };
 
