@@ -22,46 +22,46 @@ export default async (
 
   try {
     // Step 1: Setup dynamic placeholders using values from subject and body
-    // await Utils.setupDynamicPlaceholders(
-    //   `${sendEmailAnyoneValue.subject}-${sendEmailAnyoneValue.body}`,
-    //   productEventData,
-    //   integrations,
-    // );
-
-    // Step 2: Replace placeholders in subject and body
-    const emailTo = sendEmailAnyoneValue.to.map((email) => {
-      return {
-        email: email,
-      };
-    });
-
-    const emailParams = {
-      body: findAndReplacePlaceholders(sendEmailAnyoneValue.body, ruleConfig.placeholders as PlaceholdersMap),
-      subject: findAndReplacePlaceholders(sendEmailAnyoneValue.subject, ruleConfig.placeholders as PlaceholdersMap),
-      to: emailTo,
-    };
-
-    // Step 3: Make send email API call
-    return axios.post(
-      `${integrations.emailService.url}/api/v1/email/send`,
-      JSON.stringify({
-        accountId: appId,
-        from: {
-          email: 'no-reply@freshchat.com',
-          name: 'Freshchat Automations',
-        },
-        html: emailParams.body,
-        subject: emailParams.subject,
-        to: emailParams.to,
-      }),
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: integrations.emailService.apiKey,
-        },
-      },
+    await Utils.setupDynamicPlaceholders(
+      `${sendEmailAnyoneValue.subject} ${sendEmailAnyoneValue.body}`,
+      productEventData,
+      integrations,
     );
   } catch (err) {
-    return Promise.reject('Error sending conversation as html via email');
+    return Promise.reject('Failed to setup dynamic placeholders');
   }
+
+  // Step 2: Replace placeholders in subject and body
+  const emailTo = sendEmailAnyoneValue.to.map((email) => {
+    return {
+      email: email,
+    };
+  });
+
+  const emailParams = {
+    body: findAndReplacePlaceholders(sendEmailAnyoneValue.body, ruleConfig.placeholders as PlaceholdersMap),
+    subject: findAndReplacePlaceholders(sendEmailAnyoneValue.subject, ruleConfig.placeholders as PlaceholdersMap),
+    to: emailTo,
+  };
+
+  // Step 3: Make send email API call
+  return axios.post(
+    `${integrations.emailService.url}/api/v1/email/send`,
+    JSON.stringify({
+      accountId: appId,
+      from: {
+        email: 'no-reply@freshchat.com',
+        name: 'Freshchat Automations',
+      },
+      html: emailParams.body,
+      subject: emailParams.subject,
+      to: emailParams.to,
+    }),
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: integrations.emailService.apiKey,
+      },
+    },
+  );
 };
