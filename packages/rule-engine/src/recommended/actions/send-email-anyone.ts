@@ -22,19 +22,29 @@ export default async (
 
   try {
     // Step 1: Setup dynamic placeholders using values from subject and body
-    await Utils.setupDynamicPlaceholders(
-      `${sendEmailAnyoneValue.subject}-${sendEmailAnyoneValue.body}`,
-      productEventData,
-      integrations,
-    );
+    // await Utils.setupDynamicPlaceholders(
+    //   `${sendEmailAnyoneValue.subject}-${sendEmailAnyoneValue.body}`,
+    //   productEventData,
+    //   integrations,
+    // );
 
     // Step 2: Replace placeholders in subject and body
+    const emailTo = sendEmailAnyoneValue.to.map((email) => {
+      return {
+        email: email,
+      };
+    });
+
+    // const emailParams = {
+    //   body: findAndReplacePlaceholders(sendEmailAnyoneValue.body, ruleConfig.placeholders as PlaceholdersMap),
+    //   subject: findAndReplacePlaceholders(sendEmailAnyoneValue.subject, ruleConfig.placeholders as PlaceholdersMap),
+    //   to: emailTo,
+    // };
+
     const emailParams = {
-      body: findAndReplacePlaceholders(sendEmailAnyoneValue.body, ruleConfig.placeholders as PlaceholdersMap),
-      subject: findAndReplacePlaceholders(sendEmailAnyoneValue.subject, ruleConfig.placeholders as PlaceholdersMap),
-      to: sendEmailAnyoneValue.to.map((email) => {
-        email;
-      }),
+      body: sendEmailAnyoneValue.body,
+      subject: sendEmailAnyoneValue.subject,
+      to: emailTo,
     };
 
     // Step 3: Make send email API call
