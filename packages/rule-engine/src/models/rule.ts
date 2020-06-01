@@ -40,10 +40,11 @@ export enum ActionType {
   CreateFreshdeskTicket = 'CREATE_FRESHDESK_TICKET',
   ReOpen = 'REOPEN',
   Resolve = 'RESOLVE',
+  SendEmailAnyone = 'SEND_EMAIL_ANYONE',
+  SendEmailUser = 'SEND_EMAIL_USER',
   SendMessage = 'SEND_MESSAGE',
   SendPrivateNote = 'SEND_PRIVATE_NOTE',
   SendQuickreply = 'SEND_QUICKREPLY',
-  SendUserEmail = 'SEND_USER_EMAIL',
   UnassignThenReassignGroup = 'UNASSIGN_THEN_REASSIGN_GROUP',
   UpdateUserEmail = 'UPDATE_USER_EMAIL',
   UpdateUserName = 'UPDATE_USER_NAME',
@@ -118,6 +119,12 @@ export interface Trigger {
 export interface Action {
   type: ActionType;
   value: string;
+}
+
+export interface SendEmailAnyoneValue {
+  body: string;
+  subject: string;
+  to: string[];
 }
 
 export interface UserConditionValue {
