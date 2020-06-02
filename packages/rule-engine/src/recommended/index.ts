@@ -43,7 +43,8 @@ import actionUpdateUserEmail from './actions/update-user-email';
 import actionUpdateUserPhone from './actions/update-user-phone';
 import actionUpdateUserName from './actions/update-user-name';
 import actionCreateFreshdeskTicket from './actions/create-freshdesk-ticket';
-import actionSendUserEmail from './actions/send-user-email';
+import actionSendEmailUser from './actions/send-email-user';
+import actionSendEmailAnyone from './actions/send-email-anyone';
 
 // Import all conditions
 import conditionMessageText from './conditions/message-text';
@@ -63,6 +64,8 @@ import conditionUserPhone from './conditions/user-phone';
 import dynamicPlaceholderAverageWaitTime from './dynamic-placeholders/average-wait-time';
 import dynamicPlaceholderTranscriptFullConversation from './dynamic-placeholders/transcript-full-conversation';
 import dynamicPlaceholderTranscriptSinceLastResolve from './dynamic-placeholders/transcript-since-last-resolve';
+import dynamicPlaceholderTranscriptFullConversationNormal from './dynamic-placeholders/transcript-full-conversation-normal';
+import dynamicPlaceholderTranscriptSinceLastResolveNormal from './dynamic-placeholders/transcript-since-last-resolve-normal';
 
 const recommendedPlugins: RulePlugin[] = [
   {
@@ -75,7 +78,8 @@ const recommendedPlugins: RulePlugin[] = [
       [ActionType.SendMessage]: actionSendMessage,
       [ActionType.SendPrivateNote]: actionSendPrivateNote,
       [ActionType.SendQuickreply]: actionSendQuickreply,
-      [ActionType.SendUserEmail]: actionSendUserEmail,
+      [ActionType.SendEmailAnyone]: actionSendEmailAnyone,
+      [ActionType.SendEmailUser]: actionSendEmailUser,
       [ActionType.UnassignThenReassignGroup]: actionUnassignThenReassignGroup,
       [ActionType.UpdateUserProperty]: actionUpdateUserProperty,
       [ActionType.UpdateUserEmail]: actionUpdateUserEmail,
@@ -99,7 +103,9 @@ const recommendedPlugins: RulePlugin[] = [
     dynamicPlaceholders: {
       'metrics.average_wait_time': dynamicPlaceholderAverageWaitTime,
       'transcript.full_conversation': dynamicPlaceholderTranscriptFullConversation,
+      'transcript.full_conversation_normal': dynamicPlaceholderTranscriptFullConversationNormal,
       'transcript.since_last_resolve': dynamicPlaceholderTranscriptSinceLastResolve,
+      'transcript.since_last_resolve_normal': dynamicPlaceholderTranscriptSinceLastResolveNormal,
     },
     operators: {
       [ConditionOperator.StartsWith]: operatorStartsWith,

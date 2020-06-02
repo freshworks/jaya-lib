@@ -8,8 +8,61 @@
     <td>
       <table style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;margin:0px auto;background: #f4f8fa;overflow: auto;padding: 0 15px; min-width: 500px; margin: 0px;">
         {{#each (reverse messages) as | message |}}
-          {{!-- agent message --}}
-          {{#if (and (or (isnt message.message_source "system") (isFalsey message.meta_data)) (or (eq message.actor_type "agent") (eq message.message_type "system")))}}
+        {{!-- System message --}}
+          {{#if (isTruthy message.meta_data)}}
+            <tr style="border: none;">
+              <td style="padding: 8px; font-size:12px; color: #6f7071;text-align: center;max-width: 300px;">
+                {{#each message.message_parts as | message_part |}}
+                  {{#if message_part.text}}
+                    {{{message_part.text.content}}}
+                  {{/if}}
+                {{/each}}
+                <span style="color: #999999; font-size: 11px;">
+                  {{date message.created_time "hh:mm A, Do MMM"}}
+                </span>
+              </td>
+            </tr>
+          {{!-- User message --}}
+          {{else if (and (eq message.actor_type "user") (eq message.message_type "normal"))}}
+            <tr style="border: none;">
+              <td style="padding: 10px 20px;color: #333;color: #3f3f46;">
+                <div style="padding:0 5px 0 0;font-size:12px; color: #6f7071;margin-left: 33px;">
+                  {{#if (and ../user ../user.first_name)}}
+                    {{../user.first_name}}
+                  {{else}}
+                    User
+                  {{/if}}
+                </div>
+                <img 
+                  src="
+                    {{#if (and ../user ../user.avatar.url)}}
+                      {{../user.avatar.url}}
+                    {{else}}
+                      https://images.freshchat.com/30x30/fresh-chat-names/anonymous.png
+                    {{/if}}"
+                  style="width: 30px;height: 30px;border-radius: 50% 6px 50% 50%;float:left;margin-right: 3px;">
+                <div style="border-radius: 4px 20px 20px;line-height: 21px;background: #a8ddfd;max-width: 300px;padding: 12px;float: left;">
+                  {{#each message.message_parts as | message_part |}}
+                    <div style="word-break: break-all;">
+                      {{#if message_part.text}}
+                        {{{message_part.text.content}}}
+                      {{/if}}
+                      {{#if message_part.image}}
+                        <img src="{{message_part.image.url}}" style="max-height: 300px;max-width: 300px; border-radius: 4px;">
+                      {{/if}}
+                      {{#if message_part.file}}
+                        Attached file: {{message_part.file.name}}
+                      {{/if}}
+                    </div>
+                  {{/each}}
+                </div>
+                <div style="color: #999999; font-size: 11px; clear: left;margin-left: 33px;">
+                  {{date message.created_time "hh:mm A, Do MMM"}}
+                </div>
+              </td>
+            <tr>
+          {{!-- Agent message --}}
+          {{else}}
             <tr style="border: none;">
               <td style="padding: 10px 20px;color: #3f3f46;">
                 <div style="float:right">
@@ -57,58 +110,6 @@
                 </div>
               </td>
             <tr>
-          {{!-- user message --}}
-          {{else if (and (isnt message.message_source "system") (eq message.actor_type "user") (eq message.message_type "normal"))}}
-            <tr style="border: none;">
-              <td style="padding: 10px 20px;color: #333;color: #3f3f46;">
-                <div style="padding:0 5px 0 0;font-size:12px; color: #6f7071;margin-left: 33px;">
-                  {{#if (and ../user ../user.first_name)}}
-                    {{../user.first_name}}
-                  {{else}}
-                    User
-                  {{/if}}
-                </div>
-                <img 
-                  src="
-                    {{#if (and ../user ../user.avatar.url)}}
-                      {{../user.avatar.url}}
-                    {{else}}
-                      https://images.freshchat.com/30x30/fresh-chat-names/anonymous.png
-                    {{/if}}"
-                  style="width: 30px;height: 30px;border-radius: 50% 6px 50% 50%;float:left;margin-right: 3px;">
-                <div style="border-radius: 4px 20px 20px;line-height: 21px;background: #a8ddfd;max-width: 300px;padding: 12px;float: left;">
-                  {{#each message.message_parts as | message_part |}}
-                    <div style="word-break: break-all;">
-                      {{#if message_part.text}}
-                        {{{message_part.text.content}}}
-                      {{/if}}
-                      {{#if message_part.image}}
-                        <img src="{{message_part.image.url}}" style="max-height: 300px;max-width: 300px; border-radius: 4px;">
-                      {{/if}}
-                      {{#if message_part.file}}
-                        Attached file: {{message_part.file.name}}
-                      {{/if}}
-                    </div>
-                  {{/each}}
-                </div>
-                <div style="color: #999999; font-size: 11px; clear: left;margin-left: 33px;">
-                  {{date message.created_time "hh:mm A, Do MMM"}}
-                </div>
-              </td>
-            <tr>
-          {{ else if (eq message.message_source "system")}}
-            <tr style="border: none;">
-              <td style="padding: 8px; font-size:12px; color: #6f7071;text-align: center;max-width: 300px;">
-                {{#each message.message_parts as | message_part |}}
-                  {{#if message_part.text}}
-                    {{{message_part.text.content}}}
-                  {{/if}}
-                {{/each}}
-                <span style="color: #999999; font-size: 11px;">
-                  {{date message.created_time "hh:mm A, Do MMM"}}
-                </span>
-              </td>
-            </tr>
           {{/if}}
         {{/each}}
       </table>

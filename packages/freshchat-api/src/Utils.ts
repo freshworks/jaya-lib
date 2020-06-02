@@ -3,7 +3,7 @@ import path from 'path';
 import Handlebars from 'handlebars';
 import Helpers from 'handlebars-helpers';
 
-import { Message, ActorType, MessageType, FilterMessagesOptions, MessageSource } from './interfaces/Message';
+import { Message, ActorType, MessageType, FilterMessagesOptions } from './interfaces/Message';
 import { Agent } from './interfaces/Agent';
 import { User } from './interfaces/User';
 
@@ -24,19 +24,11 @@ export class Utils {
         return false;
       }
 
-      if (
-        filterMessagesOptions.isExcludeSystem &&
-        message.message_source === MessageSource.System &&
-        message.meta_data
-      ) {
+      if (filterMessagesOptions.isExcludeSystem && message.meta_data) {
         return false;
       }
 
-      if (
-        filterMessagesOptions.isExcludeNormal &&
-        (message.message_source !== MessageSource.System || !message.meta_data) &&
-        message.message_type !== MessageType.Private
-      ) {
+      if (filterMessagesOptions.isExcludeNormal && !message.meta_data && message.message_type !== MessageType.Private) {
         return false;
       }
 
