@@ -62,10 +62,10 @@ import conditionUserPhone from './conditions/user-phone';
 
 // Import all dynamic placeholders
 import dynamicPlaceholderAverageWaitTime from './dynamic-placeholders/average-wait-time';
-import dynamicPlaceholderTranscriptFullConversation from './dynamic-placeholders/transcript-full-conversation';
-import dynamicPlaceholderTranscriptSinceLastResolve from './dynamic-placeholders/transcript-since-last-resolve';
-import dynamicPlaceholderTranscriptFullConversationNormal from './dynamic-placeholders/transcript-full-conversation-normal';
-import dynamicPlaceholderTranscriptSinceLastResolveNormal from './dynamic-placeholders/transcript-since-last-resolve-normal';
+import dynamicPlaceholderTranscriptConvEntireHtml from './dynamic-placeholders/transcript-conv-entire-html';
+import dynamicPlaceholderTranscriptConvEntireIncludesPrivateSystemHtml from './dynamic-placeholders/transcript-conv-entire-includes-private-system-html';
+import dynamicPlaceholderTranscriptConvSinceLastResolveHtml from './dynamic-placeholders/transcript-conv-since-last-resolve-html';
+import dynamicPlaceholderTranscriptConvSinceLastResolveIncludesPrivateSystemHtml from './dynamic-placeholders/transcript-conv-since-last-resolve-includes-private-system-html';
 
 const recommendedPlugins: RulePlugin[] = [
   {
@@ -102,10 +102,10 @@ const recommendedPlugins: RulePlugin[] = [
     },
     dynamicPlaceholders: {
       'metrics.average_wait_time': dynamicPlaceholderAverageWaitTime,
-      'transcript.full_conversation': dynamicPlaceholderTranscriptFullConversation,
-      'transcript.full_conversation_normal': dynamicPlaceholderTranscriptFullConversationNormal,
-      'transcript.since_last_resolve': dynamicPlaceholderTranscriptSinceLastResolve,
-      'transcript.since_last_resolve_normal': dynamicPlaceholderTranscriptSinceLastResolveNormal,
+      'transcript.conv_entire.html': dynamicPlaceholderTranscriptConvEntireHtml,
+      'transcript.conv_entire.includes_private_system.html': dynamicPlaceholderTranscriptConvEntireIncludesPrivateSystemHtml,
+      'transcript.conv_since_last_resolve.html': dynamicPlaceholderTranscriptConvSinceLastResolveHtml,
+      'transcript.conv_since_last_resolve.includes_private_system.html': dynamicPlaceholderTranscriptConvSinceLastResolveIncludesPrivateSystemHtml,
     },
     operators: {
       [ConditionOperator.StartsWith]: operatorStartsWith,
