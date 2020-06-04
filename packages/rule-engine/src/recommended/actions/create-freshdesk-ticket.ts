@@ -47,8 +47,8 @@ const getTicketConversationContent = async (
     }
 
     // Step 6: Get messages html
-    description = FreshchatUtils.generateConversationHtml(descriptionMessages, agents, user as FreshchatUser);
-    privateNote = FreshchatUtils.generateConversationHtml(allMessages, agents, user as FreshchatUser);
+    description = FreshchatUtils.generateConversationTranscript(descriptionMessages, agents, user as FreshchatUser);
+    privateNote = FreshchatUtils.generateConversationTranscript(allMessages, agents, user as FreshchatUser);
   } catch (err) {
     return Promise.reject('Error converting conversation to html');
   }

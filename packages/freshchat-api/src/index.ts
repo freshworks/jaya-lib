@@ -319,7 +319,7 @@ export default class Freshchat {
     return Promise.all(agentIds.map((agentId) => this.getAgentById(agentId)));
   }
 
-  async getConversationHtml(
+  async getConversationTranscript(
     conversationId: string,
     options?: GetConversationMessagesOptions,
     filterMessagesOptions?: FilterMessagesOptions,
@@ -327,7 +327,7 @@ export default class Freshchat {
     try {
       // Step 1: Get conversation messages
       const messages = await this.getConversationMessages(conversationId, options);
-
+      // console.log(JSON.stringify(messages));
       // Step 2: Filter messages
       const filteredMessages = Utils.filterMessages(messages, filterMessagesOptions);
 
@@ -336,7 +336,7 @@ export default class Freshchat {
 
       // Step 3: Get agents by id
       const agents = await this.getAgentsById(agentIds);
-
+      // console.log(JSON.stringify(agents));
       // Step 4: Extract userId
       const userId = Utils.extractUserId(filteredMessages);
 
@@ -350,7 +350,7 @@ export default class Freshchat {
       }
 
       // Step 6: Generate conversation html
-      return Promise.resolve(Utils.generateConversationHtml(filteredMessages, agents, user as User));
+      return Promise.resolve(Utils.generateConversationTranscript(filteredMessages, agents, user as User, options));
     } catch (err) {
       return Promise.reject('Error fetching conversationHtml');
     }
