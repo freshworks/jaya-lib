@@ -327,7 +327,6 @@ export default class Freshchat {
     try {
       // Step 1: Get conversation messages
       const messages = await this.getConversationMessages(conversationId, options);
-      // console.log(JSON.stringify(messages));
       // Step 2: Filter messages
       const filteredMessages = Utils.filterMessages(messages, filterMessagesOptions);
 
@@ -336,7 +335,6 @@ export default class Freshchat {
 
       // Step 3: Get agents by id
       const agents = await this.getAgentsById(agentIds);
-      // console.log(JSON.stringify(agents));
       // Step 4: Extract userId
       const userId = Utils.extractUserId(filteredMessages);
 

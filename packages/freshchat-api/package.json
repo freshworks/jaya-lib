@@ -13,7 +13,7 @@
     "watch": "tsc --watch --incremental",
     "coverage": "codecov",
     "test": "nyc --reporter=lcov mocha",
-    "build": "tsc && cpx ./src/conversation-html.hbs ./lib",
+    "build": "tsc && cpx ./src/conversation-html.hbs ./src/conversation-text.hbs ./lib",
     "format": "prettier --write \"src/**/*.ts\"",
     "build:check": "tsc --noEmit",
     "lint": "tsc --noEmit && eslint '*/**/*.ts' --quiet --fix",
