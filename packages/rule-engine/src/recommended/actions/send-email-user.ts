@@ -27,7 +27,7 @@ export default async (
 
   try {
     const emailSubject = 'Transcript of Conversation';
-    const conversationHtml = await freshchat.getConversationHtml(
+    const conversationHtml = await freshchat.getConversationTranscript(
       conversationId,
       {
         isFetchUntilLastResolve: true,

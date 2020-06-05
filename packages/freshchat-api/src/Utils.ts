@@ -3,7 +3,13 @@ import path from 'path';
 import Handlebars from 'handlebars';
 import Helpers from 'handlebars-helpers';
 
-import { Message, ActorType, MessageType, FilterMessagesOptions } from './interfaces/Message';
+import {
+  Message,
+  ActorType,
+  MessageType,
+  FilterMessagesOptions,
+  GetConversationMessagesOptions,
+} from './interfaces/Message';
 import { Agent } from './interfaces/Agent';
 import { User } from './interfaces/User';
 
@@ -49,17 +55,28 @@ export class Utils {
     return userMessage && userMessage.actor_id;
   };
 
-  public static generateConversationHtml = (messages: Message[], agents: Agent[], user: User): string => {
+  public static generateConversationTranscript = (
+    messages: Message[],
+    agents: Agent[],
+    user: User,
+    options?: GetConversationMessagesOptions,
+  ): string => {
     const agentsMap: { [key: string]: Agent } = {};
     agents.forEach((agent) => {
       agentsMap[agent.id] = agent;
     });
 
-    const data = fs.readFileSync(path.resolve(__dirname, 'conversation.hbs'), 'utf-8');
-    const template = Handlebars.compile(data);
-    const html = template({ agents: agentsMap, messages, user });
+    let hbsData = '';
+    if (options && options.output === 'text') {
+      hbsData = fs.readFileSync(path.resolve(__dirname, 'conversation-text.hbs'), 'utf-8');
+    } else {
+      hbsData = fs.readFileSync(path.resolve(__dirname, 'conversation-html.hbs'), 'utf-8');
+    }
 
-    // fs.writeFileSync(path.resolve(__dirname, '../lib/conversation.html'), html, 'utf-8');
-    return html;
+    const template = Handlebars.compile(hbsData);
+    const transcript = template({ agents: agentsMap, messages, user });
+
+    // fs.writeFileSync(path.resolve(__dirname, '../lib/conversation.html'), transcript, 'utf-8');
+    return transcript;
   };
 }

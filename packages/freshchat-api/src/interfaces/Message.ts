@@ -65,6 +65,7 @@ export interface GetMessagesResponse {
 
 export interface GetConversationMessagesOptions {
   isFetchUntilLastResolve?: boolean;
+  output?: 'html' | 'text';
 }
 
 export interface FilterMessagesOptions {
