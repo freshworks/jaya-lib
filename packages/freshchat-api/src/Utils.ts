@@ -3,10 +3,15 @@ import path from 'path';
 import Handlebars from 'handlebars';
 import Helpers from 'handlebars-helpers';
 
-import { Message, ActorType, MessageType, FilterMessagesOptions, GetConversationMessagesOptions } from './interfaces/Message';
+import {
+  Message,
+  ActorType,
+  MessageType,
+  FilterMessagesOptions,
+  GetConversationMessagesOptions,
+} from './interfaces/Message';
 import { Agent } from './interfaces/Agent';
 import { User } from './interfaces/User';
-import { stringify } from 'querystring';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const helperDate = require('helper-date');
@@ -50,13 +55,18 @@ export class Utils {
     return userMessage && userMessage.actor_id;
   };
 
-  public static generateConversationTranscript = (messages: Message[], agents: Agent[], user: User, options?: GetConversationMessagesOptions ): string => {
+  public static generateConversationTranscript = (
+    messages: Message[],
+    agents: Agent[],
+    user: User,
+    options?: GetConversationMessagesOptions,
+  ): string => {
     const agentsMap: { [key: string]: Agent } = {};
     agents.forEach((agent) => {
       agentsMap[agent.id] = agent;
     });
 
-    let hbsData: string = '';
+    let hbsData = '';
     if (options && options.output === 'text') {
       hbsData = fs.readFileSync(path.resolve(__dirname, 'conversation-text.hbs'), 'utf-8');
     } else {
