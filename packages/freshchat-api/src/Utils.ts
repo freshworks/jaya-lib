@@ -87,7 +87,7 @@ export class Utils {
       user,
     });
 
-    fs.writeFileSync(path.resolve(__dirname, '../lib/conversation.html'), transcript, 'utf-8');
+    // fs.writeFileSync(path.resolve(__dirname, '../lib/conversation.html'), transcript, 'utf-8');
     return transcript;
   };
 }
