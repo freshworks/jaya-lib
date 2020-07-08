@@ -236,27 +236,6 @@ export default class Freshchat {
   }
 
   /**
-   * Send a Private Note.
-   */
-  sendPrivateNote(conversationId: string, message: string, agentId?: string): AxiosPromise<Message> {
-    const getAgentApiUrl = `${this.apiUrl}/agents?items_per_page=1`;
-
-    if (agentId) {
-      return this.postMessage(conversationId, message, 'private', 'agent', agentId);
-    } else {
-      return axios
-        .get(getAgentApiUrl, { headers: this.headers })
-        .then((response) => {
-          const accountOwnerId = response.data.agents[0].id;
-          return this.postMessage(conversationId, message, 'private', 'agent', accountOwnerId);
-        })
-        .catch((err) => {
-          return err;
-        });
-    }
-  }
-
-  /**
    * Send a quickreply message
    */
   sendQuickreply(conversationId: string, message: string, responses: string[]): AxiosPromise<Message> {
@@ -320,6 +299,8 @@ export default class Freshchat {
   }
 
   async getConversationTranscript(
+    baseUrl: string,
+    accountId: string,
     conversationId: string,
     options?: GetConversationMessagesOptions,
     filterMessagesOptions?: FilterMessagesOptions,
@@ -327,6 +308,7 @@ export default class Freshchat {
     try {
       // Step 1: Get conversation messages
       const messages = await this.getConversationMessages(conversationId, options);
+
       // Step 2: Filter messages
       const filteredMessages = Utils.filterMessages(messages, filterMessagesOptions);
 
@@ -335,6 +317,7 @@ export default class Freshchat {
 
       // Step 3: Get agents by id
       const agents = await this.getAgentsById(agentIds);
+
       // Step 4: Extract userId
       const userId = Utils.extractUserId(filteredMessages);
 
@@ -348,7 +331,17 @@ export default class Freshchat {
       }
 
       // Step 6: Generate conversation html
-      return Promise.resolve(Utils.generateConversationTranscript(filteredMessages, agents, user as User, options));
+      return Promise.resolve(
+        Utils.generateConversationTranscript(
+          baseUrl,
+          accountId,
+          conversationId,
+          filteredMessages,
+          agents,
+          user as User,
+          options,
+        ),
+      );
     } catch (err) {
       return Promise.reject('Error fetching conversationHtml');
     }

@@ -10,6 +10,8 @@ import { isUsernameGenerated } from '@freshworks-jaya/utilities';
 const getTicketConversationContent = async (
   freshchat: Freshchat,
   conversationId: string,
+  appId: string,
+  baseUrl: string,
 ): Promise<{ description: string; privateNote: string }> => {
   let description = '';
   let privateNote = '';
@@ -47,8 +49,28 @@ const getTicketConversationContent = async (
     }
 
     // Step 6: Get messages html
-    description = FreshchatUtils.generateConversationTranscript(descriptionMessages, agents, user as FreshchatUser);
-    privateNote = FreshchatUtils.generateConversationTranscript(allMessages, agents, user as FreshchatUser);
+    description = FreshchatUtils.generateConversationTranscript(
+      baseUrl,
+      appId,
+      conversationId,
+      descriptionMessages,
+      agents,
+      user as FreshchatUser,
+      {
+        isIncludeFreshchatLink: false,
+      },
+    );
+    privateNote = FreshchatUtils.generateConversationTranscript(
+      baseUrl,
+      appId,
+      conversationId,
+      allMessages,
+      agents,
+      user as FreshchatUser,
+      {
+        isIncludeFreshchatLink: true,
+      },
+    );
   } catch (err) {
     return Promise.reject('Error converting conversation to html');
   }
@@ -63,6 +85,7 @@ export default async (
   integrations: Integrations,
   productEventData: ProductEventData,
   actionValue: unknown,
+  domain: string,
 ): Promise<unknown> => {
   const freshdeskApiUrl = integrations.freshdesk && integrations.freshdesk.url;
   const freshdeskApiToken = integrations.freshdesk && integrations.freshdesk.token;
@@ -74,7 +97,12 @@ export default async (
 
   try {
     let ticketSubject = 'Conversation with {user.first_name|User}';
-    const ticketConversationContent = await getTicketConversationContent(freshchat, conversationId);
+    const ticketConversationContent = await getTicketConversationContent(
+      freshchat,
+      conversationId,
+      modelProperties.app_id,
+      `https://${domain}`,
+    );
 
     // Step 1: Replace placeholders
     ticketSubject = findAndReplacePlaceholders(ticketSubject, ruleConfig.placeholders as PlaceholdersMap);

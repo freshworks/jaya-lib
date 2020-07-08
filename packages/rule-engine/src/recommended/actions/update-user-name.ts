@@ -9,6 +9,7 @@ export default (
   integrations: Integrations,
   productEventData: ProductEventData,
   actionValue: unknown,
+  domain: string,
 ): Promise<unknown> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
@@ -16,7 +17,7 @@ export default (
 
   const userName = actionValue as string;
 
-  return Utils.setupDynamicPlaceholders(userName, productEventData, integrations).then(() => {
+  return Utils.setupDynamicPlaceholders(userName, productEventData, integrations, domain).then(() => {
     return freshchat.updateUser(productEventData.associations.user.id, {
       first_name: findAndReplacePlaceholders(userName, ruleConfig.placeholders as PlaceholdersMap),
     });

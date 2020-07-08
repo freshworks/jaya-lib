@@ -63,7 +63,7 @@ export class RuleEngine {
       );
       // Perform all actions sequentially in order.
       if (firstMatchingRule.actions && firstMatchingRule.actions.length) {
-        await ActionExecutor.handleActions(integrations, firstMatchingRule.actions, payload.data);
+        await ActionExecutor.handleActions(integrations, firstMatchingRule.actions, payload);
       }
     } catch (err) {
       return Promise.reject(err);

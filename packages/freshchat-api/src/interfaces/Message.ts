@@ -65,6 +65,7 @@ export interface GetMessagesResponse {
 
 export interface GetConversationMessagesOptions {
   isFetchUntilLastResolve?: boolean;
+  isIncludeFreshchatLink?: boolean;
   output?: 'html' | 'text';
 }
 

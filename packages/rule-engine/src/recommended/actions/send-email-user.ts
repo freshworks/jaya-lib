@@ -7,6 +7,7 @@ export default async (
   integrations: Integrations,
   productEventData: ProductEventData,
   actionValue: unknown,
+  domain: string,
 ): Promise<unknown> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
@@ -28,9 +29,12 @@ export default async (
   try {
     const emailSubject = 'Transcript of Conversation';
     const conversationHtml = await freshchat.getConversationTranscript(
+      `https://${domain}`,
+      modelProperties.app_id,
       conversationId,
       {
         isFetchUntilLastResolve: true,
+        isIncludeFreshchatLink: false,
       },
       {
         isExcludePrivate: true,

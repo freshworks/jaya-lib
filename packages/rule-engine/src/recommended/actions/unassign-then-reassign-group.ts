@@ -6,6 +6,7 @@ export default (
   integrations: Integrations,
   productEventData: ProductEventData,
   actionValue: unknown,
+  domain: string,
 ): Promise<unknown> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;

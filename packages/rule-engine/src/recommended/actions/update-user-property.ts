@@ -10,6 +10,7 @@ export default (
   integrations: Integrations,
   productEventData: ProductEventData,
   actionValue: unknown,
+  domain: string,
 ): Promise<unknown> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
@@ -17,19 +18,22 @@ export default (
 
   const uperPropertiesActionValue = actionValue as UserConditionValue;
 
-  return Utils.setupDynamicPlaceholders(uperPropertiesActionValue.propertyValue, productEventData, integrations).then(
-    () => {
-      return freshchat.updateUser(productEventData.associations.user.id, {
-        properties: [
-          {
-            name: uperPropertiesActionValue.propertyKey,
-            value: findAndReplacePlaceholders(
-              uperPropertiesActionValue.propertyValue,
-              ruleConfig.placeholders as PlaceholdersMap,
-            ),
-          },
-        ],
-      });
-    },
-  );
+  return Utils.setupDynamicPlaceholders(
+    uperPropertiesActionValue.propertyValue,
+    productEventData,
+    integrations,
+    domain,
+  ).then(() => {
+    return freshchat.updateUser(productEventData.associations.user.id, {
+      properties: [
+        {
+          name: uperPropertiesActionValue.propertyKey,
+          value: findAndReplacePlaceholders(
+            uperPropertiesActionValue.propertyValue,
+            ruleConfig.placeholders as PlaceholdersMap,
+          ),
+        },
+      ],
+    });
+  });
 };

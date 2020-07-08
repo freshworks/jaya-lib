@@ -1,7 +1,7 @@
 {{#each (reverse messages) as | message |}}
 {{!-- System message --}}
 {{#if (isTruthy message.meta_data)}}
-[SYS] SYSTEM  {{date message.created_time "hh:mm A, Do MMM"}} :
+[SYS] SYSTEM  {{date message.created_time "hh:mm A, Do MMM"}}:
 {{#each message.message_parts as | message_part |}}
 {{#if message_part.text}}
 {{{message_part.text.content}}}
@@ -10,9 +10,9 @@
 {{!-- User message --}}
 {{else if (and (eq message.actor_type "user") (eq message.message_type "normal"))}}
 {{#if (and ../user ../user.first_name)}}
-[USR] {{../user.first_name}}  {{date message.created_time "hh:mm A, Do MMM"}} :
+[USR] {{../user.first_name}}  {{date message.created_time "hh:mm A, Do MMM"}}:
 {{else}}
-[USR] User  {{date message.created_time "hh:mm A, Do MMM"}} :
+[USR] User  {{date message.created_time "hh:mm A, Do MMM"}}:
 {{/if}}
 {{#each message.message_parts as | message_part |}}
 {{#if message_part.text}}
@@ -29,10 +29,10 @@ Attached file: {{message_part.file.name}}
 {{else}}
 {{#if message.actor_id}}
 {{#with (lookup ../agents message.actor_id) as | agent |}}
-[AGT] {{agent.first_name}}  {{date message.created_time "hh:mm A, Do MMM"}} :
+[AGT] {{agent.first_name}}  {{date message.created_time "hh:mm A, Do MMM"}}:
 {{/with}}
 {{else}}
-[BOT] Bot  {{date message.created_time "hh:mm A, Do MMM"}} :
+[BOT] Bot  {{date message.created_time "hh:mm A, Do MMM"}}:
 {{/if}}
 {{#each message.message_parts as | message_part |}}
 {{#if message_part.text}}
@@ -48,3 +48,6 @@ Attached file: {{message_part.file.name}}
 {{/if}}
 
 {{/each}}
+{{#if isIncludeFreshchatLink}}
+{{conversationUrl}}
+{{/if}}

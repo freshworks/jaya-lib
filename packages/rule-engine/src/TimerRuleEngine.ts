@@ -121,7 +121,7 @@ export class TimerRuleEngine {
 
     // Execute actions
     if (timerRule && Array.isArray(timerRule.actions)) {
-      ActionExecutor.handleActions(integrations, timerRule.actions, externalEventPayload.data.originalPayload.data);
+      ActionExecutor.handleActions(integrations, timerRule.actions, externalEventPayload.data.originalPayload);
     }
   }
 
