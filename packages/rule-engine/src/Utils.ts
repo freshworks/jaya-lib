@@ -28,6 +28,7 @@ export class Utils {
     text: string,
     productEventData: ProductEventData,
     integrations: Integrations,
+    domain: string,
   ): Promise<void> {
     // Step 1: Extract dynamic placeholder keys from text
     // Step 2: Fetch data required by all matching keys
@@ -51,7 +52,11 @@ export class Utils {
           }
 
           try {
-            const value = await ruleConfig.dynamicPlaceholders[dynamicPlaceholderKey](productEventData, integrations);
+            const value = await ruleConfig.dynamicPlaceholders[dynamicPlaceholderKey](
+              productEventData,
+              integrations,
+              domain,
+            );
             placeholders[dynamicPlaceholderKey] = value;
 
             // Step 3

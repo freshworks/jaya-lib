@@ -1,5 +1,12 @@
 // Simple library to handle the actions to be performed
-import { ProductEventData, User, ActorType, Agent, Group } from '@freshworks-jaya/marketplace-models';
+import {
+  ProductEventData,
+  User,
+  ActorType,
+  Agent,
+  Group,
+  ProductEventPayload,
+} from '@freshworks-jaya/marketplace-models';
 import { Action } from './models/rule';
 import { Integrations } from './models/rule-engine';
 import ruleConfig from './RuleConfig';
@@ -13,12 +20,12 @@ export class ActionExecutor {
   public static handleAction(
     integrations: Integrations,
     action: Action,
-    productEventData: ProductEventData,
+    productEventPayload: ProductEventPayload,
   ): Promise<unknown> {
     const actionFunc = ruleConfig.actions && ruleConfig.actions[action.type];
 
     if (actionFunc) {
-      return actionFunc(integrations, productEventData, action.value);
+      return actionFunc(integrations, productEventPayload.data, action.value, productEventPayload.domain);
     }
     return Promise.reject('Invalid action type');
   }
@@ -92,14 +99,14 @@ export class ActionExecutor {
   public static async handleActions(
     integrations: Integrations,
     actions: Action[],
-    productEventData: ProductEventData,
+    productEventPayload: ProductEventPayload,
   ): Promise<void> {
-    this.setupPlaceholders(productEventData);
+    this.setupPlaceholders(productEventPayload.data);
 
     for (let i = 0; actions && i < actions.length; i += 1) {
       try {
         const action = actions[i];
-        await this.handleAction(integrations, action, productEventData);
+        await this.handleAction(integrations, action, productEventPayload);
       } catch (err) {
         Promise.reject(`Error processing action => ${err}`);
       }

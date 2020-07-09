@@ -70,6 +70,7 @@ export class TimerRuleEngine {
         } catch (err) {}
         // If there are no existing schedules, create schedule object
         // and push it into the schedules array for bulk scheduling later.
+
         if (!existingSchedule) {
           schedulesToCreate = [
             ...schedulesToCreate,
@@ -77,7 +78,20 @@ export class TimerRuleEngine {
               jobId,
               payload: {
                 jobId,
-                originalPayload: payload,
+                originalPayload: {
+                  account_id: payload.account_id,
+                  data: {
+                    actor: payload.data.actor,
+                    associations: payload.data.associations,
+                    conversation: payload.data.conversation,
+                    message: payload.data.message,
+                  },
+                  domain: payload.domain,
+                  event: payload.event,
+                  region: payload.region,
+                  timestamp: payload.timestamp,
+                  version: payload.timestamp,
+                },
                 ruleIndex,
               },
               scheduledTime: this.addSeconds(new Date(), rule.timerValue).toISOString(),
@@ -121,7 +135,7 @@ export class TimerRuleEngine {
 
     // Execute actions
     if (timerRule && Array.isArray(timerRule.actions)) {
-      ActionExecutor.handleActions(integrations, timerRule.actions, externalEventPayload.data.originalPayload.data);
+      ActionExecutor.handleActions(integrations, timerRule.actions, externalEventPayload.data.originalPayload);
     }
   }
 

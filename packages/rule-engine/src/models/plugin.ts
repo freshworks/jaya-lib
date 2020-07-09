@@ -5,7 +5,12 @@ import { TriggerAction, TriggerActor } from './rule';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 
 export type PluginActions = {
-  [key: string]: (integrations: Integrations, payload: ProductEventData, actionValue: unknown) => Promise<unknown>;
+  [key: string]: (
+    integrations: Integrations,
+    payload: ProductEventData,
+    actionValue: unknown,
+    domain: string,
+  ) => Promise<unknown>;
 };
 
 export type PluginOperators = {
@@ -29,7 +34,7 @@ export type PluginConditions = {
 };
 
 export type PluginDynamicPlaceholders = {
-  [key: string]: (productEventData: ProductEventData, integrations: Integrations) => Promise<string>;
+  [key: string]: (productEventData: ProductEventData, integrations: Integrations, domain: string) => Promise<string>;
 };
 
 export interface RulePlugin {

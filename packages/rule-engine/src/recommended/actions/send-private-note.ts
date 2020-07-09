@@ -9,6 +9,7 @@ export default (
   integrations: Integrations,
   productEventData: ProductEventData,
   actionValue: unknown,
+  domain: string,
 ): Promise<unknown> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
@@ -16,10 +17,12 @@ export default (
   const modelProperties = productEventData.conversation || productEventData.message;
   const conversationId = modelProperties.conversation_id;
 
-  return Utils.setupDynamicPlaceholders(actionValue as string, productEventData, integrations).then(() => {
-    return freshchat.sendPrivateNote(
+  return Utils.setupDynamicPlaceholders(actionValue as string, productEventData, integrations, domain).then(() => {
+    return freshchat.postMessage(
       conversationId,
       findAndReplacePlaceholders(actionValue as string, ruleConfig.placeholders as PlaceholdersMap),
+      'private',
+      'bot',
     );
   });
 };

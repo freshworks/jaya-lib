@@ -10,6 +10,7 @@ export default async (
   integrations: Integrations,
   productEventData: ProductEventData,
   actionValue: unknown,
+  domain: string,
 ): Promise<unknown> => {
   const modelProperties = productEventData.conversation || productEventData.message;
   const appId = modelProperties.app_id;
@@ -26,6 +27,7 @@ export default async (
       `${sendEmailAnyoneValue.subject} ${sendEmailAnyoneValue.body}`,
       productEventData,
       integrations,
+      domain,
     );
   } catch (err) {
     return Promise.reject('Failed to setup dynamic placeholders');

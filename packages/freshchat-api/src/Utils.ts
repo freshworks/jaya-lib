@@ -56,6 +56,9 @@ export class Utils {
   };
 
   public static generateConversationTranscript = (
+    baseUrl: string,
+    accountId: string,
+    conversationId: string,
     messages: Message[],
     agents: Agent[],
     user: User,
@@ -73,8 +76,16 @@ export class Utils {
       hbsData = fs.readFileSync(path.resolve(__dirname, 'conversation-html.hbs'), 'utf-8');
     }
 
+    const conversationUrl = `${baseUrl}/a/${accountId}/open/conversation/${conversationId}`;
+
     const template = Handlebars.compile(hbsData);
-    const transcript = template({ agents: agentsMap, messages, user });
+    const transcript = template({
+      agents: agentsMap,
+      conversationUrl,
+      isIncludeFreshchatLink: options && options.isIncludeFreshchatLink,
+      messages,
+      user,
+    });
 
     // fs.writeFileSync(path.resolve(__dirname, '../lib/conversation.html'), transcript, 'utf-8');
     return transcript;
