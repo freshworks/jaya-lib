@@ -108,8 +108,12 @@ export class ActionExecutor {
         const action = actions[i];
         await this.handleAction(integrations, action, productEventPayload);
       } catch (err) {
-        Promise.reject(`Error processing action => ${err}`);
+        // Error while executing an action
+        // Queietly suppressing it so that next action can be executed
+        // So, doing nothing here
       }
     }
+
+    return Promise.resolve();
   }
 }
