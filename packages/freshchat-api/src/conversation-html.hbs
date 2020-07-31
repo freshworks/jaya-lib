@@ -18,7 +18,7 @@
                   {{/if}}
                 {{/each}}
                 <span style="color: #999999; font-size: 11px;">
-                  {{date message.created_time "hh:mm A, Do MMM"}}
+                  {{date message.created_time "hh:mm A, Do MMM" datejs=false}}
                 </span>
               </td>
             </tr>
@@ -54,7 +54,7 @@
                   {{/each}}
                 </div>
                 <div style="color: #999999; font-size: 11px; clear: left;margin-left: 33px;">
-                  {{date message.created_time "hh:mm A, Do MMM"}}
+                  {{date message.created_time "hh:mm A, Do MMM" datejs=false}}
                 </div>
               </td>
             <tr>
@@ -101,7 +101,7 @@
                     {{/each}}
                   </div>
                   <div style="color: #999999;font-size: 11px;clear: right;">
-                    {{date message.created_time "hh:mm A, Do MMM"}}
+                    {{date message.created_time "hh:mm A, Do MMM" datejs=false}}
                   </div>
                 </div>
               </td>
