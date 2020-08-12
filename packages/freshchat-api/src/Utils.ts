@@ -30,7 +30,7 @@ export class Utils {
         return false;
       }
 
-      if (filterMessagesOptions.isExcludeSystem && message.meta_data) {
+      if (filterMessagesOptions.isExcludeSystem && (message.meta_data || message.message_type === 'system')) {
         return false;
       }
 
