@@ -26,6 +26,7 @@ import triggerActionPrivateNoteCreate from './trigger-actions/private-note-creat
 
 // Import all trigger actors
 import triggerActorAgent from './trigger-actors/agent';
+import triggerActorBot from './trigger-actors/bot';
 import triggerActorUser from './trigger-actors/user';
 import triggerActorSystem from './trigger-actors/system';
 
@@ -132,6 +133,7 @@ const recommendedPlugins: RulePlugin[] = [
     },
     triggerActors: {
       [TriggerActorType.Agent]: triggerActorAgent,
+      [TriggerActorType.Bot]: triggerActorBot,
       [TriggerActorType.System]: triggerActorSystem,
       [TriggerActorType.User]: triggerActorUser,
     },

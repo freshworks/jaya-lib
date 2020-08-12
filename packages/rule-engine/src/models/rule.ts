@@ -4,8 +4,14 @@ export enum MatchType {
 }
 export enum TriggerActorType {
   Agent = 'AGENT',
+  Bot = 'BOT',
   System = 'SYSTEM',
   User = 'USER',
+}
+
+export enum TriggerActorCauseBot {
+  FreddyBot = 'FREDDY_BOT',
+  HallwayBot = 'HALLWAY_BOT',
 }
 
 export enum TriggerActorCause {

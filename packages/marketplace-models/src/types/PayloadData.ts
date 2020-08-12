@@ -15,6 +15,7 @@ export enum MessageType {
 }
 export enum ActorType {
   Agent = 'agent',
+  Bot = 'bot',
   System = 'system',
   User = 'user',
 }
