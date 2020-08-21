@@ -197,7 +197,11 @@ export default class Freshchat {
         return Promise.resolve(result);
       }
     } catch (err) {
-      return Promise.reject('Error in fetching conversations');
+      if (err.response && err.response.data) {
+        return Promise.reject(err.response.data);
+      } else {
+        return Promise.reject('Error fetching conversation');
+      }
     }
   }
 
@@ -312,6 +316,10 @@ export default class Freshchat {
       // Step 2: Filter messages
       const filteredMessages = Utils.filterMessages(messages, filterMessagesOptions);
 
+      if (!filteredMessages.length) {
+        throw 'Empty conversation';
+      }
+
       // Step 2: Extract list of agentIds
       const agentIds = Utils.extractAgentIds(filteredMessages);
 
@@ -343,7 +351,7 @@ export default class Freshchat {
         ),
       );
     } catch (err) {
-      return Promise.reject('Error fetching conversationHtml');
+      return Promise.reject(err);
     }
   }
 }
