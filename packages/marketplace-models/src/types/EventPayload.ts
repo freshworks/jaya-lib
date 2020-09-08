@@ -15,7 +15,7 @@ export interface EventPayload {
   event: Event;
   iparams: unknown;
   region: string;
-  timestamp: string;
+  timestamp: number;
   version: string;
 }
 
