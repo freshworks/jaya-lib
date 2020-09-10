@@ -17,6 +17,7 @@ import recommendedPlugins from './recommended/index';
 export * from './models/rule';
 export * from './models/rule-engine';
 export * from './models/plugin';
+export * from './TimerRuleEngine';
 
 export class RuleEngine {
   constructor(private plugins?: RulePlugin[]) {
