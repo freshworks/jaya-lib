@@ -2,13 +2,15 @@ import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import { Integrations } from '../../models/rule-engine';
 import { QuickReplyValue } from '../../models/rule';
+import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 
-export default (
+export default async (
   integrations: Integrations,
   productEventData: ProductEventData,
   actionValue: unknown,
   domain: string,
-): Promise<unknown> => {
+  placeholders: PlaceholdersMap,
+): Promise<PlaceholdersMap> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
@@ -21,5 +23,11 @@ export default (
     .map((response) => response.trim())
     .filter(Boolean);
 
-  return freshchat.sendQuickreply(conversationId, quickreplyValue.question, responses);
+  try {
+    await freshchat.sendQuickreply(conversationId, quickreplyValue.question, responses);
+  } catch (err) {
+    return Promise.reject();
+  }
+
+  return Promise.resolve({});
 };

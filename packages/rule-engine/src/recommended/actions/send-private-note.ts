@@ -5,24 +5,41 @@ import { findAndReplacePlaceholders, PlaceholdersMap } from '@freshworks-jaya/ut
 import { Integrations } from '../../models/rule-engine';
 import { Utils } from '../../Utils';
 
-export default (
+export default async (
   integrations: Integrations,
   productEventData: ProductEventData,
   actionValue: unknown,
   domain: string,
-): Promise<unknown> => {
+  placeholders: PlaceholdersMap,
+): Promise<PlaceholdersMap> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
   const modelProperties = productEventData.conversation || productEventData.message;
   const conversationId = modelProperties.conversation_id;
 
-  return Utils.setupDynamicPlaceholders(actionValue as string, productEventData, integrations, domain).then(() => {
-    return freshchat.postMessage(
+  let generatedPlaceholders: PlaceholdersMap = {};
+
+  try {
+    generatedPlaceholders = await Utils.getDynamicPlaceholders(
+      actionValue as string,
+      productEventData,
+      integrations,
+      domain,
+      placeholders,
+    );
+
+    const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
+
+    await freshchat.postMessage(
       conversationId,
-      findAndReplacePlaceholders(actionValue as string, ruleConfig.placeholders as PlaceholdersMap),
+      findAndReplacePlaceholders(actionValue as string, combinedPlaceholders as PlaceholdersMap),
       'private',
       'bot',
     );
-  });
+  } catch (err) {
+    return Promise.reject();
+  }
+
+  return Promise.resolve(generatedPlaceholders);
 };

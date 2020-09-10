@@ -21,11 +21,12 @@ export class ActionExecutor {
     integrations: Integrations,
     action: Action,
     productEventPayload: ProductEventPayload,
-  ): Promise<unknown> {
+    placeholders: PlaceholdersMap,
+  ): Promise<PlaceholdersMap> {
     const actionFunc = ruleConfig.actions && ruleConfig.actions[action.type];
 
     if (actionFunc) {
-      return actionFunc(integrations, productEventPayload.data, action.value, productEventPayload.domain);
+      return actionFunc(integrations, productEventPayload.data, action.value, productEventPayload.domain, placeholders);
     }
     return Promise.reject('Invalid action type');
   }
@@ -34,7 +35,7 @@ export class ActionExecutor {
    *
    * Sets up placeholders for productEventData
    */
-  public static setupPlaceholders(productEventData: ProductEventData): void {
+  public static getPlaceholders(productEventData: ProductEventData): PlaceholdersMap {
     const user = productEventData.associations.user || ({} as User);
     const agent =
       productEventData.associations.agent ||
@@ -73,12 +74,6 @@ export class ActionExecutor {
       placeholders['user.first_name'] = '';
     }
 
-    ruleConfig.registerPlugins([
-      {
-        placeholders,
-      },
-    ]);
-
     // Register dynamic placeholders
     const dynamicPlaceholders: PlaceholdersMap = {};
     user.properties &&
@@ -86,11 +81,8 @@ export class ActionExecutor {
         const placeholderKey = `user.properties.${userProperty.name}`;
         dynamicPlaceholders[placeholderKey] = userProperty.value;
       });
-    ruleConfig.registerPlugins([
-      {
-        placeholders: dynamicPlaceholders,
-      },
-    ]);
+
+    return { ...placeholders, ...dynamicPlaceholders };
   }
 
   /**
@@ -101,12 +93,14 @@ export class ActionExecutor {
     actions: Action[],
     productEventPayload: ProductEventPayload,
   ): Promise<void> {
-    this.setupPlaceholders(productEventPayload.data);
+    let placeholders = this.getPlaceholders(productEventPayload.data);
 
     for (let i = 0; actions && i < actions.length; i += 1) {
       try {
         const action = actions[i];
-        await this.handleAction(integrations, action, productEventPayload);
+        const placeholdersFromAction = await this.handleAction(integrations, action, productEventPayload, placeholders);
+
+        placeholders = { ...placeholders, ...placeholdersFromAction };
       } catch (err) {
         // Error while executing an action
         // Queietly suppressing it so that next action can be executed

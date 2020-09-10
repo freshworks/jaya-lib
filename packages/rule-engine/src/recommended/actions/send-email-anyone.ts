@@ -3,7 +3,6 @@ import { Integrations } from '../../models/rule-engine';
 import axios from 'axios';
 import { SendEmailAnyoneValue } from '../../models/rule';
 import { Utils } from '../../Utils';
-import ruleConfig from '../../RuleConfig';
 import { findAndReplacePlaceholders, PlaceholdersMap } from '@freshworks-jaya/utilities';
 
 export default async (
@@ -11,7 +10,8 @@ export default async (
   productEventData: ProductEventData,
   actionValue: unknown,
   domain: string,
-): Promise<unknown> => {
+  placeholders: PlaceholdersMap,
+): Promise<PlaceholdersMap> => {
   const modelProperties = productEventData.conversation || productEventData.message;
   const appId = modelProperties.app_id;
 
@@ -20,50 +20,56 @@ export default async (
   }
 
   const sendEmailAnyoneValue = actionValue as SendEmailAnyoneValue;
+  let generatedPlaceholders: PlaceholdersMap = {};
 
   try {
     // Step 1: Setup dynamic placeholders using values from subject and body
-    await Utils.setupDynamicPlaceholders(
+    generatedPlaceholders = await Utils.getDynamicPlaceholders(
       `${sendEmailAnyoneValue.subject} ${sendEmailAnyoneValue.body}`,
       productEventData,
       integrations,
       domain,
+      placeholders,
+    );
+
+    const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
+
+    // Step 2: Replace placeholders in subject and body
+    const emailTo = sendEmailAnyoneValue.to.map((email) => {
+      return {
+        email: findAndReplacePlaceholders(email, combinedPlaceholders),
+      };
+    });
+
+    const emailParams = {
+      body: findAndReplacePlaceholders(sendEmailAnyoneValue.body, combinedPlaceholders),
+      subject: findAndReplacePlaceholders(sendEmailAnyoneValue.subject, combinedPlaceholders),
+      to: emailTo,
+    };
+
+    // Step 3: Make send email API call
+    await axios.post(
+      `${integrations.emailService.url}/api/v1/email/send`,
+      JSON.stringify({
+        accountId: appId,
+        from: {
+          email: 'no-reply@freshchat.com',
+          name: 'Freshchat Automations',
+        },
+        html: emailParams.body,
+        subject: emailParams.subject,
+        to: emailParams.to,
+      }),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: integrations.emailService.apiKey,
+        },
+      },
     );
   } catch (err) {
     return Promise.reject('Failed to setup dynamic placeholders');
   }
 
-  // Step 2: Replace placeholders in subject and body
-  const emailTo = sendEmailAnyoneValue.to.map((email) => {
-    return {
-      email: findAndReplacePlaceholders(email, ruleConfig.placeholders as PlaceholdersMap),
-    };
-  });
-
-  const emailParams = {
-    body: findAndReplacePlaceholders(sendEmailAnyoneValue.body, ruleConfig.placeholders as PlaceholdersMap),
-    subject: findAndReplacePlaceholders(sendEmailAnyoneValue.subject, ruleConfig.placeholders as PlaceholdersMap),
-    to: emailTo,
-  };
-
-  // Step 3: Make send email API call
-  return axios.post(
-    `${integrations.emailService.url}/api/v1/email/send`,
-    JSON.stringify({
-      accountId: appId,
-      from: {
-        email: 'no-reply@freshchat.com',
-        name: 'Freshchat Automations',
-      },
-      html: emailParams.body,
-      subject: emailParams.subject,
-      to: emailParams.to,
-    }),
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: integrations.emailService.apiKey,
-      },
-    },
-  );
+  return Promise.resolve(generatedPlaceholders);
 };
