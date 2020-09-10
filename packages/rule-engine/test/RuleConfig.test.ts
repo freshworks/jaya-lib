@@ -2,7 +2,6 @@ import { assert } from 'chai';
 import ruleConfig from '../src/RuleConfig';
 import recommendedPlugins from '../src/recommended/index';
 import 'mocha';
-import { RulePlugin } from '../src';
 
 describe('RuleConfig test', () => {
   afterEach(() => {
@@ -10,14 +9,8 @@ describe('RuleConfig test', () => {
   });
 
   it('should store the registered plugins', () => {
-    const placeholderPlugin: RulePlugin = {
-      placeholders: {
-        'user.first_name': 'Joy',
-      },
-    };
+    ruleConfig.registerPlugins([...recommendedPlugins]);
 
-    ruleConfig.registerPlugins([...recommendedPlugins, placeholderPlugin]);
-
-    assert.ok(ruleConfig.placeholders && ruleConfig.placeholders['user.first_name']);
+    assert.ok(ruleConfig.dynamicPlaceholders && ruleConfig.dynamicPlaceholders['metrics.average_wait_time']);
   });
 });
