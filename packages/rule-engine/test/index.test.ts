@@ -140,13 +140,7 @@ describe('RuleEngine test', () => {
   ];
 
   describe('invokes RuleEngine constructor with plugins', () => {
-    const ruleEngine = new RuleEngine([
-      {
-        placeholders: {
-          'user.first_name': 'some-name',
-        },
-      },
-    ]);
+    const ruleEngine = new RuleEngine([]);
 
     assert.ok(ruleEngine);
   });

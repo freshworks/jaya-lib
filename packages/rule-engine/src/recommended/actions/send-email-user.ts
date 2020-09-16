@@ -2,13 +2,15 @@ import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { Integrations } from '../../models/rule-engine';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import axios from 'axios';
+import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 
 export default async (
   integrations: Integrations,
   productEventData: ProductEventData,
   actionValue: unknown,
   domain: string,
-): Promise<unknown> => {
+  placeholders: PlaceholdersMap,
+): Promise<PlaceholdersMap> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
@@ -42,7 +44,7 @@ export default async (
       },
     );
 
-    return axios.post(
+    await axios.post(
       `${integrations.emailService.url}/api/v1/email/send`,
       JSON.stringify({
         accountId: appId,
@@ -68,4 +70,6 @@ export default async (
   } catch (err) {
     return Promise.reject('Error sending conversation as html via email');
   }
+
+  return Promise.resolve({});
 };

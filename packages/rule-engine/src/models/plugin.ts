@@ -10,7 +10,8 @@ export type PluginActions = {
     payload: ProductEventData,
     actionValue: unknown,
     domain: string,
-  ) => Promise<unknown>;
+    placeholders: PlaceholdersMap,
+  ) => Promise<PlaceholdersMap>;
 };
 
 export type PluginOperators = {
@@ -42,7 +43,6 @@ export interface RulePlugin {
   conditions?: PluginConditions;
   dynamicPlaceholders?: PluginDynamicPlaceholders;
   operators?: PluginOperators;
-  placeholders?: PlaceholdersMap;
   triggerActions?: PluginTriggerActions;
   triggerActors?: PluginTriggerActors;
 }

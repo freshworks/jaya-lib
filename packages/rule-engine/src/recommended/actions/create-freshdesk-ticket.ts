@@ -86,7 +86,8 @@ export default async (
   productEventData: ProductEventData,
   actionValue: unknown,
   domain: string,
-): Promise<unknown> => {
+  placeholders: PlaceholdersMap,
+): Promise<PlaceholdersMap> => {
   const freshdeskApiUrl = integrations.freshdesk && integrations.freshdesk.url;
   const freshdeskApiToken = integrations.freshdesk && integrations.freshdesk.token;
   const freshchatApiUrl = integrations.freshchatv2.url;
@@ -94,6 +95,7 @@ export default async (
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
   const modelProperties = productEventData.conversation || productEventData.message;
   const conversationId = modelProperties.conversation_id;
+  let generatedPlaceholders = {} as PlaceholdersMap;
 
   try {
     let ticketSubject = 'Conversation with {user.first_name|User}';
@@ -105,7 +107,7 @@ export default async (
     );
 
     // Step 1: Replace placeholders
-    ticketSubject = findAndReplacePlaceholders(ticketSubject, ruleConfig.placeholders as PlaceholdersMap);
+    ticketSubject = findAndReplacePlaceholders(ticketSubject, placeholders as PlaceholdersMap);
 
     const { email, first_name: name, id: userAlias, phone } = productEventData.associations.user;
     const headers = {
@@ -131,18 +133,12 @@ export default async (
       },
     );
 
-    // Step 3: Update placeholders with ticket_id and ticket_url
+    // Step 3: Generate placeholders with ticket_id and ticket_url
     const freshdeskTicketId = ticketCreateResponse.data.id;
-    const placeholders = {
+    generatedPlaceholders = {
       'freshdesk.ticket_id': freshdeskTicketId,
       'freshdesk.ticket_url': `${freshdeskApiUrl}/helpdesk/tickets/${freshdeskTicketId}`,
     };
-
-    ruleConfig.registerPlugins([
-      {
-        placeholders,
-      },
-    ]);
 
     // Step 4: Create Private Note for Freshdesk Ticket
     await axios.post(
@@ -160,5 +156,5 @@ export default async (
     return Promise.reject('Error creating freshdesk ticket');
   }
 
-  return Promise.resolve();
+  return Promise.resolve(generatedPlaceholders);
 };

@@ -7,7 +7,6 @@ import {
   PluginTriggerActors,
   PluginDynamicPlaceholders,
 } from './models/plugin';
-import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 
 class RuleConfig {
   actions?: PluginActions = {};
@@ -20,8 +19,6 @@ class RuleConfig {
 
   conditions?: PluginConditions = {};
 
-  placeholders?: PlaceholdersMap = {};
-
   dynamicPlaceholders?: PluginDynamicPlaceholders = {};
 
   reset = (): void => {
@@ -30,7 +27,6 @@ class RuleConfig {
     this.triggerActions = {};
     this.triggerActors = {};
     this.conditions = {};
-    this.placeholders = {};
     this.dynamicPlaceholders = {};
   };
 
@@ -56,10 +52,6 @@ class RuleConfig {
 
       if (rulePlugin.conditions) {
         this.conditions = { ...this.conditions, ...rulePlugin.conditions };
-      }
-
-      if (rulePlugin.placeholders) {
-        this.placeholders = { ...this.placeholders, ...rulePlugin.placeholders };
       }
 
       if (rulePlugin.dynamicPlaceholders) {

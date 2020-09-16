@@ -17,6 +17,7 @@ import recommendedPlugins from './recommended/index';
 export * from './models/rule';
 export * from './models/rule-engine';
 export * from './models/plugin';
+export * from './TimerRuleEngine';
 
 export class RuleEngine {
   constructor(private plugins?: RulePlugin[]) {
@@ -72,15 +73,22 @@ export class RuleEngine {
     return Promise.resolve();
   };
 
-  processExternalEvent = (
+  processExternalEvent = async (
     payload: RuleEngineExternalEventPayload,
     rules: Rule[],
     options: RuleEngineOptions,
     integrations: Integrations,
     kairosCredentials?: KairosCredentials,
-  ): void => {
+  ): Promise<void> => {
     if (options.isSchedulerEnabled && kairosCredentials) {
-      TimerRuleEngine.executeTimerActions(payload, rules, kairosCredentials, integrations);
+      try {
+        await TimerRuleEngine.executeTimerActions(payload, rules, kairosCredentials, integrations);
+        return Promise.resolve();
+      } catch (err) {
+        return Promise.reject(err);
+      }
     }
+
+    return Promise.resolve();
   };
 }

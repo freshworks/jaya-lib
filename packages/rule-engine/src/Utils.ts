@@ -24,15 +24,17 @@ export class Utils {
     return messageContent;
   }
 
-  public static async setupDynamicPlaceholders(
+  public static async getDynamicPlaceholders(
     text: string,
     productEventData: ProductEventData,
     integrations: Integrations,
     domain: string,
-  ): Promise<void> {
+    givenPlaceholders: PlaceholdersMap,
+  ): Promise<PlaceholdersMap> {
     // Step 1: Extract dynamic placeholder keys from text
     // Step 2: Fetch data required by all matching keys
-    // Step 3: Setup key-value pairs in placeholders object using ruleConfig
+    // Step 3: Return the generated placeholders map
+    const generatedPlaceholders: PlaceholdersMap = {};
 
     if (ruleConfig.dynamicPlaceholders) {
       // Step 1
@@ -45,9 +47,9 @@ export class Utils {
       if (matchingDynamicPlaceholderKeys) {
         for (let i = 0, len = matchingDynamicPlaceholderKeys.length; i < len; i++) {
           const dynamicPlaceholderKey = matchingDynamicPlaceholderKeys[i];
-          const placeholders: PlaceholdersMap = {};
 
-          if (ruleConfig.placeholders && ruleConfig.placeholders[dynamicPlaceholderKey]) {
+          // Check if the placeholder key already exists in either the given placeholders or the generated placeholders in this function.
+          if ({ ...givenPlaceholders, ...generatedPlaceholders }[dynamicPlaceholderKey]) {
             continue;
           }
 
@@ -57,21 +59,15 @@ export class Utils {
               integrations,
               domain,
             );
-            placeholders[dynamicPlaceholderKey] = value;
-
-            // Step 3
-            // ------
-            ruleConfig.registerPlugins([
-              {
-                placeholders,
-              },
-            ]);
+            generatedPlaceholders[dynamicPlaceholderKey] = value;
           } catch (err) {}
         }
       }
     }
 
-    return Promise.resolve();
+    // Step 3
+    // ------
+    return Promise.resolve(generatedPlaceholders);
   }
 
   /**

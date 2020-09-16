@@ -1,13 +1,15 @@
 import { ProductEventData, ActorType, ConversationStatus } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import { Integrations } from '../../models/rule-engine';
+import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 
-export default (
+export default async (
   integrations: Integrations,
   productEventData: ProductEventData,
   actionValue: unknown,
   domain: string,
-): Promise<unknown> => {
+  placeholders: PlaceholdersMap,
+): Promise<PlaceholdersMap> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
@@ -29,5 +31,9 @@ export default (
     assignedAgentId = actionValue as string;
   }
 
-  return freshchat.conversationAssign(conversationId, assignedAgentId, 'agent', conversationStatus);
+  try {
+    await freshchat.conversationAssign(conversationId, assignedAgentId, 'agent', conversationStatus);
+  } catch (err) {}
+
+  return Promise.resolve({});
 };

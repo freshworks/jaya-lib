@@ -1,13 +1,15 @@
 import { ProductEventData, ConversationStatus } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import { Integrations } from '../../models/rule-engine';
+import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 
-export default (
+export default async (
   integrations: Integrations,
   productEventData: ProductEventData,
   actionValue: unknown,
   domain: string,
-): Promise<unknown> => {
+  placeholders: PlaceholdersMap,
+): Promise<PlaceholdersMap> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
@@ -20,5 +22,9 @@ export default (
     assignedGroupId = '';
   }
 
-  return freshchat.conversationAssign(conversationId, assignedGroupId, 'group', ConversationStatus.New);
+  try {
+    await freshchat.conversationAssign(conversationId, assignedGroupId, 'group', ConversationStatus.New);
+  } catch (err) {}
+
+  return Promise.resolve({});
 };

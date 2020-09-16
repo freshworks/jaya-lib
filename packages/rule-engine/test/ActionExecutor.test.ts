@@ -33,10 +33,12 @@ describe('ActionExecutor test', () => {
     });
 
     it('check for generated username', () => {
-      ActionExecutor.setupPlaceholders((productEventDataForGeneratedUsername as any) as ProductEventData);
+      const placeholders = ActionExecutor.getPlaceholders(
+        (productEventDataForGeneratedUsername as any) as ProductEventData,
+      );
 
-      if (ruleConfig.placeholders) {
-        assert.ok(ruleConfig.placeholders['user.first_name'] === '');
+      if (placeholders) {
+        assert.ok(placeholders['user.first_name'] === '');
       }
     });
   });
