@@ -87,6 +87,7 @@ export class Utils {
       conversationUrl,
       isIncludeFreshchatLink: options && options.isIncludeFreshchatLink,
       messages,
+      timezone: moment().utcOffset(-timezoneOffset).format('Z'),
       timezoneOffset,
       user,
     });
