@@ -12,6 +12,7 @@ const getTicketConversationContent = async (
   conversationId: string,
   appId: string,
   baseUrl: string,
+  timezoneOffset: number,
 ): Promise<{ description: string; privateNote: string }> => {
   let description = '';
   let privateNote = '';
@@ -20,6 +21,7 @@ const getTicketConversationContent = async (
     // Step 1: Get conversation messages until last resolve
     const allMessages = await freshchat.getConversationMessages(conversationId, {
       isFetchUntilLastResolve: true,
+      timezoneOffset,
     });
 
     // Step 2: Get filtered messages
@@ -58,6 +60,7 @@ const getTicketConversationContent = async (
       user as FreshchatUser,
       {
         isIncludeFreshchatLink: false,
+        timezoneOffset,
       },
     );
     privateNote = FreshchatUtils.generateConversationTranscript(
@@ -69,6 +72,7 @@ const getTicketConversationContent = async (
       user as FreshchatUser,
       {
         isIncludeFreshchatLink: true,
+        timezoneOffset,
       },
     );
   } catch (err) {
@@ -104,6 +108,7 @@ export default async (
       conversationId,
       modelProperties.app_id,
       `https://${domain}`,
+      integrations.timezoneOffset,
     );
 
     // Step 1: Replace placeholders

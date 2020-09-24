@@ -67,6 +67,7 @@ export interface GetConversationMessagesOptions {
   isFetchUntilLastResolve?: boolean;
   isIncludeFreshchatLink?: boolean;
   output?: 'html' | 'text';
+  timezoneOffset?: number;
 }
 
 export interface FilterMessagesOptions {

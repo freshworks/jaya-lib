@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import Handlebars from 'handlebars';
 import Helpers from 'handlebars-helpers';
+import moment from 'moment';
 
 import {
   Message,
@@ -13,11 +14,11 @@ import {
 import { Agent } from './interfaces/Agent';
 import { User } from './interfaces/User';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const helperDate = require('helper-date');
+Handlebars.registerHelper('moment', function (context, block) {
+  return moment(context).utcOffset(-block.hash.offset).format(block.hash.format);
+});
 
 Handlebars.registerHelper(Helpers(['comparison', 'string', 'array']));
-Handlebars.registerHelper('date', helperDate);
 
 export class Utils {
   public static filterMessages = (messages: Message[], filterMessagesOptions?: FilterMessagesOptions): Message[] => {
@@ -76,6 +77,8 @@ export class Utils {
       hbsData = fs.readFileSync(path.resolve(__dirname, 'conversation-html.hbs'), 'utf-8');
     }
 
+    const timezoneOffset = options && options.timezoneOffset ? options.timezoneOffset : 0;
+
     const conversationUrl = `${baseUrl}/a/${accountId}/open/conversation/${conversationId}`;
 
     const template = Handlebars.compile(hbsData);
@@ -84,6 +87,7 @@ export class Utils {
       conversationUrl,
       isIncludeFreshchatLink: options && options.isIncludeFreshchatLink,
       messages,
+      timezoneOffset,
       user,
     });
 
