@@ -10,7 +10,8 @@
     "build": "lerna run build --no-private",
     "watch": "lerna run watch --parallel",
     "test": "lerna run test --no-private --stream --concurrency 1",
-    "lint": "lerna run lint"
+    "lint": "lerna run lint",
+    "bootstrap": "lerna bootstrap"
   },
   "devDependencies": {
     "@types/node": "^13.11.0",
