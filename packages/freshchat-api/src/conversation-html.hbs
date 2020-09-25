@@ -18,7 +18,7 @@
                   {{/if}}
                 {{/each}}
                 <span style="color: #999999; font-size: 11px;">
-                  {{moment message.created_time format="hh:mm A, Do MMM" offset=../timezoneOffset}}
+                  {{date message.created_time format="hh:mm A, D MMM" offset=../timezoneOffset}}
                 </span>
               </td>
             </tr>
@@ -54,7 +54,7 @@
                   {{/each}}
                 </div>
                 <div style="color: #999999; font-size: 11px; clear: left;margin-left: 33px;">
-                  {{moment message.created_time format="hh:mm A, Do MMM" offset=../timezoneOffset}}
+                  {{date message.created_time format="hh:mm A, D MMM" offset=../timezoneOffset}}
                 </div>
               </td>
             <tr>
@@ -101,7 +101,7 @@
                     {{/each}}
                   </div>
                   <div style="color: #999999;font-size: 11px;clear: right;">
-                    {{moment message.created_time format="hh:mm A, Do MMM" offset=../timezoneOffset}}
+                    {{date message.created_time format="hh:mm A, D MMM" offset=../timezoneOffset}}
                   </div>
                 </div>
               </td>

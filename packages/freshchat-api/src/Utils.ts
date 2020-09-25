@@ -2,7 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import Handlebars from 'handlebars';
 import Helpers from 'handlebars-helpers';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 import {
   Message,
@@ -14,8 +17,8 @@ import {
 import { Agent } from './interfaces/Agent';
 import { User } from './interfaces/User';
 
-Handlebars.registerHelper('moment', function (context, block) {
-  return moment(context).utcOffset(-block.hash.offset).format(block.hash.format);
+Handlebars.registerHelper('date', function (context, block) {
+  return dayjs(context).utcOffset(block.hash.offset).format(block.hash.format);
 });
 
 Handlebars.registerHelper(Helpers(['comparison', 'string', 'array']));
@@ -87,12 +90,12 @@ export class Utils {
       conversationUrl,
       isIncludeFreshchatLink: options && options.isIncludeFreshchatLink,
       messages,
-      timezone: moment().utcOffset(-timezoneOffset).format('Z'),
+      timezone: dayjs().utcOffset(timezoneOffset).format('Z'),
       timezoneOffset,
       user,
     });
 
-    // fs.writeFileSync(path.resolve(__dirname, '../lib/conversation.html'), transcript, 'utf-8');
+    fs.writeFileSync(path.resolve(__dirname, '../lib/conversation.html'), transcript, 'utf-8');
     return transcript;
   };
 }

@@ -44,8 +44,8 @@
   "dependencies": {
     "@freshworks-jaya/utilities": "^0.2.2",
     "axios": "^0.19.2",
+    "dayjs": "^1.8.36",
     "handlebars": "^4.7.6",
-    "handlebars-helpers": "^0.10.0",
-    "moment": "^2.29.0"
+    "handlebars-helpers": "^0.10.0"
   }
 }
