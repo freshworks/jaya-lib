@@ -22,7 +22,7 @@ jobs:
         node-version: 10.19.0
 
     - name: Install dependencies
-      run: yarn bootstrap
+      run: yarn
 
     - name: Run lint check
       run: yarn lint
