@@ -14,7 +14,7 @@
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\"",
     "build:check": "tsc --noEmit",
-    "lint": "tsc --noEmit && eslint '*/**/*.ts' --quiet --fix",
+    "lint": "tsc --noEmit && eslint 'src/**/*.ts' --quiet --fix",
     "prepare": "npm run build",
     "preversion": "npm run lint"
   },
