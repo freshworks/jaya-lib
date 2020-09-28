@@ -14,6 +14,7 @@ export default (productEventData: ProductEventData, integrations: Integrations, 
     modelProperties.conversation_id,
     {
       isIncludeFreshchatLink: true,
+      timezoneOffset: integrations.timezoneOffset,
     },
   );
 };

@@ -10,7 +10,7 @@
     "build": "lerna run build --no-private",
     "watch": "lerna run watch --parallel",
     "test": "lerna run test --no-private --stream --concurrency 1",
-    "lint": "eslint '*/**/*.ts' --quiet --fix"
+    "lint": "lerna run lint"
   },
   "devDependencies": {
     "@types/node": "^13.11.0",

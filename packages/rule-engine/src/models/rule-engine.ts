@@ -12,6 +12,7 @@ export interface Integrations {
   freshchatv1: ProductCredentials;
   freshchatv2: ProductCredentials;
   freshdesk?: ProductCredentials;
+  timezoneOffset: number;
 }
 
 export interface ProductCredentials {

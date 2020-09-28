@@ -20,6 +20,7 @@ describe('Utils test', () => {
       url: 'https://test.freshchat.com/v1',
       token: 'testToken',
     },
+    timezoneOffset: -330,
   };
 
   describe('convertOperand', () => {

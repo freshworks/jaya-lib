@@ -37,6 +37,7 @@ export default async (
       {
         isFetchUntilLastResolve: true,
         isIncludeFreshchatLink: false,
+        timezoneOffset: integrations.timezoneOffset,
       },
       {
         isExcludePrivate: true,

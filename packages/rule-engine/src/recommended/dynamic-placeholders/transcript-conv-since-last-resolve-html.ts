@@ -15,6 +15,7 @@ export default (productEventData: ProductEventData, integrations: Integrations, 
     {
       isFetchUntilLastResolve: true,
       isIncludeFreshchatLink: false,
+      timezoneOffset: integrations.timezoneOffset,
     },
     {
       isExcludePrivate: true,
