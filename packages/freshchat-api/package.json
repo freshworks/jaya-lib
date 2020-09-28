@@ -1,6 +1,6 @@
 {
   "name": "@freshworks-jaya/freshchat-api",
-  "version": "0.7.10-alpha.4",
+  "version": "0.7.10",
   "description": "Provides simple interface for accessing Freshchat's public APIs",
   "repository": "git@github.com:freshdesk/jaya-lib.git",
   "main": "lib/index.js",
@@ -42,7 +42,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@freshworks-jaya/utilities": "^0.2.3-alpha.0",
+    "@freshworks-jaya/utilities": "^0.2.3",
     "axios": "^0.19.2",
     "dayjs": "^1.8.36",
     "handlebars": "^4.7.6",
