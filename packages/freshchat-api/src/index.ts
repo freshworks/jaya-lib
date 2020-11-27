@@ -354,4 +354,53 @@ export default class Freshchat {
       return Promise.reject(err);
     }
   }
+
+  triggerRawReports(
+    startTime: string,
+    endTime: string,
+    eventType: 'classic' | 'agent-performance',
+    isExcludePii: boolean,
+  ): Promise<{
+    id: string;
+    link: {
+      href: string;
+      rel: string;
+    };
+  }> {
+    const rawReportsApiUrl = `${this.apiUrl}/reports/raw`;
+
+    return axios
+      .post(
+        rawReportsApiUrl,
+        JSON.stringify({
+          end: endTime,
+          event: eventType,
+          should_exclude_pii: isExcludePii,
+          start: startTime,
+        }),
+        { headers: this.headers },
+      )
+      .then((response) => Promise.resolve(response.data));
+  }
+
+  retrieveRawReports(
+    requestId: string,
+  ): Promise<{
+    id: string;
+    interval: string;
+    links: {
+      from: string;
+      link: {
+        href: string;
+        rel: string;
+      };
+      status: string;
+      to: string;
+    }[];
+    status: 'COMPLETED' | string;
+  }> {
+    const rawReportsApiUrl = `${this.apiUrl}/reports/raw/${requestId}`;
+
+    return axios.get(rawReportsApiUrl, { headers: this.headers }).then((response) => response.data);
+  }
 }
