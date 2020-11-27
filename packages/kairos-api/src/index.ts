@@ -16,6 +16,10 @@ export interface KairosSchedule {
 export interface KairosScheduleOptions {
   jobId: string;
   payload: object | null;
+  recurring?: {
+    cron: string;
+    timezone: string;
+  };
   scheduledTime: string;
   webhookUrl: string;
 }
@@ -78,7 +82,19 @@ export default class Kairos {
    * Creates a schedule using Kairos.
    */
   createSchedule(opts: KairosScheduleOptions): AxiosPromise<string> {
-    const body = {
+    const body: {
+      data: object | null;
+      group: string;
+      job_id: string;
+      recurring?: {
+        cron: string;
+        timezone: string;
+      };
+      scheduled_time: string;
+      webhook: {
+        url: string;
+      };
+    } = {
       data: opts.payload,
       group: this.group,
       job_id: opts.jobId,
@@ -87,6 +103,10 @@ export default class Kairos {
         url: opts.webhookUrl,
       },
     };
+
+    if (opts.recurring) {
+      body.recurring = opts.recurring;
+    }
 
     return axios.post(`${this.url}/schedules`, JSON.stringify(body), {
       headers: this.headers,
