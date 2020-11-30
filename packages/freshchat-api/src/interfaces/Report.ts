@@ -1,0 +1,16 @@
+export enum ReportType {
+  AgentActivity = 'Agent-Activity',
+  AgentIntelliassignActivity = 'Agent-Intelliassign-Activity',
+  AgentPerformance = 'agent-performance',
+  CSATScore = 'CSAT-Score',
+  ConversationAgentAssigned = 'Conversation-Agent-Assigned',
+  ConversationCreated = 'Conversation-Created',
+  ConversationGroupAssigned = 'Conversation-Group-Assigned',
+  ConversationResolutionLabel = 'Conversation-Resolution-Label',
+  ConversationResolved = 'Conversation-Resolved',
+  FirstResponseTime = 'First-Response-Time',
+  Interaction = 'classic',
+  MessageSent = 'Message-Sent',
+  ResolutionTime = 'Resolution-Time',
+  ResponseTime = 'Response-Time',
+}

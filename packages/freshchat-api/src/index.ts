@@ -12,11 +12,13 @@ import { User } from './interfaces/User';
 import { Agent } from './interfaces/Agent';
 import { Utils } from './Utils';
 import { isUsernameGenerated } from '@freshworks-jaya/utilities';
+import { ReportType } from './interfaces/Report';
 
 export * from './interfaces/Conversation';
 export * from './interfaces/Message';
 export * from './interfaces/DashboardHistorical';
 export * from './interfaces/User';
+export * from './interfaces/Report';
 
 export default class Freshchat {
   private get headers(): {
@@ -358,7 +360,7 @@ export default class Freshchat {
   triggerRawReports(
     startTime: string,
     endTime: string,
-    eventType: 'classic' | 'agent-performance',
+    eventType: ReportType,
     isExcludePii: boolean,
   ): Promise<{
     id: string;
@@ -375,6 +377,7 @@ export default class Freshchat {
         JSON.stringify({
           end: endTime,
           event: eventType,
+          format: 'csv',
           should_exclude_pii: isExcludePii,
           start: startTime,
         }),
