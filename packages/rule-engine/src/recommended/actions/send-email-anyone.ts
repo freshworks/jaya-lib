@@ -41,6 +41,9 @@ export default async (
       };
     });
 
+    // Replace end-of-line characters with <br>
+    sendEmailAnyoneValue.body = sendEmailAnyoneValue.body.replace(/(?:\r\n|\r|\n)/g, '<br>');
+
     const emailParams = {
       body: findAndReplacePlaceholders(sendEmailAnyoneValue.body, combinedPlaceholders),
       subject: findAndReplacePlaceholders(sendEmailAnyoneValue.subject, combinedPlaceholders),
