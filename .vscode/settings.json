@@ -1,0 +1,11 @@
+{
+    "eslint.workingDirectories": [
+        "./packages/freshchat-api", 
+        "./packages/kairos-api",
+        "./packages/marketplace-models",
+        "./packages/rule-engine",
+        "./packages/utilities",
+    ],
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+}
