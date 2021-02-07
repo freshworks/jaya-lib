@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import axios, { AxiosPromise } from 'axios';
 import {
   Message,
@@ -180,11 +181,12 @@ export default class Freshchat {
         const currentMessage = data.messages[i];
 
         if (
-          options &&
-          options.isFetchUntilLastResolve &&
-          result.length &&
-          currentMessage.meta_data &&
-          currentMessage.meta_data.isResolved
+          (options &&
+            options.isFetchUntilLastResolve &&
+            result.length &&
+            currentMessage.meta_data &&
+            currentMessage.meta_data.isResolved) ||
+          (options && options.messagesLimit && result.length >= options.messagesLimit)
         ) {
           isStopFurtherFetch = true;
           break;

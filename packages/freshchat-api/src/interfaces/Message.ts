@@ -66,6 +66,7 @@ export interface GetMessagesResponse {
 export interface GetConversationMessagesOptions {
   isFetchUntilLastResolve?: boolean;
   isIncludeFreshchatLink?: boolean;
+  messagesLimit?: number;
   output?: 'html' | 'text';
   timezoneOffset?: number;
 }
