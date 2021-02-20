@@ -39,6 +39,7 @@ export enum ActionType {
   SendQuickreply = 'SEND_QUICKREPLY',
   UnassignThenReassignGroup = 'UNASSIGN_THEN_REASSIGN_GROUP',
   UpdateUserEmail = 'UPDATE_USER_EMAIL',
+  UpdateUserLastName = 'UPDATE_USER_LAST_NAME',
   UpdateUserName = 'UPDATE_USER_NAME',
   UpdateUserPhone = 'UPDATE_USER_PHONE',
   UpdateUserProperty = 'UPDATE_USER_PROPERTY',

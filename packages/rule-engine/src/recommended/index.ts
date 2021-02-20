@@ -41,7 +41,8 @@ import actionSendQuickreply from './actions/send-quickreply';
 import actionUpdateUserProperty from './actions/update-user-property';
 import actionUpdateUserEmail from './actions/update-user-email';
 import actionUpdateUserPhone from './actions/update-user-phone';
-import actionUpdateUserName from './actions/update-user-name';
+import actionUpdateUserFirstName from './actions/update-user-first-name';
+import actionUpdateUserLastName from './actions/update-user-last-name';
 import actionCreateFreshdeskTicket from './actions/create-freshdesk-ticket';
 import actionSendEmailUser from './actions/send-email-user';
 import actionSendEmailAnyone from './actions/send-email-anyone';
@@ -83,7 +84,8 @@ const recommendedPlugins: RulePlugin[] = [
       [ActionType.UnassignThenReassignGroup]: actionUnassignThenReassignGroup,
       [ActionType.UpdateUserProperty]: actionUpdateUserProperty,
       [ActionType.UpdateUserEmail]: actionUpdateUserEmail,
-      [ActionType.UpdateUserName]: actionUpdateUserName,
+      [ActionType.UpdateUserName]: actionUpdateUserFirstName,
+      [ActionType.UpdateUserLastName]: actionUpdateUserLastName,
       [ActionType.UpdateUserPhone]: actionUpdateUserPhone,
     },
     conditions: {
