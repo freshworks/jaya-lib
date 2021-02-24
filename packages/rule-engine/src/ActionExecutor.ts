@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 // Simple library to handle the actions to be performed
 import {
   ProductEventData,
@@ -6,6 +7,7 @@ import {
   Agent,
   Group,
   ProductEventPayload,
+  Actor,
 } from '@freshworks-jaya/marketplace-models';
 import { Action } from './models/rule';
 import { Integrations } from './models/rule-engine';
@@ -37,6 +39,7 @@ export class ActionExecutor {
    */
   public static getPlaceholders(productEventData: ProductEventData): PlaceholdersMap {
     const user = productEventData.associations.user || ({} as User);
+    const actor = productEventData.actor || ({} as Actor);
     const agent =
       productEventData.associations.agent ||
       (productEventData.actor.type === ActorType.Agent ? productEventData.actor : ({} as Agent));
@@ -48,6 +51,10 @@ export class ActionExecutor {
 
     // Register static placeholders
     const placeholders = {
+      'actor.email': actor.email,
+      'actor.first_name': actor.first_name,
+      'actor.id': actor.id,
+      'actor.last_name': actor.last_name,
       'agent.email': agent.email,
       'agent.first_name': agent.first_name,
       'agent.id': agent.id,
