@@ -1,7 +1,8 @@
 import { ProductEventData, ActorType, ConversationStatus } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import { Integrations } from '../../models/rule-engine';
-import { PlaceholdersMap } from '@freshworks-jaya/utilities';
+import { findAndReplacePlaceholders, PlaceholdersMap } from '@freshworks-jaya/utilities';
+import { Utils } from '../../Utils';
 
 export default async (
   integrations: Integrations,
@@ -29,11 +30,29 @@ export default async (
     conversationStatus = ConversationStatus.New;
   } else {
     assignedAgentId = actionValue as string;
-  }
 
-  try {
-    await freshchat.conversationAssign(conversationId, assignedAgentId, 'agent', conversationStatus);
-  } catch (err) {}
+    try {
+      let generatedPlaceholders: PlaceholdersMap = {};
+      generatedPlaceholders = await Utils.getDynamicPlaceholders(
+        assignedAgentId,
+        productEventData,
+        integrations,
+        domain,
+        placeholders,
+      );
+
+      const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
+
+      await freshchat.conversationAssign(
+        conversationId,
+        findAndReplacePlaceholders(assignedAgentId, combinedPlaceholders),
+        'agent',
+        conversationStatus,
+      );
+    } catch (err) {
+      return Promise.reject();
+    }
+  }
 
   return Promise.resolve({});
 };
