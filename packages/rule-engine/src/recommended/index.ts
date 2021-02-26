@@ -63,10 +63,15 @@ import conditionUserPhone from './conditions/user-phone';
 
 // Import all dynamic placeholders
 import dynamicPlaceholderAverageWaitTime from './dynamic-placeholders/average-wait-time';
+import dynamicPlaceholderConversationUrl from './dynamic-placeholders/conversation-url';
 import dynamicPlaceholderTranscriptConvEntireHtml from './dynamic-placeholders/transcript-conv-entire-html';
 import dynamicPlaceholderTranscriptConvEntireIncludesPrivateSystemHtml from './dynamic-placeholders/transcript-conv-entire-includes-private-system-html';
 import dynamicPlaceholderTranscriptConvSinceLastResolveHtml from './dynamic-placeholders/transcript-conv-since-last-resolve-html';
 import dynamicPlaceholderTranscriptConvSinceLastResolveIncludesPrivateSystemHtml from './dynamic-placeholders/transcript-conv-since-last-resolve-includes-private-system-html';
+import dynamicPlaceholderTranscriptConvEntireText from './dynamic-placeholders/transcript-conv-entire-text';
+import dynamicPlaceholderTranscriptConvEntireIncludesPrivateSystemText from './dynamic-placeholders/transcript-conv-entire-includes-private-system-text';
+import dynamicPlaceholderTranscriptConvSinceLastResolveText from './dynamic-placeholders/transcript-conv-since-last-resolve-text';
+import dynamicPlaceholderTranscriptConvSinceLastResolveIncludesPrivateSystemText from './dynamic-placeholders/transcript-conv-since-last-resolve-includes-private-system-text';
 
 const recommendedPlugins: RulePlugin[] = [
   {
@@ -103,11 +108,16 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionKey.UserPhone]: conditionUserPhone,
     },
     dynamicPlaceholders: {
+      'conversation.url': dynamicPlaceholderConversationUrl,
       'metrics.average_wait_time': dynamicPlaceholderAverageWaitTime,
       'transcript.conv_entire.html': dynamicPlaceholderTranscriptConvEntireHtml,
       'transcript.conv_entire.includes_private_system.html': dynamicPlaceholderTranscriptConvEntireIncludesPrivateSystemHtml,
+      'transcript.conv_entire.includes_private_system.text': dynamicPlaceholderTranscriptConvEntireIncludesPrivateSystemText,
+      'transcript.conv_entire.text': dynamicPlaceholderTranscriptConvEntireText,
       'transcript.conv_since_last_resolve.html': dynamicPlaceholderTranscriptConvSinceLastResolveHtml,
       'transcript.conv_since_last_resolve.includes_private_system.html': dynamicPlaceholderTranscriptConvSinceLastResolveIncludesPrivateSystemHtml,
+      'transcript.conv_since_last_resolve.includes_private_system.text': dynamicPlaceholderTranscriptConvSinceLastResolveIncludesPrivateSystemText,
+      'transcript.conv_since_last_resolve.text': dynamicPlaceholderTranscriptConvSinceLastResolveText,
     },
     operators: {
       [ConditionOperator.StartsWith]: operatorStartsWith,

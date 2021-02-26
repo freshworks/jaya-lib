@@ -34,15 +34,16 @@ export default async (
 
       const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
 
-      await freshchat.conversationAssign(
-        conversationId,
-        findAndReplacePlaceholders(assignedGroupId, combinedPlaceholders),
-        'group',
-        ConversationStatus.New,
-      );
+      assignedGroupId = findAndReplacePlaceholders(assignedGroupId, combinedPlaceholders);
     } catch (err) {
       return Promise.reject();
     }
+  }
+
+  try {
+    await freshchat.conversationAssign(conversationId, assignedGroupId, 'group', ConversationStatus.New);
+  } catch (err) {
+    return Promise.reject();
   }
 
   return Promise.resolve({});

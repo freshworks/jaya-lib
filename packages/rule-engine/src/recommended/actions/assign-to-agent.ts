@@ -43,15 +43,16 @@ export default async (
 
       const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
 
-      await freshchat.conversationAssign(
-        conversationId,
-        findAndReplacePlaceholders(assignedAgentId, combinedPlaceholders),
-        'agent',
-        conversationStatus,
-      );
+      assignedAgentId = findAndReplacePlaceholders(assignedAgentId, combinedPlaceholders);
     } catch (err) {
       return Promise.reject();
     }
+  }
+
+  try {
+    await freshchat.conversationAssign(conversationId, assignedAgentId, 'agent', conversationStatus);
+  } catch (err) {
+    return Promise.reject();
   }
 
   return Promise.resolve({});
