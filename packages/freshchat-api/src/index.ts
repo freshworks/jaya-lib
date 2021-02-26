@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import axios, { AxiosPromise } from 'axios';
 import {
   Message,
