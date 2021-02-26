@@ -5,6 +5,6 @@ export default (productEventData: ProductEventData, integrations: Integrations, 
   const modelProperties = productEventData.conversation || productEventData.message;
 
   return Promise.resolve(
-    `https://${domain}/a/${modelProperties.app_id}/inbox/open/0/${modelProperties.conversation_id}`,
+    `https://${domain}/a/${modelProperties.app_id}/open/conversation/${modelProperties.conversation_id}`,
   );
 };
