@@ -47,18 +47,35 @@ var appUrl = 'https://domain.freshchat.com';
 var appAlias = '<App ID>'; //Available from Settings--> Mobile SDKs
 var conversationId = '<Freshchat Conversation UUID>';
 
-freshchat.getConversationTranscript(appUrl, appAlias, conversationId, {
-	//The below value can either be 'text' or 'html'
-	output: 'html', 
-	//Below is a Flag to include the conversation link in the generated transcript.
-	isIncludeFreshchatLink: true, 
-	//Below is a Flag to generate transcript for the entire conversation or every interaction. (Create -> Latest message, Reopen -> Latest message)
-	isFetchUntilLastResolve: true 
-}).then(function (resp) {
-	console.log(resp);
-}, function (error) {
-	console.log(error);
-});
+freshchat.getConversationTranscript(
+  appUrl, 
+  appAlias, 
+  conversationId, 
+  {
+    //The below value can either be 'text' or 'html'
+    output: 'html', 
+    //Below is a Flag to include the conversation link in the generated transcript.
+    isIncludeFreshchatLink: true, 
+    //Below is a Flag to generate transcript for the entire conversation or every interaction. (Create -> Latest message, Reopen -> Latest message)
+    isFetchUntilLastResolve: true,
+    //Choose a timezone offset for timestamps in conversation
+    timezoneOffset: 330 // for Asia/Kolkata timezone
+    //Limit the number of messages fetched in the transcript
+    messagesLimit: 200
+  }, 
+  {
+    //Exclude normal messages
+    isExcludeNormal: false,
+    //Exclude private messages
+    isExcludePrivate: false,
+    //Exclude system messages
+    isExcludeSystem: true
+  })
+  .then(function (resp) {
+    console.log(resp);
+  }, function (error) {
+    console.log(error);
+  });
 ```
 
 ### Reports API
