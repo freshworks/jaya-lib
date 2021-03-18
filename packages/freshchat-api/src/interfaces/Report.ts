@@ -3,6 +3,7 @@ export enum ReportType {
   AgentIntelliassignActivity = 'Agent-Intelliassign-Activity',
   AgentPerformance = 'agent-performance',
   CSATScore = 'CSAT-Score',
+  ChatTranscript = 'Chat-Transcript',
   ConversationAgentAssigned = 'Conversation-Agent-Assigned',
   ConversationCreated = 'Conversation-Created',
   ConversationGroupAssigned = 'Conversation-Group-Assigned',
