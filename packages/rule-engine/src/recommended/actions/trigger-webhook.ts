@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { Integrations } from '../../models/rule-engine';
 import { TriggerWebhookValue, WebhookContentType } from '../../models/rule';
@@ -29,6 +28,38 @@ const contentMap: {
   },
 };
 
+const safelyParseJSON = (jsonString: string): object | undefined => {
+  let parsed: object | undefined = undefined;
+
+  try {
+    parsed = JSON.parse(jsonString);
+  } catch (e) {
+    // Oh well, but whatever...
+  }
+
+  return parsed;
+};
+
+const replacePlaceholdersInObject = (value: object, combinedPlaceholders: PlaceholdersMap): object => {
+  // Step 1: Stringify the JSON
+  const stringifiedJSON = JSON.stringify(value);
+
+  // Step 2: Replace all placeholders with the combinedPlaceholders map
+  const replacedString = findAndReplacePlaceholders(stringifiedJSON, combinedPlaceholders);
+
+  // Step 3: Construct the JSON back from the JSON-string
+  const reconstructedObject = safelyParseJSON(replacedString);
+  return reconstructedObject ? reconstructedObject : value;
+};
+
+const getReplacedContent = (content: string | object, combinedPlaceholders: PlaceholdersMap): string | object => {
+  if (typeof content === 'string' || content instanceof String) {
+    return findAndReplacePlaceholders(content as string, combinedPlaceholders);
+  }
+
+  return replacePlaceholdersInObject(content, combinedPlaceholders);
+};
+
 const getRequestConfig = (
   triggerWebhookValue: TriggerWebhookValue,
   combinedPlaceholders: PlaceholdersMap,
@@ -41,8 +72,7 @@ const getRequestConfig = (
 
   // Step 2: Add custom headers if available
   if (triggerWebhookValue.customHeaders) {
-    // TODO: findAndReplacePlaceholders in each property value of customHeaders
-    axiosRequestConfig.headers = { ...triggerWebhookValue.customHeaders };
+    axiosRequestConfig.headers = replacePlaceholdersInObject(triggerWebhookValue.customHeaders, combinedPlaceholders);
   }
 
   // Step 3: Handle authentication
@@ -76,8 +106,9 @@ const getRequestConfig = (
 
     if (triggerWebhookValue.content) {
       // Step 5: Handle content based on content-type
-      // TODO: findAndReplacePlaceholders in each property value of content
-      axiosRequestConfig.data = contentMap[triggerWebhookValue.contentType](triggerWebhookValue.content);
+      const replacedContent = getReplacedContent(triggerWebhookValue.content, combinedPlaceholders);
+
+      axiosRequestConfig.data = contentMap[triggerWebhookValue.contentType](replacedContent);
     }
   }
 
