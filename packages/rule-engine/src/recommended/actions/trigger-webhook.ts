@@ -1,6 +1,7 @@
+/* eslint-disable complexity */
 import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { Integrations } from '../../models/rule-engine';
-import { JsonArray, JsonMap, TriggerWebhookValue, WebhookContentType } from '../../models/rule';
+import { JsonArray, JsonMap, TriggerWebhookValue, WebhookContentType, WebhookRequestType } from '../../models/rule';
 import { findAndReplacePlaceholders, PlaceholdersMap } from '@freshworks-jaya/utilities';
 import axios, { AxiosRequestConfig } from 'axios';
 import querystring, { ParsedUrlQueryInput } from 'querystring';
@@ -27,6 +28,16 @@ const contentMap: {
   [WebhookContentType.Xml]: (content: string | JsonMap) => {
     return content;
   },
+};
+
+const isRequestTypeContentMap: {
+  [key in WebhookRequestType]: boolean;
+} = {
+  [WebhookRequestType.Get]: false,
+  [WebhookRequestType.Post]: true,
+  [WebhookRequestType.Put]: true,
+  [WebhookRequestType.Patch]: true,
+  [WebhookRequestType.Delete]: false,
 };
 
 const replacePlaceholdersInObject = (jsonMap: JsonMap | JsonArray, combinedPlaceholders: PlaceholdersMap): void => {
@@ -67,7 +78,7 @@ const getRequestConfig = (
 
   // Step 3: Handle authentication
   if (triggerWebhookValue.authHeader) {
-    if (triggerWebhookValue.authHeader.username) {
+    if (triggerWebhookValue.authHeader.username && triggerWebhookValue.authHeader.password) {
       // Simple auth with username and password
       axiosRequestConfig.auth = {
         password: findAndReplacePlaceholders(triggerWebhookValue.authHeader.password, combinedPlaceholders),
@@ -94,7 +105,7 @@ const getRequestConfig = (
 
     axiosRequestConfig.headers['Content-Type'] = contentTypeMap[triggerWebhookValue.contentType];
 
-    if (triggerWebhookValue.content) {
+    if (triggerWebhookValue.content && isRequestTypeContentMap[triggerWebhookValue.requestType]) {
       // Step 5: Handle content based on content-type
       const replacedContent = getReplacedContent(triggerWebhookValue.content, combinedPlaceholders);
 
