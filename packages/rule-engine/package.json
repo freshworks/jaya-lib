@@ -26,10 +26,10 @@
     "@types/bluebird": "^3.5.30",
     "@types/chai": "^4.2.11",
     "@types/chai-as-promised": "^7.1.2",
-    "@types/lodash-es": "^4.17.4",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.11.0",
     "@types/sinon": "^9.0.0",
+    "@types/lodash": "^4.14.168",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "codecov": "^3.6.5",
@@ -48,7 +48,7 @@
     "@freshworks-jaya/utilities": "^0.2.3",
     "axios": "^0.19.2",
     "bluebird": "^3.7.2",
-    "lodash-es": "^4.17.21",
+    "lodash": "^4.17.21",
     "querystring": "^0.2.1"
   }
 }

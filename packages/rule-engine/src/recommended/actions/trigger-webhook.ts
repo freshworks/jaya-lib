@@ -5,7 +5,7 @@ import { findAndReplacePlaceholders, PlaceholdersMap } from '@freshworks-jaya/ut
 import axios, { AxiosRequestConfig } from 'axios';
 import querystring, { ParsedUrlQueryInput } from 'querystring';
 import { Utils } from '../../Utils';
-import _ from 'lodash-es';
+import * as _ from 'lodash';
 
 const contentTypeMap: {
   [key in WebhookContentType]: string;
@@ -62,10 +62,7 @@ const getRequestConfig = (
 
   // Step 2: Add custom headers if available
   if (triggerWebhookValue.customHeaders) {
-    axiosRequestConfig.headers = replacePlaceholdersInObject(
-      triggerWebhookValue.customHeaders as JsonMap,
-      combinedPlaceholders,
-    );
+    axiosRequestConfig.headers = replacePlaceholdersInObject(triggerWebhookValue.customHeaders, combinedPlaceholders);
   }
 
   // Step 3: Handle authentication
@@ -122,7 +119,7 @@ export default async (
   // Get dynamic placeholders and combine it with the static placeholders
   try {
     const generatedPlaceholders = await Utils.getDynamicPlaceholders(
-      JSON.stringify(`${triggerWebhookValue}`),
+      JSON.stringify(triggerWebhookValue),
       productEventData,
       integrations,
       domain,
