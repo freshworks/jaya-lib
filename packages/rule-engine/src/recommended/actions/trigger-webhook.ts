@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { Integrations } from '../../models/rule-engine';
 import { JsonArray, JsonMap, TriggerWebhookValue, WebhookContentType, WebhookRequestType } from '../../models/rule';
@@ -77,27 +76,25 @@ const getRequestConfig = (
   }
 
   // Step 3: Handle authentication
-  if (triggerWebhookValue.authHeader) {
-    if (triggerWebhookValue.authHeader.username && triggerWebhookValue.authHeader.password) {
-      // Simple auth with username and password
-      axiosRequestConfig.auth = {
-        password: findAndReplacePlaceholders(triggerWebhookValue.authHeader.password, combinedPlaceholders),
-        username: findAndReplacePlaceholders(triggerWebhookValue.authHeader.username, combinedPlaceholders),
-      };
-    } else if (triggerWebhookValue.authHeader.apiKey) {
-      // API key based authentication
-      if (!axiosRequestConfig.headers) {
-        axiosRequestConfig.headers = {};
-      }
-
-      axiosRequestConfig.headers['Authorization'] = `Bearer ${findAndReplacePlaceholders(
-        triggerWebhookValue.authHeader.apiKey,
-        combinedPlaceholders,
-      )}`;
+  if (triggerWebhookValue.authHeader?.username && triggerWebhookValue.authHeader?.password) {
+    // Simple auth with username and password
+    axiosRequestConfig.auth = {
+      password: findAndReplacePlaceholders(triggerWebhookValue.authHeader.password, combinedPlaceholders),
+      username: findAndReplacePlaceholders(triggerWebhookValue.authHeader.username, combinedPlaceholders),
+    };
+  } else if (triggerWebhookValue.authHeader?.apiKey) {
+    // API key based authentication
+    if (!axiosRequestConfig.headers) {
+      axiosRequestConfig.headers = {};
     }
+
+    axiosRequestConfig.headers['Authorization'] = `Bearer ${findAndReplacePlaceholders(
+      triggerWebhookValue.authHeader.apiKey,
+      combinedPlaceholders,
+    )}`;
   }
 
-  // Step 4: Handle content-type
+  // Step 4: Handle contentType
   if (triggerWebhookValue.contentType) {
     if (!axiosRequestConfig.headers) {
       axiosRequestConfig.headers = {};
