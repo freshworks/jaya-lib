@@ -1,10 +1,11 @@
 import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { Integrations } from '../../models/rule-engine';
-import { TriggerWebhookValue, WebhookContentType } from '../../models/rule';
+import { JsonArray, JsonMap, TriggerWebhookValue, WebhookContentType } from '../../models/rule';
 import { findAndReplacePlaceholders, PlaceholdersMap } from '@freshworks-jaya/utilities';
 import axios, { AxiosRequestConfig } from 'axios';
 import querystring, { ParsedUrlQueryInput } from 'querystring';
 import { Utils } from '../../Utils';
+import _ from 'lodash-es';
 
 const contentTypeMap: {
   [key in WebhookContentType]: string;
@@ -15,49 +16,38 @@ const contentTypeMap: {
 };
 
 const contentMap: {
-  [key in WebhookContentType]: (content: string | object) => string | object;
+  [key in WebhookContentType]: (content: string | JsonMap) => string | JsonMap;
 } = {
-  [WebhookContentType.Json]: (content: string | object) => {
+  [WebhookContentType.Json]: (content: string | JsonMap) => {
     return content;
   },
-  [WebhookContentType.UrlEncoded]: (content: string | object) => {
+  [WebhookContentType.UrlEncoded]: (content: string | JsonMap) => {
     return querystring.stringify(content as ParsedUrlQueryInput, '&', '=');
   },
-  [WebhookContentType.Xml]: (content: string | object) => {
+  [WebhookContentType.Xml]: (content: string | JsonMap) => {
     return content;
   },
 };
 
-const safelyParseJSON = (jsonString: string): object | undefined => {
-  let parsed: object | undefined = undefined;
-
-  try {
-    parsed = JSON.parse(jsonString);
-  } catch (e) {
-    // Oh well, but whatever...
-  }
-
-  return parsed;
+const replacePlaceholdersInObject = (jsonMap: JsonMap | JsonArray, combinedPlaceholders: PlaceholdersMap): void => {
+  (function traverseObject(json: JsonMap | JsonArray): void {
+    _.forOwn(json, (value, key) => {
+      if (_.isString(value)) {
+        (json as JsonMap)[key] = findAndReplacePlaceholders(value as string, combinedPlaceholders);
+      } else if (_.isObject(value) || _.isArray(value)) {
+        traverseObject(value as JsonArray | JsonMap);
+      }
+    });
+  })(jsonMap);
 };
 
-const replacePlaceholdersInObject = (value: object, combinedPlaceholders: PlaceholdersMap): object => {
-  // Step 1: Stringify the JSON
-  const stringifiedJSON = JSON.stringify(value);
-
-  // Step 2: Replace all placeholders with the combinedPlaceholders map
-  const replacedString = findAndReplacePlaceholders(stringifiedJSON, combinedPlaceholders);
-
-  // Step 3: Construct the JSON back from the JSON-string
-  const reconstructedObject = safelyParseJSON(replacedString);
-  return reconstructedObject ? reconstructedObject : value;
-};
-
-const getReplacedContent = (content: string | object, combinedPlaceholders: PlaceholdersMap): string | object => {
-  if (typeof content === 'string' || content instanceof String) {
+const getReplacedContent = (content: string | JsonMap, combinedPlaceholders: PlaceholdersMap): string | JsonMap => {
+  if (_.isString(content)) {
     return findAndReplacePlaceholders(content as string, combinedPlaceholders);
   }
 
-  return replacePlaceholdersInObject(content, combinedPlaceholders);
+  replacePlaceholdersInObject(content as JsonMap, combinedPlaceholders);
+  return content;
 };
 
 const getRequestConfig = (
@@ -72,7 +62,10 @@ const getRequestConfig = (
 
   // Step 2: Add custom headers if available
   if (triggerWebhookValue.customHeaders) {
-    axiosRequestConfig.headers = replacePlaceholdersInObject(triggerWebhookValue.customHeaders, combinedPlaceholders);
+    axiosRequestConfig.headers = replacePlaceholdersInObject(
+      triggerWebhookValue.customHeaders as JsonMap,
+      combinedPlaceholders,
+    );
   }
 
   // Step 3: Handle authentication

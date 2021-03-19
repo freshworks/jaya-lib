@@ -129,15 +129,21 @@ export interface Action {
   value: string;
 }
 
+export type AnyJson = boolean | number | string | null | JsonArray | JsonMap;
+export interface JsonMap {
+  [key: string]: AnyJson;
+}
+export type JsonArray = Array<AnyJson>;
+
 export interface TriggerWebhookValue {
   authHeader?: {
     apiKey: string;
     password: string;
     username: string;
   };
-  content?: object | string;
+  content?: JsonMap | string;
   contentType?: WebhookContentType;
-  customHeaders?: object;
+  customHeaders?: JsonMap;
   requestType: WebhookRequestType;
   url: string;
 }
