@@ -3,6 +3,10 @@ import Freshchat from '@freshworks-jaya/freshchat-api';
 import { findAndReplacePlaceholders, PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Integrations } from '../../models/rule-engine';
 import { Utils } from '../../Utils';
+import Handlebars from 'handlebars';
+import Helpers from 'handlebars-helpers';
+
+Handlebars.registerHelper(Helpers());
 
 export default async (
   integrations: Integrations,
@@ -26,13 +30,11 @@ export default async (
       domain,
       placeholders,
     );
-
     const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
-
-    await freshchat.sendNormalReplyText(
-      conversationId,
-      findAndReplacePlaceholders(actionValue as string, combinedPlaceholders),
-    );
+    const template = Handlebars.compile(actionValue as string);
+    const handlebarsProcessedText = template(combinedPlaceholders);
+    const textWithReplacedPlaceholders = findAndReplacePlaceholders(handlebarsProcessedText, combinedPlaceholders);
+    await freshchat.sendNormalReplyText(conversationId, textWithReplacedPlaceholders);
   } catch (err) {
     return Promise.reject();
   }
