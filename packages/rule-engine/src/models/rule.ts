@@ -37,6 +37,7 @@ export enum ActionType {
   SendMessage = 'SEND_MESSAGE',
   SendPrivateNote = 'SEND_PRIVATE_NOTE',
   SendQuickreply = 'SEND_QUICKREPLY',
+  TriggerWebhook = 'TRIGGER_WEBHOOK',
   UnassignThenReassignGroup = 'UNASSIGN_THEN_REASSIGN_GROUP',
   UpdateUserEmail = 'UPDATE_USER_EMAIL',
   UpdateUserLastName = 'UPDATE_USER_LAST_NAME',
@@ -86,6 +87,20 @@ export enum ConversationStatusChangeValue {
   Resolved = 'RESOLVED',
 }
 
+export enum WebhookRequestType {
+  Delete = 'DELETE',
+  Get = 'GET',
+  Patch = 'PATCH',
+  Post = 'POST',
+  Put = 'PUT',
+}
+
+export enum WebhookContentType {
+  Json = 'JSON',
+  UrlEncoded = 'X-FORM-URLENCODED',
+  Xml = 'XML',
+}
+
 export interface ConversationStatusChange {
   from: ConversationStatusChangeValue | null;
   to: ConversationStatusChangeValue | null;
@@ -112,6 +127,25 @@ export interface Trigger {
 export interface Action {
   type: ActionType;
   value: string;
+}
+
+export type AnyJson = boolean | number | string | null | JsonArray | JsonMap;
+export interface JsonMap {
+  [key: string]: AnyJson;
+}
+export type JsonArray = Array<AnyJson>;
+
+export interface TriggerWebhookValue {
+  authHeader?: {
+    apiKey: string;
+    password: string;
+    username: string;
+  };
+  content?: JsonMap | string;
+  contentType?: WebhookContentType;
+  customHeaders?: JsonMap;
+  requestType: WebhookRequestType;
+  url: string;
 }
 
 export interface SendEmailAnyoneValue {

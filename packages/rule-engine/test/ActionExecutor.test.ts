@@ -35,6 +35,17 @@ describe('ActionExecutor test', () => {
     it('check for generated username', () => {
       const placeholders = ActionExecutor.getPlaceholders(
         (productEventDataForGeneratedUsername as any) as ProductEventData,
+        {
+          freshchatv1: {
+            token: 'tokenv1',
+            url: 'urlv1',
+          },
+          freshchatv2: {
+            token: 'tokenv2',
+            url: 'urlv2',
+          },
+          timezoneOffset: -330,
+        },
       );
 
       if (placeholders) {

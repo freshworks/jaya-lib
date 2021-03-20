@@ -37,7 +37,7 @@ export class ActionExecutor {
    *
    * Sets up placeholders for productEventData
    */
-  public static getPlaceholders(productEventData: ProductEventData): PlaceholdersMap {
+  public static getPlaceholders(productEventData: ProductEventData, integrations: Integrations): PlaceholdersMap {
     const user = productEventData.associations.user || ({} as User);
     const actor = productEventData.actor || ({} as Actor);
     const agent =
@@ -66,6 +66,12 @@ export class ActionExecutor {
       'conversation.assigned_group_id': conversation.assigned_group_id,
       'conversation.id': conversation.conversation_id,
       'conversation.status': conversation.status,
+      'freshchat.api_token_v1': integrations.freshchatv1.token,
+      'freshchat.api_token_v2': integrations.freshchatv2.token,
+      'freshchat.api_url_v1': integrations.freshchatv1.url,
+      'freshchat.api_url_v2': integrations.freshchatv2.url,
+      'freshdesk.api_token': integrations.freshdesk?.token,
+      'freshdesk.api_url': integrations.freshdesk?.url,
       'group.description': group.description,
       'group.id': group.id,
       'group.name': group.name,
@@ -100,7 +106,7 @@ export class ActionExecutor {
     actions: Action[],
     productEventPayload: ProductEventPayload,
   ): Promise<void> {
-    let placeholders = this.getPlaceholders(productEventPayload.data);
+    let placeholders = this.getPlaceholders(productEventPayload.data, integrations);
 
     for (let i = 0; actions && i < actions.length; i += 1) {
       try {
