@@ -64,7 +64,7 @@
               <td style="padding: 10px 20px;color: #3f3f46;">
                 <div style="float:right">
                   <div style="font-size: 12px;font-weight: 500;float: right; color: #6f7071; margin-right: 33px;">
-                    {{#if message.actor_id}}
+                    {{#if (and message.actor_id (lookup ../agents message.actor_id))}}
                       {{#with (lookup ../agents message.actor_id) as | agent |}}
                         {{agent.first_name}}
                       {{/with}}
@@ -73,7 +73,7 @@
                     {{/if}}
                   </div>
 
-                  {{#if message.actor_id}}
+                  {{#if (and message.actor_id (lookup ../agents message.actor_id))}}
                     {{#with (lookup ../agents message.actor_id) as | agent |}}
                       {{#if agent.avatar.url}}
                         <img src="{{agent.avatar.url}}" style="width: 30px;height: 30px;border-radius: 6px 50% 50% 50%;margin-left:5px;float:right;clear:right">

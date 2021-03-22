@@ -27,7 +27,7 @@ Attached file: {{message_part.file.name}}
 {{/each}}
 {{!-- Agent message --}}
 {{else}}
-{{#if message.actor_id}}
+{{#if (and message.actor_id (lookup ../agents message.actor_id))}}
 {{#with (lookup ../agents message.actor_id) as | agent |}}
 {{agent.first_name}}  {{date message.created_time format="DD-MMM-YY, HH:mm" offset=../../timezoneOffset}}
 {{/with}}
