@@ -4,7 +4,7 @@
 System  {{date message.created_time format="DD-MMM-YY, HH:mm" offset=../timezoneOffset}}
 {{#each message.message_parts as | message_part |}}
 {{#if message_part.text}}
-{{{message_part.text.content}}}
+{{htmlToText message_part.text.content}}
 {{/if}}
 {{/each}}
 {{!-- User message --}}
@@ -16,7 +16,7 @@ User  {{date message.created_time format="DD-MMM-YY, HH:mm" offset=../timezoneOf
 {{/if}}
 {{#each message.message_parts as | message_part |}}
 {{#if message_part.text}}
-{{{message_part.text.content}}}
+{{htmlToText message_part.text.content}}
 {{/if}}
 {{#if message_part.image}}
 Image: {{message_part.image.url}}
@@ -36,7 +36,7 @@ Bot  {{date message.created_time format="DD-MMM-YY, HH:mm" offset=../timezoneOff
 {{/if}}
 {{#each message.message_parts as | message_part |}}
 {{#if message_part.text}}
-{{{message_part.text.content}}}
+{{htmlToText message_part.text.content}}
 {{/if}}
 {{#if message_part.image}}
 Image: {{message_part.image.url}}
