@@ -38,7 +38,7 @@ import actionSendMessage from './actions/send-message';
 import actionSendPrivateNote from './actions/send-private-note';
 import actionUnassignThenReassignGroup from './actions/unassign-then-reassign-group';
 import actionSendQuickreply from './actions/send-quickreply';
-import actionTriggerWebhook from './actions/trigger-webhook';
+import actionTriggerApi from './actions/trigger-api';
 import actionUpdateUserProperty from './actions/update-user-property';
 import actionUpdateUserEmail from './actions/update-user-email';
 import actionUpdateUserPhone from './actions/update-user-phone';
@@ -87,7 +87,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ActionType.SendQuickreply]: actionSendQuickreply,
       [ActionType.SendEmailAnyone]: actionSendEmailAnyone,
       [ActionType.SendEmailUser]: actionSendEmailUser,
-      [ActionType.TriggerWebhook]: actionTriggerWebhook,
+      [ActionType.TriggerApi]: actionTriggerApi,
       [ActionType.UnassignThenReassignGroup]: actionUnassignThenReassignGroup,
       [ActionType.UpdateUserProperty]: actionUpdateUserProperty,
       [ActionType.UpdateUserEmail]: actionUpdateUserEmail,

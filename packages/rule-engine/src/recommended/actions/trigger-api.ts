@@ -1,6 +1,13 @@
 import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { Integrations } from '../../models/rule-engine';
-import { JsonArray, JsonMap, TriggerWebhookValue, WebhookContentType, WebhookRequestType } from '../../models/rule';
+import {
+  Api,
+  JsonArray,
+  JsonMap,
+  TriggerWebhookValue,
+  WebhookContentType,
+  WebhookRequestType,
+} from '../../models/rule';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import axios, { AxiosRequestConfig } from 'axios';
 import querystring, { ParsedUrlQueryInput } from 'querystring';
@@ -125,15 +132,21 @@ export default async (
   actionValue: unknown,
   domain: string,
   placeholders: PlaceholdersMap,
+  apis: Api[],
 ): Promise<PlaceholdersMap> => {
-  const triggerWebhookValue = actionValue as TriggerWebhookValue;
+  const triggerApiModelName = actionValue as string;
+  const triggerApi = apis.find((api) => api.responseModelName === triggerApiModelName);
+
+  if (!triggerApi) {
+    return Promise.reject(new Error('Api not found'));
+  }
 
   let combinedPlaceholders: PlaceholdersMap = {};
 
   // Get dynamic placeholders and combine it with the static placeholders
   try {
     const generatedPlaceholders = await Utils.getDynamicPlaceholders(
-      JSON.stringify(triggerWebhookValue),
+      JSON.stringify(triggerApi.config),
       productEventData,
       integrations,
       domain,
@@ -145,7 +158,7 @@ export default async (
     return Promise.reject('Failed to generate dynamic placeholders map');
   }
 
-  const axiosRequestConfig = getRequestConfig(triggerWebhookValue, combinedPlaceholders);
+  const axiosRequestConfig = getRequestConfig(triggerApi.config, combinedPlaceholders);
   let webhookResponse;
 
   try {
@@ -155,5 +168,5 @@ export default async (
     return Promise.reject('Trigger webhook failure');
   }
 
-  return Promise.resolve({ model: webhookResponse.data });
+  return Promise.resolve({ [triggerApi.responseModelName]: webhookResponse.data });
 };

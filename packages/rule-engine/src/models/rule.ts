@@ -37,7 +37,7 @@ export enum ActionType {
   SendMessage = 'SEND_MESSAGE',
   SendPrivateNote = 'SEND_PRIVATE_NOTE',
   SendQuickreply = 'SEND_QUICKREPLY',
-  TriggerWebhook = 'TRIGGER_WEBHOOK',
+  TriggerApi = 'TRIGGER_API',
   UnassignThenReassignGroup = 'UNASSIGN_THEN_REASSIGN_GROUP',
   UpdateUserEmail = 'UPDATE_USER_EMAIL',
   UpdateUserLastName = 'UPDATE_USER_LAST_NAME',
@@ -185,4 +185,10 @@ export interface Rule {
   name: string;
   timerValue: number;
   triggers: Trigger[];
+}
+
+export interface Api {
+  config: TriggerWebhookValue;
+  name: string;
+  responseModelName: string;
 }

@@ -9,7 +9,7 @@ import {
   ProductEventPayload,
   Actor,
 } from '@freshworks-jaya/marketplace-models';
-import { Action } from './models/rule';
+import { Action, Api } from './models/rule';
 import { Integrations } from './models/rule-engine';
 import ruleConfig from './RuleConfig';
 import { isUsernameGenerated, PlaceholdersMap } from '@freshworks-jaya/utilities';
@@ -24,11 +24,19 @@ export class ActionExecutor {
     action: Action,
     productEventPayload: ProductEventPayload,
     placeholders: PlaceholdersMap,
+    apis: Api[],
   ): Promise<PlaceholdersMap> {
     const actionFunc = ruleConfig.actions && ruleConfig.actions[action.type];
 
     if (actionFunc) {
-      return actionFunc(integrations, productEventPayload.data, action.value, productEventPayload.domain, placeholders);
+      return actionFunc(
+        integrations,
+        productEventPayload.data,
+        action.value,
+        productEventPayload.domain,
+        placeholders,
+        apis,
+      );
     }
     return Promise.reject('Invalid action type');
   }
@@ -106,13 +114,20 @@ export class ActionExecutor {
     integrations: Integrations,
     actions: Action[],
     productEventPayload: ProductEventPayload,
+    apis: Api[],
   ): Promise<void> {
     let placeholders = this.getPlaceholders(productEventPayload.data, integrations);
 
     for (let i = 0; actions && i < actions.length; i += 1) {
       try {
         const action = actions[i];
-        const placeholdersFromAction = await this.handleAction(integrations, action, productEventPayload, placeholders);
+        const placeholdersFromAction = await this.handleAction(
+          integrations,
+          action,
+          productEventPayload,
+          placeholders,
+          apis,
+        );
 
         placeholders = { ...placeholders, ...placeholdersFromAction };
       } catch (err) {

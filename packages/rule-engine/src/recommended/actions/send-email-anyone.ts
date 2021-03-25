@@ -1,7 +1,7 @@
 import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { Integrations } from '../../models/rule-engine';
 import axios from 'axios';
-import { SendEmailAnyoneValue } from '../../models/rule';
+import { Api, SendEmailAnyoneValue } from '../../models/rule';
 import { Utils } from '../../Utils';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 
@@ -11,6 +11,7 @@ export default async (
   actionValue: unknown,
   domain: string,
   placeholders: PlaceholdersMap,
+  apis: Api[],
 ): Promise<PlaceholdersMap> => {
   const modelProperties = productEventData.conversation || productEventData.message;
   const appId = modelProperties.app_id;

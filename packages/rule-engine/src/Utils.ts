@@ -20,7 +20,20 @@ dayjs.extend(utc);
 // Register Handlebars helpers
 Handlebars.registerHelper(Helpers());
 Handlebars.registerHelper('date', function (context, block) {
-  return dayjs(context).utcOffset(block.hash.offset).format(block.hash.format);
+  let date = dayjs(context);
+
+  const offsetString = block?.hash?.offset;
+  const offsetNumber = offsetString && parseInt(offsetString, 10);
+
+  if (Number.isInteger(offsetNumber)) {
+    date = date.utcOffset(offsetNumber);
+  }
+
+  if (block?.hash?.format) {
+    return date.format(block.hash.format);
+  }
+
+  return date.format();
 });
 Handlebars.registerHelper('htmlToText', function (context) {
   return htmlToText(context);
