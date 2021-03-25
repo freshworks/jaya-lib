@@ -2,7 +2,7 @@ import { BusinessHour, isOutsideBusinessHours } from './is-outside-business-hour
 import usernameVerbs from './constants/username-verbs';
 import usernameNouns from './constants/username-nouns';
 export interface PlaceholdersMap {
-  [key: string]: string;
+  [key: string]: string | unknown;
 }
 
 /**
@@ -83,7 +83,10 @@ const findAndReplacePlaceholders = (message: string, placeholdersMap: Placeholde
       const regExpReplaceString = `\\{${field.replace('.', '\\.')}(\\|${altValue})?\\}`;
 
       // Replace all occurrences of placeholder with value.
-      return replaceAll(replacedString, regExpReplaceString, value);
+      if (typeof value === 'string') {
+        return replaceAll(replacedString, regExpReplaceString, value);
+      }
+      return replacedString;
     }, result);
   }
 

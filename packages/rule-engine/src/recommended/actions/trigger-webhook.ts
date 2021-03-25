@@ -146,13 +146,14 @@ export default async (
   }
 
   const axiosRequestConfig = getRequestConfig(triggerWebhookValue, combinedPlaceholders);
+  let webhookResponse;
 
   try {
     // Step 6: Make the API call
-    await axios.request(axiosRequestConfig);
+    webhookResponse = await axios.request(axiosRequestConfig);
   } catch (err) {
     return Promise.reject('Trigger webhook failure');
   }
 
-  return Promise.resolve({});
+  return Promise.resolve({ model: webhookResponse.data });
 };
