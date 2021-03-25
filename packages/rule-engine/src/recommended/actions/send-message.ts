@@ -1,12 +1,8 @@
 import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
-import { findAndReplacePlaceholders, PlaceholdersMap } from '@freshworks-jaya/utilities';
+import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Integrations } from '../../models/rule-engine';
 import { Utils } from '../../Utils';
-import Handlebars from 'handlebars';
-import Helpers from 'handlebars-helpers';
-
-Handlebars.registerHelper(Helpers());
 
 export default async (
   integrations: Integrations,
@@ -31,9 +27,10 @@ export default async (
       placeholders,
     );
     const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
-    const template = Handlebars.compile(actionValue as string);
-    const handlebarsProcessedText = template(combinedPlaceholders);
-    const textWithReplacedPlaceholders = findAndReplacePlaceholders(handlebarsProcessedText, combinedPlaceholders);
+    const textWithReplacedPlaceholders = Utils.processHandlebarsAndReplacePlaceholders(
+      actionValue as string,
+      combinedPlaceholders,
+    );
     await freshchat.sendNormalReplyText(conversationId, textWithReplacedPlaceholders);
   } catch (err) {
     return Promise.reject();

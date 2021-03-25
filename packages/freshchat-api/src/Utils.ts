@@ -4,6 +4,7 @@ import Handlebars from 'handlebars';
 import Helpers from 'handlebars-helpers';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import { htmlToText } from 'html-to-text';
 
 dayjs.extend(utc);
 
@@ -19,6 +20,10 @@ import { User } from './interfaces/User';
 
 Handlebars.registerHelper('date', function (context, block) {
   return dayjs(context).utcOffset(block.hash.offset).format(block.hash.format);
+});
+
+Handlebars.registerHelper('htmlToText', function (context) {
+  return htmlToText(context);
 });
 
 Handlebars.registerHelper(Helpers(['comparison', 'string', 'array']));

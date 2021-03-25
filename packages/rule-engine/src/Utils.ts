@@ -2,8 +2,15 @@ import { ConditionOperator } from './index';
 import ruleConfig from './RuleConfig';
 import { Integrations } from './models/rule-engine';
 import axios from 'axios';
-import { BusinessHour, findMatchingKeys, PlaceholdersMap } from '@freshworks-jaya/utilities';
+import {
+  BusinessHour,
+  findMatchingKeys,
+  PlaceholdersMap,
+  findAndReplacePlaceholders,
+} from '@freshworks-jaya/utilities';
 import { MessagePart, ProductEventData } from '@freshworks-jaya/marketplace-models';
+import Handlebars from 'handlebars';
+import Helpers from 'handlebars-helpers';
 
 export class Utils {
   /**
@@ -22,6 +29,16 @@ export class Utils {
     }
 
     return messageContent;
+  }
+
+  public static processHanldebars(value: string, placeholders: PlaceholdersMap): string {
+    Handlebars.registerHelper(Helpers());
+    const template = Handlebars.compile(value as string);
+    return template(placeholders);
+  }
+
+  public static processHandlebarsAndReplacePlaceholders(value: string, placeholders: PlaceholdersMap): string {
+    return findAndReplacePlaceholders(this.processHanldebars(value, placeholders), placeholders);
   }
 
   public static async getDynamicPlaceholders(
