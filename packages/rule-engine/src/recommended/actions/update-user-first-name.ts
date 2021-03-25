@@ -1,6 +1,6 @@
 import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
-import { findAndReplacePlaceholders, PlaceholdersMap } from '@freshworks-jaya/utilities';
+import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Integrations } from '../../models/rule-engine';
 import { Utils } from '../../Utils';
 
@@ -30,7 +30,7 @@ export default async (
     const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
 
     await freshchat.updateUser(productEventData.associations.user.id, {
-      first_name: findAndReplacePlaceholders(userName, combinedPlaceholders),
+      first_name: Utils.processHandlebarsAndReplacePlaceholders(userName, combinedPlaceholders),
     });
   } catch (err) {
     return Promise.reject();

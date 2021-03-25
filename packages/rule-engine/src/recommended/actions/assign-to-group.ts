@@ -1,7 +1,7 @@
 import { ProductEventData, ConversationStatus } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import { Integrations } from '../../models/rule-engine';
-import { findAndReplacePlaceholders, PlaceholdersMap } from '@freshworks-jaya/utilities';
+import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Utils } from '../../Utils';
 
 export default async (
@@ -34,7 +34,7 @@ export default async (
 
       const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
 
-      assignedGroupId = findAndReplacePlaceholders(assignedGroupId, combinedPlaceholders);
+      assignedGroupId = Utils.processHandlebarsAndReplacePlaceholders(assignedGroupId, combinedPlaceholders);
     } catch (err) {
       return Promise.reject();
     }

@@ -76,6 +76,7 @@ export class ActionExecutor {
       'group.id': group.id,
       'group.name': group.name,
       'message.text': messageText,
+      'timezone.offset': integrations.timezoneOffset?.toString(),
       'user.email': user.email,
       'user.first_name': user.first_name,
       'user.id': user.id,

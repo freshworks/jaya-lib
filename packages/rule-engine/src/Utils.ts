@@ -11,6 +11,20 @@ import {
 import { MessagePart, ProductEventData } from '@freshworks-jaya/marketplace-models';
 import Handlebars from 'handlebars';
 import Helpers from 'handlebars-helpers';
+import { htmlToText } from 'html-to-text';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
+
+// Register Handlebars helpers
+Handlebars.registerHelper(Helpers());
+Handlebars.registerHelper('date', function (context, block) {
+  return dayjs(context).utcOffset(block.hash.offset).format(block.hash.format);
+});
+Handlebars.registerHelper('htmlToText', function (context) {
+  return htmlToText(context);
+});
 
 export class Utils {
   /**
@@ -32,7 +46,6 @@ export class Utils {
   }
 
   public static processHanldebars(value: string, placeholders: PlaceholdersMap): string {
-    Handlebars.registerHelper(Helpers());
     const template = Handlebars.compile(value as string);
     return template(placeholders);
   }

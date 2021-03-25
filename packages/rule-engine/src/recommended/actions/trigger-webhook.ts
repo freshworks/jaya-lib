@@ -1,7 +1,7 @@
 import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { Integrations } from '../../models/rule-engine';
 import { JsonArray, JsonMap, TriggerWebhookValue, WebhookContentType, WebhookRequestType } from '../../models/rule';
-import { findAndReplacePlaceholders, PlaceholdersMap } from '@freshworks-jaya/utilities';
+import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import axios, { AxiosRequestConfig } from 'axios';
 import querystring, { ParsedUrlQueryInput } from 'querystring';
 import { Utils } from '../../Utils';
@@ -43,7 +43,7 @@ const replacePlaceholdersInObject = (jsonMap: JsonMap | JsonArray, combinedPlace
   (function traverseObject(json: JsonMap | JsonArray): void {
     _.forOwn(json, (value, key) => {
       if (_.isString(value)) {
-        (json as JsonMap)[key] = findAndReplacePlaceholders(value as string, combinedPlaceholders);
+        (json as JsonMap)[key] = Utils.processHandlebarsAndReplacePlaceholders(value as string, combinedPlaceholders);
       } else if (_.isObject(value) || _.isArray(value)) {
         traverseObject(value as JsonArray | JsonMap);
       }
@@ -53,7 +53,7 @@ const replacePlaceholdersInObject = (jsonMap: JsonMap | JsonArray, combinedPlace
 
 const getReplacedContent = (content: string | JsonMap, combinedPlaceholders: PlaceholdersMap): string | JsonMap => {
   if (_.isString(content)) {
-    return findAndReplacePlaceholders(content as string, combinedPlaceholders);
+    return Utils.processHandlebarsAndReplacePlaceholders(content as string, combinedPlaceholders);
   }
 
   replacePlaceholdersInObject(content as JsonMap, combinedPlaceholders);
@@ -67,7 +67,7 @@ const getRequestConfig = (
   // Step 1: Add mandatory method and url parameters
   const axiosRequestConfig: AxiosRequestConfig = {
     method: triggerWebhookValue.requestType,
-    url: findAndReplacePlaceholders(triggerWebhookValue.url, combinedPlaceholders),
+    url: Utils.processHandlebarsAndReplacePlaceholders(triggerWebhookValue.url, combinedPlaceholders),
   };
 
   // Step 2: Add custom headers if available
@@ -79,8 +79,14 @@ const getRequestConfig = (
   if (triggerWebhookValue.authHeader?.username && triggerWebhookValue.authHeader?.password) {
     // Simple auth with username and password
     axiosRequestConfig.auth = {
-      password: findAndReplacePlaceholders(triggerWebhookValue.authHeader.password, combinedPlaceholders),
-      username: findAndReplacePlaceholders(triggerWebhookValue.authHeader.username, combinedPlaceholders),
+      password: Utils.processHandlebarsAndReplacePlaceholders(
+        triggerWebhookValue.authHeader.password,
+        combinedPlaceholders,
+      ),
+      username: Utils.processHandlebarsAndReplacePlaceholders(
+        triggerWebhookValue.authHeader.username,
+        combinedPlaceholders,
+      ),
     };
   } else if (triggerWebhookValue.authHeader?.apiKey) {
     // API key based authentication
@@ -88,7 +94,7 @@ const getRequestConfig = (
       axiosRequestConfig.headers = {};
     }
 
-    axiosRequestConfig.headers['Authorization'] = `Bearer ${findAndReplacePlaceholders(
+    axiosRequestConfig.headers['Authorization'] = `Bearer ${Utils.processHandlebarsAndReplacePlaceholders(
       triggerWebhookValue.authHeader.apiKey,
       combinedPlaceholders,
     )}`;
