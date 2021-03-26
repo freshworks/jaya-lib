@@ -1,7 +1,7 @@
 import Kairos, { KairosSchedule, KairosScheduleOptions } from '@freshworks-jaya/kairos-api';
 import { Event, ProductEventPayload, ProductEventData, ModelProperties } from '@freshworks-jaya/marketplace-models';
 import { ActionExecutor } from './ActionExecutor';
-import { Api, Rule } from './models/rule';
+import { Api, CustomPlaceholdersMap, Rule } from './models/rule';
 import { RuleProcessor } from './RuleProcessor';
 import { KairosCredentials, RuleEngineExternalEventPayload, Integrations } from './models/rule-engine';
 
@@ -121,6 +121,7 @@ export class TimerRuleEngine {
     kairosCredentials: KairosCredentials,
     integrations: Integrations,
     apis: Api[],
+    customPlaceholders: CustomPlaceholdersMap,
   ): Promise<void> {
     const scheduler = new Kairos(kairosCredentials);
 
@@ -141,6 +142,7 @@ export class TimerRuleEngine {
         timerRule.actions,
         externalEventPayload.data.originalPayload,
         apis,
+        customPlaceholders,
       );
     }
   }

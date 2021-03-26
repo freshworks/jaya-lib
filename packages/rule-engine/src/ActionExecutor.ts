@@ -9,7 +9,7 @@ import {
   ProductEventPayload,
   Actor,
 } from '@freshworks-jaya/marketplace-models';
-import { Action, Api } from './models/rule';
+import { Action, Api, CustomPlaceholdersMap } from './models/rule';
 import { Integrations } from './models/rule-engine';
 import ruleConfig from './RuleConfig';
 import { isUsernameGenerated, PlaceholdersMap } from '@freshworks-jaya/utilities';
@@ -115,8 +115,11 @@ export class ActionExecutor {
     actions: Action[],
     productEventPayload: ProductEventPayload,
     apis: Api[],
+    customPlaceholders: CustomPlaceholdersMap,
   ): Promise<void> {
     let placeholders = this.getPlaceholders(productEventPayload.data, integrations);
+
+    placeholders = { ...placeholders, ...customPlaceholders };
 
     for (let i = 0; actions && i < actions.length; i += 1) {
       try {

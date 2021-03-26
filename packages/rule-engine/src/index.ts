@@ -6,7 +6,7 @@ import {
   KairosCredentials,
 } from './models/rule-engine';
 
-import { Api, Rule } from './models/rule';
+import { Api, CustomPlaceholdersMap, Rule } from './models/rule';
 import { RulePlugin } from './models/plugin';
 import { RuleProcessor } from './RuleProcessor';
 import { ActionExecutor } from './ActionExecutor';
@@ -38,6 +38,7 @@ export class RuleEngine {
     payload: ProductEventPayload,
     rules: Rule[],
     apis: Api[],
+    customPlaceholders: CustomPlaceholdersMap,
     options: RuleEngineOptions,
     externalEventUrl: string,
     integrations: Integrations,
@@ -65,7 +66,7 @@ export class RuleEngine {
       );
       // Perform all actions sequentially in order.
       if (firstMatchingRule.actions && firstMatchingRule.actions.length) {
-        await ActionExecutor.handleActions(integrations, firstMatchingRule.actions, payload, apis);
+        await ActionExecutor.handleActions(integrations, firstMatchingRule.actions, payload, apis, customPlaceholders);
       }
     } catch (err) {
       return Promise.reject(err);
@@ -78,13 +79,21 @@ export class RuleEngine {
     payload: RuleEngineExternalEventPayload,
     rules: Rule[],
     apis: Api[],
+    customPlaceholders: CustomPlaceholdersMap,
     options: RuleEngineOptions,
     integrations: Integrations,
     kairosCredentials?: KairosCredentials,
   ): Promise<void> => {
     if (options.isSchedulerEnabled && kairosCredentials) {
       try {
-        await TimerRuleEngine.executeTimerActions(payload, rules, kairosCredentials, integrations, apis);
+        await TimerRuleEngine.executeTimerActions(
+          payload,
+          rules,
+          kairosCredentials,
+          integrations,
+          apis,
+          customPlaceholders,
+        );
         return Promise.resolve();
       } catch (err) {
         return Promise.reject(err);

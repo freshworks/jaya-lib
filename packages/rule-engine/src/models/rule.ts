@@ -192,3 +192,7 @@ export interface Api {
   name: string;
   responseModelName: string;
 }
+
+export interface CustomPlaceholdersMap {
+  [key: string]: string;
+}
