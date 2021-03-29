@@ -4,6 +4,10 @@ export interface RuleEngineOptions {
   isSchedulerEnabled: boolean;
 }
 
+export enum ExternalEventType {
+  DeleteSchedules = 'DELETE_SCHEDULES',
+}
+
 export interface Integrations {
   emailService?: {
     apiKey: string;
@@ -24,7 +28,13 @@ export interface RuleEngineExternalEventPayload extends ExternalEventPayload {
   data: TimerCompletionPayload;
 }
 
+export interface DeleteSchedulesData {
+  jobsToDelete: string[];
+}
+
 export interface TimerCompletionPayload {
+  eventData?: DeleteSchedulesData;
+  eventType?: ExternalEventType;
   jobId: string;
   originalPayload: ProductEventPayload;
   ruleIndex: number;
