@@ -11,6 +11,7 @@ import {
 } from './models/rule';
 import { RuleProcessor } from './RuleProcessor';
 import { KairosCredentials, RuleEngineExternalEventPayload, Integrations } from './models/rule-engine';
+import axios from 'axios';
 
 export class TimerRuleEngine {
   /**
@@ -198,21 +199,35 @@ export class TimerRuleEngine {
         ])
       ) {
         // Current event is IntelliAssign assigns an Agent, schedule to cancel it after 5 seconds
-        return scheduler
-          .createSchedule({
-            jobId: `${modelProperties.app_id}_${modelProperties.conversation_id}_intelliassign_invalidation`,
-            payload: {
+        // return scheduler
+        //   .createSchedule({
+        //     jobId: `${modelProperties.app_id}_${modelProperties.conversation_id}_intelliassign_invalidation`,
+        //     payload: {
+        //       eventData: {
+        //         jobsToDelete,
+        //       },
+        //       eventType: 'DELETE_SCHEDULES',
+        //     },
+        //     scheduledTime: this.addSeconds(new Date(), 5).toISOString(),
+        //     webhookUrl: externalEventUrl,
+        //   })
+        //   .then(
+        //     () => Promise.resolve(),
+        //     () => Promise.reject('Error during createSchedule'),
+        //   );
+        return axios
+          .post(
+            externalEventUrl,
+            JSON.stringify({
               eventData: {
                 jobsToDelete,
               },
               eventType: 'DELETE_SCHEDULES',
-            },
-            scheduledTime: this.addSeconds(new Date(), 5).toISOString(),
-            webhookUrl: externalEventUrl,
-          })
+            }),
+          )
           .then(
             () => Promise.resolve(),
-            () => Promise.reject('Error during createSchedule'),
+            () => Promise.reject('Error while calling externalEvent to delete schedules'),
           );
       } else {
         // Bulk delete the jobs
