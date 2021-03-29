@@ -152,6 +152,8 @@ describe('RuleEngine test', () => {
         .processProductEvent(
           (productEventPayload as any) as ProductEventPayload,
           (rules as any) as Rule[],
+          [],
+          {},
           {
             isSchedulerEnabled: false,
           },
@@ -171,6 +173,8 @@ describe('RuleEngine test', () => {
         .processProductEvent(
           (productEventPayload as any) as ProductEventPayload,
           (rules as any) as Rule[],
+          [],
+          {},
           {
             isSchedulerEnabled: false,
           },
