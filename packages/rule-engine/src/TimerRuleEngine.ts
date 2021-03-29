@@ -1,7 +1,14 @@
 import Kairos, { KairosSchedule, KairosScheduleOptions } from '@freshworks-jaya/kairos-api';
 import { Event, ProductEventPayload, ProductEventData, ModelProperties } from '@freshworks-jaya/marketplace-models';
 import { ActionExecutor } from './ActionExecutor';
-import { Api, CustomPlaceholdersMap, Rule } from './models/rule';
+import {
+  Api,
+  CustomPlaceholdersMap,
+  Rule,
+  TriggerActionType,
+  TriggerActorCause,
+  TriggerActorType,
+} from './models/rule';
 import { RuleProcessor } from './RuleProcessor';
 import { KairosCredentials, RuleEngineExternalEventPayload, Integrations } from './models/rule-engine';
 
@@ -153,6 +160,7 @@ export class TimerRuleEngine {
   public static async invalidateTimers(
     payload: ProductEventPayload,
     rules: Rule[],
+    externalEventUrl: string,
     kairosCredentials: KairosCredentials,
   ): Promise<void> {
     const modelProperties = payload.data.conversation || payload.data.message;
@@ -172,10 +180,47 @@ export class TimerRuleEngine {
 
     if (jobsToDelete && jobsToDelete.length) {
       const scheduler = new Kairos(kairosCredentials);
-      return scheduler.bulkDeleteSchedules(jobsToDelete).then(
-        () => Promise.resolve(),
-        () => Promise.reject('Error during bulkDeleteSchedules'),
-      );
+      if (
+        RuleProcessor.isTriggerConditionMatching(payload.event, payload.data, [
+          {
+            action: {
+              change: {
+                from: 'ANY',
+                to: 'ASSIGNED',
+              },
+              type: TriggerActionType.ConversationAgentAssign,
+            },
+            actor: {
+              cause: TriggerActorCause.IntelliAssign,
+              type: TriggerActorType.System,
+            },
+          },
+        ])
+      ) {
+        // Current event is IntelliAssign assigns an Agent, schedule to cancel it after 5 seconds
+        return scheduler
+          .createSchedule({
+            jobId: `${modelProperties.app_id}_${modelProperties.conversation_id}_intelliassign_invalidation`,
+            payload: {
+              eventData: {
+                jobsToDelete,
+              },
+              eventType: 'DELETE_SCHEDULES',
+            },
+            scheduledTime: this.addSeconds(new Date(), 5).toISOString(),
+            webhookUrl: externalEventUrl,
+          })
+          .then(
+            () => Promise.resolve(),
+            () => Promise.reject('Error during createSchedule'),
+          );
+      } else {
+        // Bulk delete the jobs
+        return scheduler.bulkDeleteSchedules(jobsToDelete).then(
+          () => Promise.resolve(),
+          () => Promise.reject('Error during bulkDeleteSchedules'),
+        );
+      }
     }
     return Promise.resolve();
   }
