@@ -1,9 +1,9 @@
 import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { Integrations } from '../../models/rule-engine';
 import axios from 'axios';
-import { SendEmailAnyoneValue } from '../../models/rule';
+import { Api, SendEmailAnyoneValue } from '../../models/rule';
 import { Utils } from '../../Utils';
-import { findAndReplacePlaceholders, PlaceholdersMap } from '@freshworks-jaya/utilities';
+import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 
 export default async (
   integrations: Integrations,
@@ -11,6 +11,7 @@ export default async (
   actionValue: unknown,
   domain: string,
   placeholders: PlaceholdersMap,
+  apis: Api[],
 ): Promise<PlaceholdersMap> => {
   const modelProperties = productEventData.conversation || productEventData.message;
   const appId = modelProperties.app_id;
@@ -37,7 +38,7 @@ export default async (
     // Step 2: Replace placeholders in subject and body
     const emailTo = sendEmailAnyoneValue.to.map((email) => {
       return {
-        email: findAndReplacePlaceholders(email, combinedPlaceholders),
+        email: Utils.processHandlebarsAndReplacePlaceholders(email, combinedPlaceholders),
       };
     });
 
@@ -45,8 +46,8 @@ export default async (
     sendEmailAnyoneValue.body = sendEmailAnyoneValue.body.replace(/(?:\r\n|\r|\n)/g, '<br>');
 
     const emailParams = {
-      body: findAndReplacePlaceholders(sendEmailAnyoneValue.body, combinedPlaceholders),
-      subject: findAndReplacePlaceholders(sendEmailAnyoneValue.subject, combinedPlaceholders),
+      body: Utils.processHandlebarsAndReplacePlaceholders(sendEmailAnyoneValue.body, combinedPlaceholders),
+      subject: Utils.processHandlebarsAndReplacePlaceholders(sendEmailAnyoneValue.subject, combinedPlaceholders),
       to: emailTo,
     };
 

@@ -6,7 +6,7 @@ import {
   KairosCredentials,
 } from './models/rule-engine';
 
-import { Rule } from './models/rule';
+import { Api, CustomPlaceholdersMap, Rule } from './models/rule';
 import { RulePlugin } from './models/plugin';
 import { RuleProcessor } from './RuleProcessor';
 import { ActionExecutor } from './ActionExecutor';
@@ -37,6 +37,8 @@ export class RuleEngine {
   processProductEvent = async (
     payload: ProductEventPayload,
     rules: Rule[],
+    apis: Api[],
+    customPlaceholders: CustomPlaceholdersMap,
     options: RuleEngineOptions,
     externalEventUrl: string,
     integrations: Integrations,
@@ -45,7 +47,7 @@ export class RuleEngine {
     if (options.isSchedulerEnabled && kairosCredentials) {
       try {
         // Invalidate exising schedules
-        await TimerRuleEngine.invalidateTimers(payload, rules, kairosCredentials);
+        await TimerRuleEngine.invalidateTimers(payload, rules, externalEventUrl, kairosCredentials);
 
         // Process all timer rules.
         await TimerRuleEngine.triggerTimers(payload, rules, externalEventUrl, kairosCredentials, integrations);
@@ -64,7 +66,7 @@ export class RuleEngine {
       );
       // Perform all actions sequentially in order.
       if (firstMatchingRule.actions && firstMatchingRule.actions.length) {
-        await ActionExecutor.handleActions(integrations, firstMatchingRule.actions, payload);
+        await ActionExecutor.handleActions(integrations, firstMatchingRule.actions, payload, apis, customPlaceholders);
       }
     } catch (err) {
       return Promise.reject(err);
@@ -76,13 +78,22 @@ export class RuleEngine {
   processExternalEvent = async (
     payload: RuleEngineExternalEventPayload,
     rules: Rule[],
+    apis: Api[],
+    customPlaceholders: CustomPlaceholdersMap,
     options: RuleEngineOptions,
     integrations: Integrations,
     kairosCredentials?: KairosCredentials,
   ): Promise<void> => {
     if (options.isSchedulerEnabled && kairosCredentials) {
       try {
-        await TimerRuleEngine.executeTimerActions(payload, rules, kairosCredentials, integrations);
+        await TimerRuleEngine.executeTimerActions(
+          payload,
+          rules,
+          kairosCredentials,
+          integrations,
+          apis,
+          customPlaceholders,
+        );
         return Promise.resolve();
       } catch (err) {
         return Promise.reject(err);

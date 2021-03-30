@@ -1,11 +1,12 @@
 import { ProductEventData } from '@freshworks-jaya/marketplace-models';
-import ruleConfig from '../../RuleConfig';
-import { findAndReplacePlaceholders, PlaceholdersMap } from '@freshworks-jaya/utilities';
+import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Integrations } from '../../models/rule-engine';
 import axios from 'axios';
 import Freshchat, { User as FreshchatUser } from '@freshworks-jaya/freshchat-api';
 import { Utils as FreshchatUtils } from '@freshworks-jaya/freshchat-api/lib/Utils';
 import { isUsernameGenerated } from '@freshworks-jaya/utilities';
+import { Utils } from '../../Utils';
+import { Api } from '../../models/rule';
 
 const getTicketConversationContent = async (
   freshchat: Freshchat,
@@ -91,6 +92,7 @@ export default async (
   actionValue: unknown,
   domain: string,
   placeholders: PlaceholdersMap,
+  apis: Api[],
 ): Promise<PlaceholdersMap> => {
   const freshdeskApiUrl = integrations.freshdesk && integrations.freshdesk.url;
   const freshdeskApiToken = integrations.freshdesk && integrations.freshdesk.token;
@@ -112,7 +114,7 @@ export default async (
     );
 
     // Step 1: Replace placeholders
-    ticketSubject = findAndReplacePlaceholders(ticketSubject, placeholders as PlaceholdersMap);
+    ticketSubject = Utils.processHandlebarsAndReplacePlaceholders(ticketSubject, placeholders);
 
     const { email, first_name: name, id: userAlias, phone } = productEventData.associations.user;
     const headers = {

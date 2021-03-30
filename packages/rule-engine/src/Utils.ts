@@ -2,8 +2,42 @@ import { ConditionOperator } from './index';
 import ruleConfig from './RuleConfig';
 import { Integrations } from './models/rule-engine';
 import axios from 'axios';
-import { BusinessHour, findMatchingKeys, PlaceholdersMap } from '@freshworks-jaya/utilities';
+import {
+  BusinessHour,
+  findMatchingKeys,
+  PlaceholdersMap,
+  findAndReplacePlaceholders,
+} from '@freshworks-jaya/utilities';
 import { MessagePart, ProductEventData } from '@freshworks-jaya/marketplace-models';
+import Handlebars from 'handlebars';
+import Helpers from 'handlebars-helpers';
+import { htmlToText } from 'html-to-text';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
+
+// Register Handlebars helpers
+Handlebars.registerHelper(Helpers());
+Handlebars.registerHelper('date', function (context, block) {
+  let date = dayjs(context);
+
+  const offsetString = block?.hash?.offset;
+  const offsetNumber = offsetString && parseInt(offsetString, 10);
+
+  if (Number.isInteger(offsetNumber)) {
+    date = date.utcOffset(offsetNumber);
+  }
+
+  if (block?.hash?.format) {
+    return date.format(block.hash.format);
+  }
+
+  return date.format();
+});
+Handlebars.registerHelper('htmlToText', function (context) {
+  return htmlToText(context);
+});
 
 export class Utils {
   /**
@@ -22,6 +56,23 @@ export class Utils {
     }
 
     return messageContent;
+  }
+
+  public static processHanldebars(value: string, placeholders: PlaceholdersMap): string {
+    let processedString = '';
+    try {
+      const template = Handlebars.compile(value as string);
+      processedString = template(placeholders);
+    } catch (err) {
+      processedString = '';
+    }
+    return processedString ? processedString : value;
+  }
+
+  public static processHandlebarsAndReplacePlaceholders(value: string, placeholders: PlaceholdersMap): string {
+    const handlebarsProcessedValue = this.processHanldebars(value, placeholders);
+
+    return findAndReplacePlaceholders(handlebarsProcessedValue, placeholders);
   }
 
   public static async getDynamicPlaceholders(

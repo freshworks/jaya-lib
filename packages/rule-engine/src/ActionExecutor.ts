@@ -9,7 +9,7 @@ import {
   ProductEventPayload,
   Actor,
 } from '@freshworks-jaya/marketplace-models';
-import { Action } from './models/rule';
+import { Action, Api, CustomPlaceholdersMap } from './models/rule';
 import { Integrations } from './models/rule-engine';
 import ruleConfig from './RuleConfig';
 import { isUsernameGenerated, PlaceholdersMap } from '@freshworks-jaya/utilities';
@@ -24,11 +24,19 @@ export class ActionExecutor {
     action: Action,
     productEventPayload: ProductEventPayload,
     placeholders: PlaceholdersMap,
+    apis: Api[],
   ): Promise<PlaceholdersMap> {
     const actionFunc = ruleConfig.actions && ruleConfig.actions[action.type];
 
     if (actionFunc) {
-      return actionFunc(integrations, productEventPayload.data, action.value, productEventPayload.domain, placeholders);
+      return actionFunc(
+        integrations,
+        productEventPayload.data,
+        action.value,
+        productEventPayload.domain,
+        placeholders,
+        apis,
+      );
     }
     return Promise.reject('Invalid action type');
   }
@@ -37,7 +45,7 @@ export class ActionExecutor {
    *
    * Sets up placeholders for productEventData
    */
-  public static getPlaceholders(productEventData: ProductEventData): PlaceholdersMap {
+  public static getPlaceholders(productEventData: ProductEventData, integrations: Integrations): PlaceholdersMap {
     const user = productEventData.associations.user || ({} as User);
     const actor = productEventData.actor || ({} as Actor);
     const agent =
@@ -66,10 +74,17 @@ export class ActionExecutor {
       'conversation.assigned_group_id': conversation.assigned_group_id,
       'conversation.id': conversation.conversation_id,
       'conversation.status': conversation.status,
+      'freshchat.api_token_v1': integrations.freshchatv1.token,
+      'freshchat.api_token_v2': integrations.freshchatv2.token,
+      'freshchat.api_url_v1': integrations.freshchatv1.url,
+      'freshchat.api_url_v2': integrations.freshchatv2.url,
+      'freshdesk.api_token': integrations.freshdesk?.token,
+      'freshdesk.api_url': integrations.freshdesk?.url,
       'group.description': group.description,
       'group.id': group.id,
       'group.name': group.name,
       'message.text': messageText,
+      'timezone.offset': integrations.timezoneOffset?.toString(),
       'user.email': user.email,
       'user.first_name': user.first_name,
       'user.id': user.id,
@@ -99,13 +114,23 @@ export class ActionExecutor {
     integrations: Integrations,
     actions: Action[],
     productEventPayload: ProductEventPayload,
+    apis: Api[],
+    customPlaceholders: CustomPlaceholdersMap,
   ): Promise<void> {
-    let placeholders = this.getPlaceholders(productEventPayload.data);
+    let placeholders = this.getPlaceholders(productEventPayload.data, integrations);
+
+    placeholders = { ...placeholders, ...customPlaceholders };
 
     for (let i = 0; actions && i < actions.length; i += 1) {
       try {
         const action = actions[i];
-        const placeholdersFromAction = await this.handleAction(integrations, action, productEventPayload, placeholders);
+        const placeholdersFromAction = await this.handleAction(
+          integrations,
+          action,
+          productEventPayload,
+          placeholders,
+          apis,
+        );
 
         placeholders = { ...placeholders, ...placeholdersFromAction };
       } catch (err) {

@@ -1,5 +1,5 @@
 import { Event, ProductEventData } from '@freshworks-jaya/marketplace-models';
-import { Condition } from './rule';
+import { Api, Condition } from './rule';
 import { Integrations } from './rule-engine';
 import { TriggerAction, TriggerActor } from './rule';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
@@ -11,6 +11,7 @@ export type PluginActions = {
     actionValue: unknown,
     domain: string,
     placeholders: PlaceholdersMap,
+    apis: Api[],
   ) => Promise<PlaceholdersMap>;
 };
 

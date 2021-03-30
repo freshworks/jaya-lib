@@ -1,8 +1,9 @@
 import { ProductEventData, ActorType, ConversationStatus } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import { Integrations } from '../../models/rule-engine';
-import { findAndReplacePlaceholders, PlaceholdersMap } from '@freshworks-jaya/utilities';
+import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Utils } from '../../Utils';
+import { Api } from '../../models/rule';
 
 export default async (
   integrations: Integrations,
@@ -10,6 +11,7 @@ export default async (
   actionValue: unknown,
   domain: string,
   placeholders: PlaceholdersMap,
+  apis: Api[],
 ): Promise<PlaceholdersMap> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
@@ -43,7 +45,7 @@ export default async (
 
       const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
 
-      assignedAgentId = findAndReplacePlaceholders(assignedAgentId, combinedPlaceholders);
+      assignedAgentId = Utils.processHandlebarsAndReplacePlaceholders(assignedAgentId, combinedPlaceholders);
     } catch (err) {
       return Promise.reject();
     }

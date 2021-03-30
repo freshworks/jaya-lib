@@ -35,6 +35,11 @@ describe('Utils test', () => {
       assert.equal('Welcome Arun', findAndReplacePlaceholders(message, { 'user.first_name': 'Arun' }));
     });
 
+    it('should not replace placeholders which do not have a string value', () => {
+      const message = 'Welcome {user.first_name}';
+      assert.equal('Welcome {user.first_name}', findAndReplacePlaceholders(message, { 'user.first_name': { a: 'b' } }));
+    });
+
     it('should replace {user.first_name|there} with value from altText when value is not available in placeholders', () => {
       const message = 'Welcome {user.first_name|there}';
       assert.equal('Welcome there', findAndReplacePlaceholders(message, { 'user.first_name': '' }));

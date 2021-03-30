@@ -1,8 +1,9 @@
 import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
-import { findAndReplacePlaceholders, PlaceholdersMap } from '@freshworks-jaya/utilities';
+import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Integrations } from '../../models/rule-engine';
 import { Utils } from '../../Utils';
+import { Api } from '../../models/rule';
 
 export default async (
   integrations: Integrations,
@@ -10,6 +11,7 @@ export default async (
   actionValue: unknown,
   domain: string,
   placeholders: PlaceholdersMap,
+  apis: Api[],
 ): Promise<PlaceholdersMap> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
@@ -26,13 +28,12 @@ export default async (
       domain,
       placeholders,
     );
-
     const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
-
-    await freshchat.sendNormalReplyText(
-      conversationId,
-      findAndReplacePlaceholders(actionValue as string, combinedPlaceholders),
+    const textWithReplacedPlaceholders = Utils.processHandlebarsAndReplacePlaceholders(
+      actionValue as string,
+      combinedPlaceholders,
     );
+    await freshchat.sendNormalReplyText(conversationId, textWithReplacedPlaceholders);
   } catch (err) {
     return Promise.reject();
   }

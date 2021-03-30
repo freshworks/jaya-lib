@@ -196,6 +196,7 @@ describe('TimerRuleEngine test', () => {
       TimerRuleEngine.invalidateTimers(
         (productEventPayload as any) as ProductEventPayload,
         ([disabledRule] as any) as Rule[],
+        '',
         {
           token: 'kairos token',
           url: 'kairos key',
@@ -212,6 +213,7 @@ describe('TimerRuleEngine test', () => {
       TimerRuleEngine.invalidateTimers(
         (productEventPayload as any) as ProductEventPayload,
         ([enabledNonTimerRule] as any) as Rule[],
+        '',
         {
           token: 'kairos token',
           url: 'kairos key',
@@ -228,6 +230,7 @@ describe('TimerRuleEngine test', () => {
       TimerRuleEngine.invalidateTimers(
         (productEventPayload as any) as ProductEventPayload,
         ([ruleWitoutInvalidators] as any) as Rule[],
+        '',
         {
           token: 'kairos token',
           url: 'kairos key',
@@ -244,6 +247,7 @@ describe('TimerRuleEngine test', () => {
       TimerRuleEngine.invalidateTimers(
         (productEventPayload as any) as ProductEventPayload,
         ([ruleWithInvalidatorsNotMatching] as any) as Rule[],
+        '',
         {
           token: 'kairos token',
           url: 'kairos key',
@@ -260,6 +264,7 @@ describe('TimerRuleEngine test', () => {
       TimerRuleEngine.invalidateTimers(
         (productEventPayload as any) as ProductEventPayload,
         ([ruleWithInvalidatorsMatching] as any) as Rule[],
+        '',
         {
           token: 'kairos token',
           url: 'kairos key',
@@ -277,6 +282,7 @@ describe('TimerRuleEngine test', () => {
         TimerRuleEngine.invalidateTimers(
           (productEventPayload as any) as ProductEventPayload,
           ([ruleWithInvalidatorsMatching] as any) as Rule[],
+          '',
           {
             token: 'kairos token',
             url: 'kairos key',
@@ -375,6 +381,8 @@ describe('TimerRuleEngine test', () => {
             url: 'some url',
           },
           (integrations as any) as Integrations,
+          [],
+          {},
         );
       } catch (err) {
         assert('delete schedule threw an error');
@@ -394,6 +402,8 @@ describe('TimerRuleEngine test', () => {
           url: 'some url',
         },
         (integrations as any) as Integrations,
+        [],
+        {},
       );
 
       assert.isFalse(spy.called);
@@ -412,6 +422,8 @@ describe('TimerRuleEngine test', () => {
           url: 'some url',
         },
         (integrations as any) as Integrations,
+        [],
+        {},
       );
     });
   });

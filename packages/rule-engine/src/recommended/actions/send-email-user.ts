@@ -3,6 +3,7 @@ import { Integrations } from '../../models/rule-engine';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import axios from 'axios';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
+import { Api } from '../../models/rule';
 
 export default async (
   integrations: Integrations,
@@ -10,6 +11,7 @@ export default async (
   actionValue: unknown,
   domain: string,
   placeholders: PlaceholdersMap,
+  apis: Api[],
 ): Promise<PlaceholdersMap> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
