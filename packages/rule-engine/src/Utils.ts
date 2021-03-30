@@ -59,12 +59,20 @@ export class Utils {
   }
 
   public static processHanldebars(value: string, placeholders: PlaceholdersMap): string {
-    const template = Handlebars.compile(value as string);
-    return template(placeholders);
+    let processedString = '';
+    try {
+      const template = Handlebars.compile(value as string);
+      processedString = template(placeholders);
+    } catch (err) {
+      processedString = '';
+    }
+    return processedString ? processedString : value;
   }
 
   public static processHandlebarsAndReplacePlaceholders(value: string, placeholders: PlaceholdersMap): string {
-    return findAndReplacePlaceholders(this.processHanldebars(value, placeholders), placeholders);
+    const handlebarsProcessedValue = this.processHanldebars(value, placeholders);
+
+    return findAndReplacePlaceholders(handlebarsProcessedValue, placeholders);
   }
 
   public static async getDynamicPlaceholders(
