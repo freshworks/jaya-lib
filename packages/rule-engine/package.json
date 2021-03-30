@@ -48,7 +48,7 @@
     "@freshworks-jaya/kairos-api": "^0.1.2",
     "@freshworks-jaya/marketplace-models": "^0.1.7",
     "@freshworks-jaya/utilities": "^0.2.4",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bluebird": "^3.7.2",
     "dayjs": "^1.8.36",
     "handlebars": "^4.7.6",
