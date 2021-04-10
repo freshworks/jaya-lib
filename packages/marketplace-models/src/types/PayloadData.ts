@@ -44,7 +44,7 @@ export interface Group {
 
 export interface Channel {
   enabled: boolean;
-  icon: object;
+  icon: unknown;
   id: string;
   locale: string;
   name: string;
@@ -140,7 +140,7 @@ export interface ModelProperties {
 }
 
 export interface Agent {
-  avatar: object;
+  avatar: unknown;
   email: string;
   first_name: string;
   id: string;

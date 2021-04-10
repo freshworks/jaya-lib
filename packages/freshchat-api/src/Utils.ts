@@ -18,9 +18,12 @@ import {
 import { Agent } from './interfaces/Agent';
 import { User } from './interfaces/User';
 
-Handlebars.registerHelper('date', function (context: string, block: { hash: { offset: number; format: string | undefined; }; }) {
-  return dayjs(context).utcOffset(block.hash.offset).format(block.hash.format);
-});
+Handlebars.registerHelper(
+  'date',
+  function (context: string, block: { hash: { format: string | undefined; offset: number } }) {
+    return dayjs(context).utcOffset(block.hash.offset).format(block.hash.format);
+  },
+);
 
 Handlebars.registerHelper('htmlToText', function (context: string) {
   return htmlToText(context);
