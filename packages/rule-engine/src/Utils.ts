@@ -19,7 +19,7 @@ dayjs.extend(utc);
 
 // Register Handlebars helpers
 Handlebars.registerHelper(Helpers());
-Handlebars.registerHelper('date', function (context, block) {
+Handlebars.registerHelper('date', function (context: string, block: { hash: { offset: any; format: string | undefined; }; }) {
   let date = dayjs(context);
 
   const offsetString = block?.hash?.offset;
@@ -35,7 +35,7 @@ Handlebars.registerHelper('date', function (context, block) {
 
   return date.format();
 });
-Handlebars.registerHelper('htmlToText', function (context) {
+Handlebars.registerHelper('htmlToText', function (context: string) {
   return htmlToText(context);
 });
 

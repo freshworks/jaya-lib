@@ -13,20 +13,20 @@
     "lint": "lerna run lint"
   },
   "devDependencies": {
-    "@types/node": "^13.11.0",
-    "@typescript-eslint/eslint-plugin": "^2.25.0",
-    "@typescript-eslint/parser": "^2.25.0",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.10.1",
-    "eslint-import-resolver-typescript": "^2.0.0",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-prettier": "^3.1.2",
-    "eslint-plugin-typescript-sort-keys": "^0.8.0",
-    "husky": "^4.2.3",
+    "@types/node": "^14.14.37",
+    "@typescript-eslint/eslint-plugin": "^4.21.0",
+    "@typescript-eslint/parser": "^4.21.0",
+    "eslint": "^7.24.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-typescript-sort-keys": "^1.6.0",
+    "husky": "^6.0.0",
     "lerna": "^4.0.0",
-    "lint-staged": "^10.1.2",
-    "prettier": "^2.0.2",
-    "typescript": "^3.8.3"
+    "lint-staged": "^10.5.4",
+    "prettier": "^2.2.1",
+    "typescript": "^4.2.4"
   },
   "lint-staged": {
     "*.ts": [

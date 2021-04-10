@@ -18,11 +18,11 @@ import {
 import { Agent } from './interfaces/Agent';
 import { User } from './interfaces/User';
 
-Handlebars.registerHelper('date', function (context, block) {
+Handlebars.registerHelper('date', function (context: string, block: { hash: { offset: number; format: string | undefined; }; }) {
   return dayjs(context).utcOffset(block.hash.offset).format(block.hash.format);
 });
 
-Handlebars.registerHelper('htmlToText', function (context) {
+Handlebars.registerHelper('htmlToText', function (context: string) {
   return htmlToText(context);
 });
 
