@@ -19,23 +19,26 @@ dayjs.extend(utc);
 
 // Register Handlebars helpers
 Handlebars.registerHelper(Helpers());
-Handlebars.registerHelper('date', function (context, block) {
-  let date = dayjs(context);
+Handlebars.registerHelper(
+  'date',
+  function (context: string, block: { hash: { format: string | undefined; offset: string } }) {
+    let date = dayjs(context);
 
-  const offsetString = block?.hash?.offset;
-  const offsetNumber = offsetString && parseInt(offsetString, 10);
+    const offsetString = block?.hash?.offset;
+    const offsetNumber = offsetString && parseInt(offsetString, 10);
 
-  if (Number.isInteger(offsetNumber)) {
-    date = date.utcOffset(offsetNumber);
-  }
+    if (Number.isInteger(offsetNumber)) {
+      date = date.utcOffset(offsetNumber as number);
+    }
 
-  if (block?.hash?.format) {
-    return date.format(block.hash.format);
-  }
+    if (block?.hash?.format) {
+      return date.format(block.hash.format);
+    }
 
-  return date.format();
-});
-Handlebars.registerHelper('htmlToText', function (context) {
+    return date.format();
+  },
+);
+Handlebars.registerHelper('htmlToText', function (context: string) {
   return htmlToText(context);
 });
 

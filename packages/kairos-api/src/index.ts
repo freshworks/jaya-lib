@@ -15,7 +15,7 @@ export interface KairosSchedule {
 
 export interface KairosScheduleOptions {
   jobId: string;
-  payload: object | null;
+  payload: unknown | null;
   recurring?: {
     cron: string;
     timezone: string;
@@ -61,7 +61,7 @@ export default class Kairos {
           headers: this.headers,
         })
         .then(
-          (data: object) => {
+          (data: unknown) => {
             const dataObj = data as { data: KairosSchedule };
             const response = dataObj && dataObj.data;
 
@@ -83,7 +83,7 @@ export default class Kairos {
    */
   createSchedule(opts: KairosScheduleOptions): AxiosPromise<string> {
     const body: {
-      data: object | null;
+      data: unknown | null;
       group: string;
       job_id: string;
       recurring?: {
