@@ -143,7 +143,7 @@ export default async (
     // Step 3: Generate placeholders with ticket_id and ticket_url
     const freshdeskTicketId = ticketCreateResponse.data.id;
     generatedPlaceholders = {
-      'freshdesk.ticket_id': freshdeskTicketId,
+      'freshdesk.ticket_id': `${freshdeskTicketId}`,
       'freshdesk.ticket_url': `${freshdeskApiUrl}/helpdesk/tickets/${freshdeskTicketId}`,
     };
 
