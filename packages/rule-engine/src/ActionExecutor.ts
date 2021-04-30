@@ -94,6 +94,7 @@ export class ActionExecutor {
 
     if (isUsernameGenerated(user.first_name || '')) {
       placeholders['user.first_name'] = '';
+      placeholders['user.last_name'] = '';
     }
 
     // Register dynamic placeholders
