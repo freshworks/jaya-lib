@@ -1,6 +1,6 @@
 {
   "name": "@freshworks-jaya/rule-engine",
-  "version": "0.12.32",
+  "version": "0.12.33-alpha.0",
   "description": "Provides methods to process rules in product events in marketplace app",
   "repository": "git@github.com:freshdesk/jaya-lib.git",
   "main": "lib/index.js",
@@ -44,7 +44,7 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "@freshworks-jaya/freshchat-api": "^0.7.20",
+    "@freshworks-jaya/freshchat-api": "^0.7.21-alpha.0",
     "@freshworks-jaya/kairos-api": "^0.1.3",
     "@freshworks-jaya/marketplace-models": "^0.1.8",
     "@freshworks-jaya/utilities": "^0.2.5",
