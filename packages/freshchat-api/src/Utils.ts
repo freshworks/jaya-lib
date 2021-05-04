@@ -26,7 +26,17 @@ Handlebars.registerHelper(
 );
 
 Handlebars.registerHelper('htmlToText', function (context: string) {
-  return htmlToText(context);
+  return htmlToText(context, {
+    preserveNewlines: true,
+  });
+});
+
+Handlebars.registerHelper('nl2br', function (text: string) {
+  if (typeof text !== 'string') {
+    return '';
+  }
+
+  return text.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br>$2');
 });
 
 Handlebars.registerHelper(Helpers(['comparison', 'string', 'array']));

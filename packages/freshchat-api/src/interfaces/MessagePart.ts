@@ -16,10 +16,12 @@ export interface MessagePart {
   quick_reply_button?: {
     custom_reply_text?: string;
     label: string;
+    payload?: string;
   };
   reference?: {
     label: string;
-    reference_id: string;
+    placeholder_reference_id?: string;
+    reference_id?: string;
   };
   template_content?: {
     sections: {
@@ -31,7 +33,7 @@ export interface MessagePart {
   text?: { content: string };
   url_button?: {
     label: string;
-    target: string;
+    target?: '_self' | '_blank';
     url: string;
   };
 }

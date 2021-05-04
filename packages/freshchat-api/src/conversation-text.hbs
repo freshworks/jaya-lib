@@ -1,11 +1,51 @@
+{{#*inline "messageFragment"}}
+{{#if fragment.text}}
+{{htmlToText fragment.text.content}}
+{{/if}}
+{{#if fragment.image}}
+Image: {{fragment.image.url}}
+{{/if}}
+{{#if fragment.file}}
+Attached file: {{fragment.file.name}}
+{{/if}}
+{{#if fragment.reference}}
+{{fragment.reference.label}}
+{{/if}}
+{{#if fragment.url_button}}
+{{#if fragment.url_button.label}}
+{{fragment.url_button.label}}
+{{else}}
+View FAQ({{fragment.url_button.url}})
+{{/if}}  
+{{/if}}
+{{#if fragment.quick_reply_button}}
+{{#if fragment.quick_reply_button.custom_reply_text}}
+{{fragment.quick_reply_button.custom_reply_text}}
+{{else}}
+{{fragment.quick_reply_button.label}}
+{{/if}}
+{{/if}}
+{{#if fragment.template_content}}
+{{#if (eq fragment.template_content.type "carousel_card_default")}}
+{{#each fragment.template_content.sections as | section |}}
+{{#each section.parts as | part |}}
+{{> messageFragment fragment=part}}
+{{/each}}
+{{/each}}
+{{/if}}
+{{/if}}
+{{#if fragment.collection}}
+{{#each fragment.collection.sub_parts as | sub_part |}}
+{{> messageFragment fragment=sub_part}}
+{{/each}}
+{{/if}}
+{{/inline}}
 {{#each (reverse messages) as | message |}}
 {{!-- System message --}}
-{{#if (isTruthy message.meta_data)}}
+{{#if (or (isTruthy message.meta_data) (eq message.message_type "system"))}}
 System  {{date message.created_time format="DD-MMM-YY, HH:mm" offset=../timezoneOffset}}
 {{#each message.message_parts as | message_part |}}
-{{#if message_part.text}}
-{{htmlToText message_part.text.content}}
-{{/if}}
+{{> messageFragment fragment=message_part}}
 {{/each}}
 {{!-- User message --}}
 {{else if (and (eq message.actor_type "user") (eq message.message_type "normal"))}}
@@ -15,15 +55,7 @@ System  {{date message.created_time format="DD-MMM-YY, HH:mm" offset=../timezone
 User  {{date message.created_time format="DD-MMM-YY, HH:mm" offset=../timezoneOffset}}
 {{/if}}
 {{#each message.message_parts as | message_part |}}
-{{#if message_part.text}}
-{{htmlToText message_part.text.content}}
-{{/if}}
-{{#if message_part.image}}
-Image: {{message_part.image.url}}
-{{/if}}
-{{#if message_part.file}}
-Attached file: {{message_part.file.name}}
-{{/if}}
+{{> messageFragment fragment=message_part}}
 {{/each}}
 {{!-- Agent message --}}
 {{else}}
@@ -34,16 +66,11 @@ Attached file: {{message_part.file.name}}
 {{else}}
 Bot  {{date message.created_time format="DD-MMM-YY, HH:mm" offset=../timezoneOffset}}
 {{/if}}
+{{#if (eq message.message_type "private")}}
+[Private Note]
+{{/if}}
 {{#each message.message_parts as | message_part |}}
-{{#if message_part.text}}
-{{htmlToText message_part.text.content}}
-{{/if}}
-{{#if message_part.image}}
-Image: {{message_part.image.url}}
-{{/if}}
-{{#if message_part.file}}
-Attached file: {{message_part.file.name}}
-{{/if}}
+{{> messageFragment fragment=message_part}}
 {{/each}}
 {{/if}}
 
