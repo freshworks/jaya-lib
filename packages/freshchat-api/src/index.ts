@@ -13,6 +13,7 @@ import { Agent } from './interfaces/Agent';
 import { Utils } from './Utils';
 import { isUsernameGenerated } from '@freshworks-jaya/utilities';
 import { ReportType } from './interfaces/Report';
+import { MessagePart } from './interfaces/MessagePart';
 
 export * from './interfaces/Conversation';
 export * from './interfaces/Message';
@@ -152,6 +153,29 @@ export default class Freshchat {
             },
           },
         ],
+        message_type: messageType,
+        reply_parts: replyParts,
+      }),
+      { headers: this.headers },
+    );
+  }
+
+  sendReply(
+    conversationId: string,
+    messageType: 'normal' | 'private',
+    actorType: 'agent' | 'bot',
+    messageParts: MessagePart[],
+    replyParts?: ReplyPart[],
+    actorId?: string,
+  ): AxiosPromise<Message> {
+    const postMessageApiUrl = `${this.apiUrl}/conversations/${conversationId}/messages`;
+
+    return axios.post(
+      postMessageApiUrl,
+      JSON.stringify({
+        actor_id: actorId,
+        actor_type: actorType || 'bot',
+        message_parts: messageParts,
         message_type: messageType,
         reply_parts: replyParts,
       }),
