@@ -37,5 +37,8 @@
     "hooks": {
       "pre-commit": "lint-staged && yarn build"
     }
+  },
+  "resolutions": {
+    "handlebars": "4.7.7"
   }
 }
