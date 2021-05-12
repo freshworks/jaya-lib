@@ -71,9 +71,9 @@ export class Utils {
   }
 
   public static processHandlebarsAndReplacePlaceholders(value: string, placeholders: PlaceholdersMap): string {
-    const handlebarsProcessedValue = this.processHanldebars(value, placeholders);
+    // const handlebarsProcessedValue = this.processHanldebars(value, placeholders);
 
-    return findAndReplacePlaceholders(handlebarsProcessedValue, placeholders);
+    return findAndReplacePlaceholders(value, placeholders);
   }
 
   public static async getDynamicPlaceholders(
