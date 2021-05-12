@@ -10,7 +10,6 @@ import {
 } from '@freshworks-jaya/utilities';
 import { MessagePart, ProductEventData } from '@freshworks-jaya/marketplace-models';
 import Handlebars from 'handlebars';
-import Helpers from 'handlebars-helpers';
 import { htmlToText } from 'html-to-text';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -18,7 +17,6 @@ import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
 
 // Register Handlebars helpers
-Handlebars.registerHelper(Helpers());
 Handlebars.registerHelper(
   'date',
   function (context: string, block: { hash: { format: string | undefined; offset: string } }) {
