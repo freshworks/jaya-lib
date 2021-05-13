@@ -20,6 +20,7 @@ describe('Utils test', () => {
       url: 'https://test.freshchat.com/v1',
       token: 'testToken',
     },
+    logglyKey: 'logglykeyhere',
     timezoneOffset: -330,
   };
 

@@ -1,4 +1,4 @@
-import { ProductEventData } from '@freshworks-jaya/marketplace-models';
+import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import { Integrations } from '../../models/rule-engine';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import axios from 'axios';
@@ -7,7 +7,7 @@ import { Api } from '../../models/rule';
 
 export default async (
   integrations: Integrations,
-  productEventData: ProductEventData,
+  productEventPayload: ProductEventPayload,
   actionValue: unknown,
   domain: string,
   placeholders: PlaceholdersMap,
@@ -16,11 +16,13 @@ export default async (
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
-  const modelProperties = productEventData.conversation || productEventData.message;
+  const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
   const conversationId = modelProperties.conversation_id;
   const appId = modelProperties.app_id;
   const userEmail =
-    productEventData.associations && productEventData.associations.user && productEventData.associations.user.email;
+    productEventPayload.data.associations &&
+    productEventPayload.data.associations.user &&
+    productEventPayload.data.associations.user.email;
 
   if (!userEmail) {
     return Promise.reject('No user email to send');

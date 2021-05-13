@@ -1,4 +1,4 @@
-import { ProductEventData, ActorType, ConversationStatus } from '@freshworks-jaya/marketplace-models';
+import { ActorType, ConversationStatus, ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import { Integrations } from '../../models/rule-engine';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
@@ -7,7 +7,7 @@ import { Api } from '../../models/rule';
 
 export default async (
   integrations: Integrations,
-  productEventData: ProductEventData,
+  productEventPayload: ProductEventPayload,
   actionValue: unknown,
   domain: string,
   placeholders: PlaceholdersMap,
@@ -16,15 +16,15 @@ export default async (
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
-  const modelProperties = productEventData.conversation || productEventData.message;
+  const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
   const conversationId = modelProperties.conversation_id;
 
   let assignedAgentId = '';
   let conversationStatus = ConversationStatus.Assigned;
 
   if (actionValue === '-2') {
-    if (productEventData.actor.type === ActorType.Agent) {
-      assignedAgentId = productEventData.actor.id;
+    if (productEventPayload.data.actor.type === ActorType.Agent) {
+      assignedAgentId = productEventPayload.data.actor.id;
     } else {
       throw new Error('Event performing actor is a user. Cannot assign conversation to user');
     }
@@ -37,7 +37,7 @@ export default async (
       let generatedPlaceholders: PlaceholdersMap = {};
       generatedPlaceholders = await Utils.getDynamicPlaceholders(
         assignedAgentId,
-        productEventData,
+        productEventPayload,
         integrations,
         domain,
         placeholders,

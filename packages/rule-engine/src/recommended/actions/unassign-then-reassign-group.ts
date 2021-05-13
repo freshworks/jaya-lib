@@ -1,4 +1,4 @@
-import { ProductEventData, ConversationStatus } from '@freshworks-jaya/marketplace-models';
+import { ConversationStatus, ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import { Integrations } from '../../models/rule-engine';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
@@ -6,7 +6,7 @@ import { Api } from '../../models/rule';
 
 export default async (
   integrations: Integrations,
-  productEventData: ProductEventData,
+  productEventPayload: ProductEventPayload,
   actionValue: unknown,
   domain: string,
   placeholders: PlaceholdersMap,
@@ -15,7 +15,7 @@ export default async (
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
-  const modelProperties = productEventData.conversation || productEventData.message;
+  const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
   const conversationId = modelProperties.conversation_id;
 
   if (modelProperties.assigned_group_id) {

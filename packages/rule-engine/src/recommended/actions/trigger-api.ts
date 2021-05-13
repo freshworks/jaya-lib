@@ -1,4 +1,4 @@
-import { ProductEventData } from '@freshworks-jaya/marketplace-models';
+import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import { Integrations } from '../../models/rule-engine';
 import {
   Api,
@@ -13,6 +13,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import querystring, { ParsedUrlQueryInput } from 'querystring';
 import { Utils } from '../../Utils';
 import * as _ from 'lodash';
+import { ErrorCodes } from '../../models/error-codes';
 
 const contentTypeMap: {
   [key in WebhookContentType]: string;
@@ -128,7 +129,7 @@ const getRequestConfig = (
 
 export default async (
   integrations: Integrations,
-  productEventData: ProductEventData,
+  productEventPayload: ProductEventPayload,
   actionValue: unknown,
   domain: string,
   placeholders: PlaceholdersMap,
@@ -147,7 +148,7 @@ export default async (
   try {
     const generatedPlaceholders = await Utils.getDynamicPlaceholders(
       JSON.stringify(triggerApi.config),
-      productEventData,
+      productEventPayload,
       integrations,
       domain,
       placeholders,
@@ -165,6 +166,13 @@ export default async (
     // Step 6: Make the API call
     webhookResponse = await axios.request(axiosRequestConfig);
   } catch (err) {
+    Utils.log(productEventPayload, integrations.logglyKey, {
+      data: {
+        apiName: triggerApi.name,
+        error: err,
+      },
+      errorCode: ErrorCodes.TriggerAPI,
+    });
     return Promise.reject('Trigger webhook failure');
   }
 

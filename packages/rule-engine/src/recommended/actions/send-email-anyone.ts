@@ -1,4 +1,4 @@
-import { ProductEventData } from '@freshworks-jaya/marketplace-models';
+import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import { Integrations } from '../../models/rule-engine';
 import axios from 'axios';
 import { Api, SendEmailAnyoneValue } from '../../models/rule';
@@ -7,13 +7,13 @@ import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 
 export default async (
   integrations: Integrations,
-  productEventData: ProductEventData,
+  productEventPayload: ProductEventPayload,
   actionValue: unknown,
   domain: string,
   placeholders: PlaceholdersMap,
   apis: Api[],
 ): Promise<PlaceholdersMap> => {
-  const modelProperties = productEventData.conversation || productEventData.message;
+  const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
   const appId = modelProperties.app_id;
 
   if (!integrations.emailService) {
@@ -27,7 +27,7 @@ export default async (
     // Step 1: Setup dynamic placeholders using values from subject and body
     generatedPlaceholders = await Utils.getDynamicPlaceholders(
       `${sendEmailAnyoneValue.subject} ${sendEmailAnyoneValue.body}`,
-      productEventData,
+      productEventPayload,
       integrations,
       domain,
       placeholders,

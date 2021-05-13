@@ -1,4 +1,4 @@
-import { ProductEventData } from '@freshworks-jaya/marketplace-models';
+import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Integrations } from '../../models/rule-engine';
@@ -7,7 +7,7 @@ import { Api } from '../../models/rule';
 
 export default async (
   integrations: Integrations,
-  productEventData: ProductEventData,
+  productEventPayload: ProductEventPayload,
   actionValue: unknown,
   domain: string,
   placeholders: PlaceholdersMap,
@@ -23,7 +23,7 @@ export default async (
   try {
     generatedPlaceholders = await Utils.getDynamicPlaceholders(
       userName,
-      productEventData,
+      productEventPayload,
       integrations,
       domain,
       placeholders,
@@ -31,7 +31,7 @@ export default async (
 
     const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
 
-    await freshchat.updateUser(productEventData.associations.user.id, {
+    await freshchat.updateUser(productEventPayload.data.associations.user.id, {
       first_name: Utils.processHandlebarsAndReplacePlaceholders(userName, combinedPlaceholders),
     });
   } catch (err) {

@@ -1,6 +1,7 @@
 import { ConditionOperator } from './index';
 import ruleConfig from './RuleConfig';
 import { Integrations } from './models/rule-engine';
+import Helpers from 'handlebars-helpers';
 import axios from 'axios';
 import {
   BusinessHour,
@@ -8,15 +9,18 @@ import {
   PlaceholdersMap,
   findAndReplacePlaceholders,
 } from '@freshworks-jaya/utilities';
-import { MessagePart, ProductEventData } from '@freshworks-jaya/marketplace-models';
+import { MessagePart, ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import Handlebars from 'handlebars';
 import { htmlToText } from 'html-to-text';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import { ErrorCodes } from './models/error-codes';
+import { JsonMap } from './models/rule';
 
 dayjs.extend(utc);
 
 // Register Handlebars helpers
+Handlebars.registerHelper(Helpers());
 Handlebars.registerHelper(
   'date',
   function (context: string, block: { hash: { format: string | undefined; offset: string } }) {
@@ -41,6 +45,37 @@ Handlebars.registerHelper('htmlToText', function (context: string) {
 });
 
 export class Utils {
+  public static log(
+    productEventPayload: ProductEventPayload,
+    logglyKey: string,
+    logInfo: {
+      data?: JsonMap;
+      errorCode: ErrorCodes;
+    },
+  ): void {
+    const accountId = productEventPayload.account_id;
+    const region = productEventPayload.region;
+    const conversation = productEventPayload.data.conversation || productEventPayload.data.message;
+    const conversationId = conversation.conversation_id;
+
+    try {
+      axios.post(
+        `http://logs-01.loggly.com/inputs/${logglyKey}/tag/http/`,
+        {
+          ...logInfo,
+          accountId,
+          conversationId,
+          region,
+        },
+        {
+          headers: {
+            'content-type': 'application/json',
+          },
+        },
+      );
+    } catch (err) {}
+  }
+
   /**
    * Gets a concatenated string of messageParts with type 'text'.
    */
@@ -71,14 +106,14 @@ export class Utils {
   }
 
   public static processHandlebarsAndReplacePlaceholders(value: string, placeholders: PlaceholdersMap): string {
-    // const handlebarsProcessedValue = this.processHanldebars(value, placeholders);
+    const handlebarsProcessedValue = this.processHanldebars(value, placeholders);
 
-    return findAndReplacePlaceholders(value, placeholders);
+    return findAndReplacePlaceholders(handlebarsProcessedValue, placeholders);
   }
 
   public static async getDynamicPlaceholders(
     text: string,
-    productEventData: ProductEventData,
+    productEventPayload: ProductEventPayload,
     integrations: Integrations,
     domain: string,
     givenPlaceholders: PlaceholdersMap,
@@ -107,12 +142,20 @@ export class Utils {
 
           try {
             const value = await ruleConfig.dynamicPlaceholders[dynamicPlaceholderKey](
-              productEventData,
+              productEventPayload,
               integrations,
               domain,
             );
             generatedPlaceholders[dynamicPlaceholderKey] = value;
-          } catch (err) {}
+          } catch (err) {
+            Utils.log(productEventPayload, integrations.logglyKey, {
+              data: {
+                error: err,
+                placeholderKey: dynamicPlaceholderKey,
+              },
+              errorCode: ErrorCodes.DynamicPlaceholder,
+            });
+          }
         }
       }
     }

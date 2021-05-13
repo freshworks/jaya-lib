@@ -16,6 +16,7 @@ export interface Integrations {
   freshchatv1: ProductCredentials;
   freshchatv2: ProductCredentials;
   freshdesk?: ProductCredentials;
+  logglyKey: string;
   timezoneOffset: number;
 }
 
