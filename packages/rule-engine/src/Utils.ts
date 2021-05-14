@@ -16,6 +16,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { ErrorCodes } from './models/error-codes';
 import { JsonMap } from './models/rule';
+import GoogleCloudLogging, { LogSeverity } from './GoogleCloudLogging';
 
 dayjs.extend(utc);
 
@@ -47,33 +48,25 @@ Handlebars.registerHelper('htmlToText', function (context: string) {
 export class Utils {
   public static log(
     productEventPayload: ProductEventPayload,
-    logglyKey: string,
-    logInfo: {
-      data?: JsonMap;
-      errorCode: ErrorCodes;
-    },
+    integrations: Integrations,
+    errorCode: ErrorCodes,
+    info: JsonMap,
+    severity?: LogSeverity,
   ): void {
-    const accountId = productEventPayload.account_id;
-    const region = productEventPayload.region;
     const conversation = productEventPayload.data.conversation || productEventPayload.data.message;
     const conversationId = conversation.conversation_id;
+    const googleCloudLogging = new GoogleCloudLogging(integrations.googleServiceAccount);
 
-    try {
-      axios.post(
-        `http://logs-01.loggly.com/inputs/${logglyKey}/tag/http/`,
-        {
-          ...logInfo,
-          accountId,
-          conversationId,
-          region,
-        },
-        {
-          headers: {
-            'content-type': 'application/json',
-          },
-        },
-      );
-    } catch (err) {}
+    googleCloudLogging.log(
+      {
+        account_id: productEventPayload.account_id,
+        conversation_id: conversationId,
+        error_code: errorCode,
+        info,
+        region: productEventPayload.region,
+      },
+      severity || LogSeverity.DEFAULT,
+    );
   }
 
   /**
@@ -147,15 +140,7 @@ export class Utils {
               domain,
             );
             generatedPlaceholders[dynamicPlaceholderKey] = value;
-          } catch (err) {
-            Utils.log(productEventPayload, integrations.logglyKey, {
-              data: {
-                error: err,
-                placeholderKey: dynamicPlaceholderKey,
-              },
-              errorCode: ErrorCodes.DynamicPlaceholder,
-            });
-          }
+          } catch (err) {}
         }
       }
     }

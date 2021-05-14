@@ -14,6 +14,7 @@ import querystring, { ParsedUrlQueryInput } from 'querystring';
 import { Utils } from '../../Utils';
 import * as _ from 'lodash';
 import { ErrorCodes } from '../../models/error-codes';
+import { LogSeverity } from '../../GoogleCloudLogging';
 
 const contentTypeMap: {
   [key in WebhookContentType]: string;
@@ -166,13 +167,19 @@ export default async (
     // Step 6: Make the API call
     webhookResponse = await axios.request(axiosRequestConfig);
   } catch (err) {
-    Utils.log(productEventPayload, integrations.logglyKey, {
-      data: {
+    Utils.log(
+      productEventPayload,
+      integrations,
+      ErrorCodes.TriggerAPI,
+      {
         apiName: triggerApi.name,
-        error: err,
+        error: {
+          code: err.code,
+          message: err.message,
+        },
       },
-      errorCode: ErrorCodes.TriggerAPI,
-    });
+      LogSeverity.ERROR,
+    );
     return Promise.reject('Trigger webhook failure');
   }
 

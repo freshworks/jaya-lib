@@ -16,8 +16,15 @@ export interface Integrations {
   freshchatv1: ProductCredentials;
   freshchatv2: ProductCredentials;
   freshdesk?: ProductCredentials;
-  logglyKey: string;
+  googleServiceAccount: GoogleServiceAccountConfig;
   timezoneOffset: number;
+}
+
+export interface GoogleServiceAccountConfig {
+  clientEmail: string;
+  logName: string;
+  privateKey: string;
+  projectId: string;
 }
 
 export interface ProductCredentials {
