@@ -46,27 +46,29 @@ Handlebars.registerHelper('htmlToText', function (context: string) {
 });
 
 export class Utils {
-  public static log(
+  public static async log(
     productEventPayload: ProductEventPayload,
     integrations: Integrations,
     errorCode: ErrorCodes,
     info: JsonMap,
     severity?: LogSeverity,
-  ): void {
+  ): Promise<void> {
     const conversation = productEventPayload.data.conversation || productEventPayload.data.message;
     const conversationId = conversation.conversation_id;
     const googleCloudLogging = new GoogleCloudLogging(integrations.googleServiceAccount);
 
-    googleCloudLogging.log(
-      {
-        account_id: productEventPayload.account_id,
-        conversation_id: conversationId,
-        error_code: errorCode,
-        info,
-        region: productEventPayload.region,
-      },
-      severity || LogSeverity.ERROR,
-    );
+    try {
+      googleCloudLogging.log(
+        {
+          account_id: productEventPayload.account_id,
+          conversation_id: conversationId,
+          error_code: errorCode,
+          info,
+          region: productEventPayload.region,
+        },
+        severity || LogSeverity.ERROR,
+      );
+    } catch (err) {}
   }
 
   /**
