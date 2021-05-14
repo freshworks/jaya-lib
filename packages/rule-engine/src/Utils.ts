@@ -140,7 +140,12 @@ export class Utils {
               domain,
             );
             generatedPlaceholders[dynamicPlaceholderKey] = value;
-          } catch (err) {}
+          } catch (err) {
+            this.log(productEventPayload, integrations, ErrorCodes.DynamicPlaceholder, {
+              dynamicPlaceholderKey,
+              error: err,
+            });
+          }
         }
       }
     }

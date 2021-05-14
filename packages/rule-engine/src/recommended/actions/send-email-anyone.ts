@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Api, SendEmailAnyoneValue } from '../../models/rule';
 import { Utils } from '../../Utils';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
+import { ErrorCodes } from '../../models/error-codes';
 
 export default async (
   integrations: Integrations,
@@ -72,6 +73,9 @@ export default async (
       },
     );
   } catch (err) {
+    Utils.log(productEventPayload, integrations, ErrorCodes.SendEmail, {
+      error: err,
+    });
     return Promise.reject('Failed to setup dynamic placeholders');
   }
 

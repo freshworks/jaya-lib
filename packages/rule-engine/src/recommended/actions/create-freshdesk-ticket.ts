@@ -7,6 +7,7 @@ import { Utils as FreshchatUtils } from '@freshworks-jaya/freshchat-api/lib/Util
 import { isUsernameGenerated } from '@freshworks-jaya/utilities';
 import { Utils } from '../../Utils';
 import { Api } from '../../models/rule';
+import { ErrorCodes } from '../../models/error-codes';
 
 const getTicketConversationContent = async (
   freshchat: Freshchat,
@@ -160,6 +161,9 @@ export default async (
       },
     );
   } catch (err) {
+    Utils.log(productEventPayload, integrations, ErrorCodes.FreshdeskTicket, {
+      error: err,
+    });
     return Promise.reject('Error creating freshdesk ticket');
   }
 
