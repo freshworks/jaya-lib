@@ -65,7 +65,7 @@ export class Utils {
         info,
         region: productEventPayload.region,
       },
-      severity || LogSeverity.DEFAULT,
+      severity || LogSeverity.ERROR,
     );
   }
 

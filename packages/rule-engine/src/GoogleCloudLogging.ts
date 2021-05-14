@@ -1,4 +1,3 @@
-import { google } from 'googleapis';
 import { Logging } from '@google-cloud/logging';
 import { ApiResponse } from '@google-cloud/logging/build/src/log';
 import { GoogleServiceAccountConfig } from './models/rule-engine';
@@ -15,14 +14,6 @@ export enum LogSeverity {
   NOTICE = 'NOTICE',
   WARNING = 'WARNING',
 }
-
-/**
- * This code is only for including googleapis in here.
- * It solves the versioning problem of some of the dependencies @google-cloud.
- */
-const apis = google.getSupportedAPIs();
-JSON.stringify(apis);
-
 export default class GoogleCloudLogging {
   private logging: Logging;
 
