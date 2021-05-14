@@ -44,7 +44,12 @@ describe('ActionExecutor test', () => {
             token: 'tokenv2',
             url: 'urlv2',
           },
-          logglyKey: 'randomkey',
+          googleServiceAccount: {
+            projectId: 'projectid',
+            privateKey: 'privatekey',
+            clientEmail: 'emailaddresshere',
+            logName: 'jaya-lib',
+          },
           timezoneOffset: -330,
         },
       );

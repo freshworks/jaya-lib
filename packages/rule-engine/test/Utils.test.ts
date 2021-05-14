@@ -20,7 +20,12 @@ describe('Utils test', () => {
       url: 'https://test.freshchat.com/v1',
       token: 'testToken',
     },
-    logglyKey: 'logglykeyhere',
+    googleServiceAccount: {
+      projectId: 'projectid',
+      privateKey: 'privatekey',
+      clientEmail: 'emailaddresshere',
+      logName: 'jaya-lib',
+    },
     timezoneOffset: -330,
   };
 
