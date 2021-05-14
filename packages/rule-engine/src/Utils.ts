@@ -1,6 +1,7 @@
 import { ConditionOperator } from './index';
 import ruleConfig from './RuleConfig';
 import { Integrations } from './models/rule-engine';
+import Helpers from 'handlebars-helpers';
 import axios from 'axios';
 import {
   BusinessHour,
@@ -8,12 +9,14 @@ import {
   PlaceholdersMap,
   findAndReplacePlaceholders,
 } from '@freshworks-jaya/utilities';
-import { MessagePart, ProductEventData } from '@freshworks-jaya/marketplace-models';
+import { MessagePart, ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import Handlebars from 'handlebars';
-import Helpers from 'handlebars-helpers';
 import { htmlToText } from 'html-to-text';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import { ErrorCodes } from './models/error-codes';
+import { JsonMap } from './models/rule';
+import GoogleCloudLogging, { LogSeverity } from './GoogleCloudLogging';
 
 dayjs.extend(utc);
 
@@ -43,6 +46,29 @@ Handlebars.registerHelper('htmlToText', function (context: string) {
 });
 
 export class Utils {
+  public static log(
+    productEventPayload: ProductEventPayload,
+    integrations: Integrations,
+    errorCode: ErrorCodes,
+    info: JsonMap,
+    severity?: LogSeverity,
+  ): void {
+    const conversation = productEventPayload.data.conversation || productEventPayload.data.message;
+    const conversationId = conversation.conversation_id;
+    const googleCloudLogging = new GoogleCloudLogging(integrations.googleServiceAccount);
+
+    googleCloudLogging.log(
+      {
+        account_id: productEventPayload.account_id,
+        conversation_id: conversationId,
+        error_code: errorCode,
+        info,
+        region: productEventPayload.region,
+      },
+      severity || LogSeverity.ERROR,
+    );
+  }
+
   /**
    * Gets a concatenated string of messageParts with type 'text'.
    */
@@ -80,7 +106,7 @@ export class Utils {
 
   public static async getDynamicPlaceholders(
     text: string,
-    productEventData: ProductEventData,
+    productEventPayload: ProductEventPayload,
     integrations: Integrations,
     domain: string,
     givenPlaceholders: PlaceholdersMap,
@@ -109,12 +135,17 @@ export class Utils {
 
           try {
             const value = await ruleConfig.dynamicPlaceholders[dynamicPlaceholderKey](
-              productEventData,
+              productEventPayload,
               integrations,
               domain,
             );
             generatedPlaceholders[dynamicPlaceholderKey] = value;
-          } catch (err) {}
+          } catch (err) {
+            this.log(productEventPayload, integrations, ErrorCodes.DynamicPlaceholder, {
+              dynamicPlaceholderKey,
+              error: err,
+            });
+          }
         }
       }
     }

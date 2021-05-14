@@ -31,7 +31,7 @@ export class ActionExecutor {
     if (actionFunc) {
       return actionFunc(
         integrations,
-        productEventPayload.data,
+        productEventPayload,
         action.value,
         productEventPayload.domain,
         placeholders,

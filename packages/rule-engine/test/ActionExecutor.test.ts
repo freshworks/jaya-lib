@@ -44,6 +44,7 @@ describe('ActionExecutor test', () => {
             token: 'tokenv2',
             url: 'urlv2',
           },
+          logglyKey: 'randomkey',
           timezoneOffset: -330,
         },
       );
