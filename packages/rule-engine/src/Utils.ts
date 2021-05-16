@@ -91,13 +91,15 @@ export class Utils {
 
   public static processHanldebars(value: string, placeholders: PlaceholdersMap): string {
     let processedString = '';
+    let isError = false;
     try {
       const template = Handlebars.compile(value as string);
       processedString = template(placeholders);
     } catch (err) {
-      processedString = '';
+      isError = true;
     }
-    return processedString ? processedString : value;
+
+    return isError ? value : processedString;
   }
 
   public static processHandlebarsAndReplacePlaceholders(value: string, placeholders: PlaceholdersMap): string {
