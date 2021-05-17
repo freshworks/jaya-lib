@@ -46,6 +46,19 @@ Handlebars.registerHelper('htmlToText', function (context: string) {
 });
 
 export class Utils {
+  public static safelyParseJson(value: string): JsonMap | null {
+    try {
+      const jsonMap = JSON.parse(value);
+      if (typeof jsonMap === 'object' && jsonMap.constructor === Object) {
+        return jsonMap;
+      }
+
+      throw new Error('Not a valid Json Map');
+    } catch (err) {
+      return null;
+    }
+  }
+
   public static async log(
     productEventPayload: ProductEventPayload,
     integrations: Integrations,

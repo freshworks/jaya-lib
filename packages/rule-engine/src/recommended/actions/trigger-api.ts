@@ -59,13 +59,35 @@ const replacePlaceholdersInObject = (jsonMap: JsonMap | JsonArray, combinedPlace
   })(jsonMap);
 };
 
-const getReplacedContent = (content: string | JsonMap, combinedPlaceholders: PlaceholdersMap): string | JsonMap => {
-  if (_.isString(content)) {
-    return Utils.processHandlebarsAndReplacePlaceholders(content as string, combinedPlaceholders);
+const getReplacedContent = (
+  content: string,
+  combinedPlaceholders: PlaceholdersMap,
+  contentType: WebhookContentType,
+): string | JsonMap => {
+  if (contentType === WebhookContentType.Xml) {
+    return Utils.processHandlebarsAndReplacePlaceholders(content, combinedPlaceholders);
   }
 
-  replacePlaceholdersInObject(content as JsonMap, combinedPlaceholders);
-  return content;
+  const jsonContent = Utils.safelyParseJson(content);
+
+  if (jsonContent) {
+    replacePlaceholdersInObject(jsonContent, combinedPlaceholders);
+  }
+
+  return jsonContent || {};
+};
+
+const getReplacedHeaders = (content: string, combinedPlaceholders: PlaceholdersMap): JsonMap => {
+  // replacePlaceholdersInObject(triggerWebhookValue.customHeaders, combinedPlaceholders);
+  // Step 1: Parse content to JSON
+  const jsonHeaders = Utils.safelyParseJson(content);
+
+  // Step 2: replacePlaceholdersInObject
+  if (jsonHeaders) {
+    replacePlaceholdersInObject(jsonHeaders, combinedPlaceholders);
+  }
+
+  return jsonHeaders || {};
 };
 
 const getRequestConfig = (
@@ -80,7 +102,8 @@ const getRequestConfig = (
 
   // Step 2: Add custom headers if available
   if (triggerWebhookValue.customHeaders) {
-    axiosRequestConfig.headers = replacePlaceholdersInObject(triggerWebhookValue.customHeaders, combinedPlaceholders);
+    // Parse custom headers to json
+    axiosRequestConfig.headers = getReplacedHeaders(triggerWebhookValue.customHeaders, combinedPlaceholders);
   }
 
   // Step 3: Handle authentication
@@ -118,7 +141,11 @@ const getRequestConfig = (
 
     if (triggerWebhookValue.content && isRequestTypeContentMap[triggerWebhookValue.requestType]) {
       // Step 5: Handle content based on content-type
-      const replacedContent = getReplacedContent(triggerWebhookValue.content, combinedPlaceholders);
+      const replacedContent = getReplacedContent(
+        triggerWebhookValue.content,
+        combinedPlaceholders,
+        triggerWebhookValue.contentType,
+      );
 
       axiosRequestConfig.data = contentMap[triggerWebhookValue.contentType](replacedContent);
     }

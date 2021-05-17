@@ -141,9 +141,9 @@ export interface TriggerWebhookValue {
     password: string;
     username: string;
   };
-  content?: JsonMap | string;
+  content?: string;
   contentType?: WebhookContentType;
-  customHeaders?: JsonMap;
+  customHeaders?: string;
   requestType: WebhookRequestType;
   url: string;
 }
