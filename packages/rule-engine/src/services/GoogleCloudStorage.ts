@@ -1,5 +1,13 @@
 import { Datastore } from '@google-cloud/datastore';
 import { GoogleServiceAccountConfig } from './GoogleServiceAccount';
+import { google } from 'googleapis';
+
+/**
+ * This code is only for including googleapis in here.
+ * It solves the versioning problem of some of the dependencies @google-cloud.
+ */
+const apis = google.getSupportedAPIs();
+JSON.stringify(apis);
 
 export interface GoogleCloudStorageConfig extends GoogleServiceAccountConfig {
   keyKind: string;
