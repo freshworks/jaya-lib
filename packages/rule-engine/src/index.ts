@@ -19,7 +19,6 @@ export * from './models/rule-engine';
 export * from './models/plugin';
 export * from './TimerRuleEngine';
 export * from './services/GoogleCloudLogging';
-export * from './services/GoogleCloudStorage';
 export * from './services/GoogleServiceAccount';
 
 export class RuleEngine {
