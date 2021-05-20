@@ -74,7 +74,10 @@ export default async (
     );
   } catch (err) {
     Utils.log(productEventPayload, integrations, ErrorCodes.SendEmail, {
-      error: err,
+      error: {
+        data: err?.response?.data,
+        headers: err?.response?.headers,
+      },
     });
     return Promise.reject('Failed to setup dynamic placeholders');
   }
