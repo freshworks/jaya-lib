@@ -49,6 +49,7 @@
     "@freshworks-jaya/marketplace-models": "^0.1.8",
     "@freshworks-jaya/utilities": "^0.2.5",
     "@google-cloud/logging": "^9.2.3",
+    "@google-cloud/datastore": "^6.4.0",
     "axios": "^0.21.1",
     "bluebird": "^3.7.2",
     "dayjs": "^1.10.4",

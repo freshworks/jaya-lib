@@ -1,7 +1,13 @@
 import { Logging } from '@google-cloud/logging';
 import { ApiResponse } from '@google-cloud/logging/build/src/log';
-import { GoogleServiceAccountConfig } from './models/rule-engine';
-import { JsonMap } from './models/rule';
+import { JsonMap } from '../models/rule';
+
+export interface GoogleCloudLoggingConfig {
+  client_email: string;
+  logName: string;
+  private_key: string;
+  project_id: string;
+}
 
 export enum LogSeverity {
   ALERT = 'ALERT',
@@ -17,13 +23,13 @@ export enum LogSeverity {
 export default class GoogleCloudLogging {
   private logging: Logging;
 
-  constructor(private config: GoogleServiceAccountConfig) {
+  constructor(private config: GoogleCloudLoggingConfig) {
     this.logging = new Logging({
       credentials: {
-        client_email: this.config.clientEmail,
-        private_key: this.config.privateKey,
+        client_email: this.config.client_email,
+        private_key: this.config.private_key,
       },
-      projectId: this.config.projectId,
+      projectId: this.config.project_id,
     });
   }
 

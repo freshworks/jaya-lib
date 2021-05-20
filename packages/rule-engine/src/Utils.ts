@@ -16,7 +16,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { ErrorCodes } from './models/error-codes';
 import { JsonMap } from './models/rule';
-import GoogleCloudLogging, { LogSeverity } from './GoogleCloudLogging';
+import GoogleCloudLogging, { LogSeverity } from './services/GoogleCloudLogging';
 
 dayjs.extend(utc);
 
@@ -68,7 +68,7 @@ export class Utils {
   ): Promise<void> {
     const conversation = productEventPayload.data.conversation || productEventPayload.data.message;
     const conversationId = conversation.conversation_id;
-    const googleCloudLogging = new GoogleCloudLogging(integrations.googleServiceAccount);
+    const googleCloudLogging = new GoogleCloudLogging(integrations.googleCloudLoggingConfig);
 
     try {
       googleCloudLogging.log(

@@ -1,4 +1,5 @@
 import { ExternalEventPayload, ProductEventPayload } from '@freshworks-jaya/marketplace-models';
+import { GoogleCloudLoggingConfig } from '../services/GoogleCloudLogging';
 
 export interface RuleEngineOptions {
   isSchedulerEnabled: boolean;
@@ -16,15 +17,8 @@ export interface Integrations {
   freshchatv1: ProductCredentials;
   freshchatv2: ProductCredentials;
   freshdesk?: ProductCredentials;
-  googleServiceAccount: GoogleServiceAccountConfig;
+  googleCloudLoggingConfig: GoogleCloudLoggingConfig;
   timezoneOffset: number;
-}
-
-export interface GoogleServiceAccountConfig {
-  clientEmail: string;
-  logName: string;
-  privateKey: string;
-  projectId: string;
 }
 
 export interface ProductCredentials {

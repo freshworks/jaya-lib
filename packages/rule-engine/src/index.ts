@@ -18,6 +18,8 @@ export * from './models/rule';
 export * from './models/rule-engine';
 export * from './models/plugin';
 export * from './TimerRuleEngine';
+export * from './services/GoogleCloudLogging';
+export * from './services/GoogleCloudStorage';
 
 export class RuleEngine {
   constructor(private plugins?: RulePlugin[]) {
