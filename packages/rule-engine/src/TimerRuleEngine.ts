@@ -11,7 +11,9 @@ import {
 } from './models/rule';
 import { RuleProcessor } from './RuleProcessor';
 import { KairosCredentials, RuleEngineExternalEventPayload, Integrations } from './models/rule-engine';
-
+import { Utils } from './Utils';
+import { ErrorCodes, ErrorTypes } from './models/error-codes';
+import { LogSeverity } from './services/GoogleCloudLogging';
 export class TimerRuleEngine {
   /**
    * Add minutes to date object.
@@ -74,7 +76,22 @@ export class TimerRuleEngine {
         let existingSchedule;
         try {
           existingSchedule = (await scheduler.fetchSchedule(jobId)) as KairosSchedule;
-        } catch (err) {}
+        } catch (err) {
+          Utils.log(
+            payload,
+            integrations,
+            ErrorCodes.KairosError,
+            {
+              error: {
+                data: err?.response?.data,
+                responseHeaders: err?.response?.headers,
+              },
+              errorType: ErrorTypes.KairosFetchExistingSchedule,
+              jobId,
+            },
+            LogSeverity.CRITICAL,
+          );
+        }
         // If there are no existing schedules, create schedule object
         // and push it into the schedules array for bulk scheduling later.
 
@@ -112,6 +129,20 @@ export class TimerRuleEngine {
       try {
         await scheduler.bulkCreateSchedules(schedulesToCreate);
       } catch (err) {
+        Utils.log(
+          payload,
+          integrations,
+          ErrorCodes.KairosError,
+          {
+            error: {
+              data: err?.response?.data,
+              responseHeaders: err?.response?.headers,
+            },
+            errorType: ErrorTypes.KairosBulkCreateSchedules,
+          },
+          LogSeverity.CRITICAL,
+        );
+
         return Promise.reject('Error creating bulk schedules');
       }
     }
@@ -136,6 +167,20 @@ export class TimerRuleEngine {
     try {
       await scheduler.deleteSchedule(externalEventPayload.data.jobId);
     } catch (err) {
+      Utils.log(
+        (externalEventPayload as unknown) as ProductEventPayload,
+        integrations,
+        ErrorCodes.KairosError,
+        {
+          error: {
+            data: err?.response?.data,
+            responseHeaders: err?.response?.headers,
+          },
+          errorType: ErrorTypes.KairosDeleteCompletedSchedule,
+          jobId: externalEventPayload.data?.jobId,
+        },
+        LogSeverity.CRITICAL,
+      );
       throw new Error('Error deleting kairos schedule before execution');
     }
 
@@ -162,6 +207,7 @@ export class TimerRuleEngine {
     rules: Rule[],
     externalEventUrl: string,
     kairosCredentials: KairosCredentials,
+    integrations: Integrations,
   ): Promise<void> {
     const modelProperties = payload.data.conversation || payload.data.message;
 
@@ -198,9 +244,10 @@ export class TimerRuleEngine {
         ])
       ) {
         // Current event is IntelliAssign assigns an Agent, schedule to cancel it after 5 seconds
+        const createScheduleJobId = `${modelProperties.app_id}_${modelProperties.conversation_id}_intelliassign_invalidation`;
         return scheduler
           .createSchedule({
-            jobId: `${modelProperties.app_id}_${modelProperties.conversation_id}_intelliassign_invalidation`,
+            jobId: createScheduleJobId,
             payload: {
               eventData: {
                 jobsToDelete,
@@ -212,13 +259,46 @@ export class TimerRuleEngine {
           })
           .then(
             () => Promise.resolve(),
-            () => Promise.reject('Error during createSchedule'),
+            (err) => {
+              Utils.log(
+                payload,
+                integrations,
+                ErrorCodes.KairosError,
+                {
+                  error: {
+                    data: err?.response?.data,
+                    responseHeaders: err?.response?.headers,
+                  },
+                  errorType: ErrorTypes.KairosCreteScheduleToInvalidateIntelliAssign,
+                  jobId: createScheduleJobId,
+                },
+                LogSeverity.CRITICAL,
+              );
+
+              return Promise.reject('Error during createSchedule');
+            },
           );
       } else {
         // Bulk delete the jobs
         return scheduler.bulkDeleteSchedules(jobsToDelete).then(
           () => Promise.resolve(),
-          () => Promise.reject('Error during bulkDeleteSchedules'),
+          (err) => {
+            Utils.log(
+              payload,
+              integrations,
+              ErrorCodes.KairosError,
+              {
+                error: {
+                  data: err?.response?.data,
+                  responseHeaders: err?.response?.headers,
+                },
+                errorType: ErrorTypes.KairosDeleteInvalidatedSchedules,
+                jobIds: jobsToDelete,
+              },
+              LogSeverity.CRITICAL,
+            );
+            return Promise.reject('Error during bulkDeleteSchedules');
+          },
         );
       }
     }

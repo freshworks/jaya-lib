@@ -66,17 +66,17 @@ export class Utils {
     info: JsonMap,
     severity?: LogSeverity,
   ): Promise<void> {
-    const conversation = productEventPayload.data.conversation || productEventPayload.data.message;
-    const conversationId = conversation.conversation_id;
-    const googleCloudLogging = new GoogleCloudLogging(integrations.googleCloudLoggingConfig);
-
     try {
+      const conversation = productEventPayload.data?.conversation || productEventPayload.data?.message;
+      const conversationId = conversation?.conversation_id;
+      const googleCloudLogging = new GoogleCloudLogging(integrations.googleCloudLoggingConfig);
+
       googleCloudLogging.log(
         {
           account_id: productEventPayload.account_id,
           conversation_id: conversationId,
           error_code: errorCode,
-          event_epoch: productEventPayload.timestamp,
+          event_epoch: new Date(productEventPayload.timestamp * 1000).toISOString(),
           info,
           region: productEventPayload.region,
         },
