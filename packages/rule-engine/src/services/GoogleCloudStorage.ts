@@ -7,7 +7,7 @@ export interface GoogleCloudStorageConfig {
   project_id: string;
 }
 
-export default class GoogleCloudStorage {
+export class GoogleCloudStorage {
   private datastore: Datastore;
 
   private keyKind: string;

@@ -20,7 +20,7 @@ export enum LogSeverity {
   NOTICE = 'NOTICE',
   WARNING = 'WARNING',
 }
-export default class GoogleCloudLogging {
+export class GoogleCloudLogging {
   private logging: Logging;
 
   constructor(private config: GoogleCloudLoggingConfig) {
