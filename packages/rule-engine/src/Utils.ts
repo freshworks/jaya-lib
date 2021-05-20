@@ -76,6 +76,7 @@ export class Utils {
           account_id: productEventPayload.account_id,
           conversation_id: conversationId,
           error_code: errorCode,
+          event_epoch: productEventPayload.timestamp,
           info,
           region: productEventPayload.region,
         },
