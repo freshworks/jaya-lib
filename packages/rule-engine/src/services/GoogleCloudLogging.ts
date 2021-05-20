@@ -1,12 +1,10 @@
 import { Logging } from '@google-cloud/logging';
 import { ApiResponse } from '@google-cloud/logging/build/src/log';
 import { JsonMap } from '../models/rule';
+import { GoogleServiceAccountConfig } from './GoogleServiceAccount';
 
-export interface GoogleCloudLoggingConfig {
-  client_email: string;
+export interface GoogleCloudLoggingConfig extends GoogleServiceAccountConfig {
   logName: string;
-  private_key: string;
-  project_id: string;
 }
 
 export enum LogSeverity {

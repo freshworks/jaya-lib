@@ -1,10 +1,8 @@
 import { Datastore } from '@google-cloud/datastore';
+import { GoogleServiceAccountConfig } from './GoogleServiceAccount';
 
-export interface GoogleCloudStorageConfig {
-  client_email: string;
+export interface GoogleCloudStorageConfig extends GoogleServiceAccountConfig {
   keyKind: string;
-  private_key: string;
-  project_id: string;
 }
 
 export class GoogleCloudStorage {
