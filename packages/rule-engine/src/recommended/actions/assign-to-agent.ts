@@ -4,6 +4,8 @@ import { Integrations } from '../../models/rule-engine';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Utils } from '../../Utils';
 import { Api } from '../../models/rule';
+import { ErrorCodes, ErrorTypes } from '../../models/error-codes';
+import { LogSeverity } from '../../services/GoogleCloudLogging';
 
 export default async (
   integrations: Integrations,
@@ -54,6 +56,19 @@ export default async (
   try {
     await freshchat.conversationAssign(conversationId, assignedAgentId, 'agent', conversationStatus);
   } catch (err) {
+    Utils.log(
+      productEventPayload,
+      integrations,
+      ErrorCodes.FreshchatAction,
+      {
+        error: {
+          data: err?.response?.data,
+          headers: err?.response?.headers,
+        },
+        errorType: ErrorTypes.FreshchatAssignAgent,
+      },
+      LogSeverity.ERROR,
+    );
     return Promise.reject();
   }
 

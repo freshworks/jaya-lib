@@ -5,6 +5,8 @@ import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Integrations } from '../../models/rule-engine';
 import { Utils } from '../../Utils';
 import { Api } from '../../models/rule';
+import { ErrorCodes, ErrorTypes } from '../../models/error-codes';
+import { LogSeverity } from '../../services/GoogleCloudLogging';
 
 export default async (
   integrations: Integrations,
@@ -40,6 +42,19 @@ export default async (
       'bot',
     );
   } catch (err) {
+    Utils.log(
+      productEventPayload,
+      integrations,
+      ErrorCodes.FreshchatAction,
+      {
+        error: {
+          data: err?.response?.data,
+          headers: err?.response?.headers,
+        },
+        errorType: ErrorTypes.FreshchatSendPrivateNote,
+      },
+      LogSeverity.ERROR,
+    );
     return Promise.reject();
   }
 

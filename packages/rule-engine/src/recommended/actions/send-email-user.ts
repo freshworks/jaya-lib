@@ -5,7 +5,7 @@ import axios from 'axios';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Api } from '../../models/rule';
 import { Utils } from '../../Utils';
-import { ErrorCodes, ErrorTypes } from '../../models/error-codes';
+import { ErrorCodes } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
 
 export default async (

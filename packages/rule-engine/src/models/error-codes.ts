@@ -1,6 +1,7 @@
 export enum ErrorCodes {
   DynamicPlaceholder = 'DYNAMIC_PLACEHOLDER_ERROR',
   EmailTrace = 'EMAIL_TRACE',
+  FreshchatAction = 'FRESHCHAT_ACTION_ERROR',
   FreshdeskTicket = 'FRESHDESK_TICKET_CREATE_ERROR',
   KairosError = 'KAIROS_ERROR',
   SendEmail = 'SEND_EMAIL_ERROR',
@@ -8,6 +9,19 @@ export enum ErrorCodes {
 }
 
 export enum ErrorTypes {
+  FreshchatAssignAgent = 'FRESHCHAT_ASSIGN_AGENT_ERROR',
+  FreshchatAssignGroup = 'FRESHCHAT_ASSIGN_GROUP_ERROR',
+  FreshchatReopenConversation = 'FRESHCHAT_REOPEN_CONVERSATION_ERROR',
+  FreshchatResolveConversation = 'FRESHCHAT_RESOLVE_CONVERSATION_ERROR',
+  FreshchatSendMessage = 'FRESHCHAT_SEND_MESSAGE_ERROR',
+  FreshchatSendPrivateNote = 'FRESHCHAT_SEND_PRIVATE_NOTE_ERROR',
+  FreshchatSendQuickReply = 'FRESHCHAT_SEND_QUICK_REPLY_ERROR',
+  FreshchatUnassignThenReassign = 'FRESHCHAT_UNASSIGN_THEN_REASSIGN_ERROR',
+  FreshchatUpdateEmail = 'FRESHCHAT_UPDATE_EMAIL_ERROR',
+  FreshchatUpdateFirstName = 'FRESHCHAT_UPDATE_FIRST_NAME_ERROR',
+  FreshchatUpdateLastName = 'FRESHCHAT_UPDATE_LAST_NAME_ERROR',
+  FreshchatUpdatePhone = 'FRESHCHAT_UPDATE_PHONE_ERROR',
+  FreshchatUpdateProperty = 'FRESHCHAT_UPDATE_PROPERTY_ERROR',
   KairosBulkCreateSchedules = 'BULK_CREATE_SCHEDULES_ERROR',
   KairosCreteScheduleToInvalidateIntelliAssign = 'CREATE_SCHEDULE_INVALIDATE_INTELLIASSIGN',
   KairosDeleteCompletedSchedule = 'DELETE_COMPLETED_SCHEDULE_ERROR',
