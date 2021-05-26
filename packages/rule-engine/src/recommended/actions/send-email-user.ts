@@ -6,12 +6,12 @@ import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Api } from '../../models/rule';
 import { Utils } from '../../Utils';
 import { ErrorCodes } from '../../models/error-codes';
+import { LogSeverity } from '../../services/GoogleCloudLogging';
 
 export default async (
   integrations: Integrations,
   productEventPayload: ProductEventPayload,
   actionValue: unknown,
-  domain: string,
   placeholders: PlaceholdersMap,
   apis: Api[],
 ): Promise<PlaceholdersMap> => {
@@ -37,7 +37,7 @@ export default async (
   try {
     const emailSubject = 'Transcript of Conversation';
     const conversationHtml = await freshchat.getConversationTranscript(
-      `https://${domain}`,
+      `https://${productEventPayload.domain}`,
       modelProperties.app_id,
       conversationId,
       {
@@ -51,7 +51,7 @@ export default async (
       },
     );
 
-    await axios.post(
+    const emailResponse = await axios.post(
       `${integrations.emailService.url}/api/v1/email/send`,
       JSON.stringify({
         accountId: appId,
@@ -74,9 +74,22 @@ export default async (
         },
       },
     );
+
+    Utils.log(
+      productEventPayload,
+      integrations,
+      ErrorCodes.EmailTrace,
+      {
+        data: emailResponse?.data,
+      },
+      LogSeverity.INFO,
+    );
   } catch (err) {
     Utils.log(productEventPayload, integrations, ErrorCodes.SendEmail, {
-      error: err,
+      error: {
+        data: err?.response?.data,
+        headers: err?.response?.headers,
+      },
     });
     return Promise.reject('Error sending conversation as html via email');
   }

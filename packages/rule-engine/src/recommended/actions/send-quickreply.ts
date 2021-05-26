@@ -3,12 +3,14 @@ import Freshchat from '@freshworks-jaya/freshchat-api';
 import { Integrations } from '../../models/rule-engine';
 import { Api, QuickReplyValue } from '../../models/rule';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
+import { Utils } from '../../Utils';
+import { ErrorCodes, ErrorTypes } from '../../models/error-codes';
+import { LogSeverity } from '../../services/GoogleCloudLogging';
 
 export default async (
   integrations: Integrations,
   productEventPayload: ProductEventPayload,
   actionValue: unknown,
-  domain: string,
   placeholders: PlaceholdersMap,
   apis: Api[],
 ): Promise<PlaceholdersMap> => {
@@ -19,14 +21,52 @@ export default async (
   const conversationId = modelProperties.conversation_id;
 
   const quickreplyValue = actionValue as QuickReplyValue;
-  const responses = quickreplyValue.responses
-    .split(',')
-    .map((response) => response.trim())
-    .filter(Boolean);
+  const responses =
+    quickreplyValue.responses
+      .split(',')
+      .map((response) => response.trim())
+      .filter(Boolean) || [];
+
+  let generatedPlaceholders: PlaceholdersMap = {};
+  let processedQuestion = '';
+  let processedResponses: string[] = [];
 
   try {
-    await freshchat.sendQuickreply(conversationId, quickreplyValue.question, responses);
+    // Step 1: Setup dynamic placeholders using values from question and responses
+    generatedPlaceholders = await Utils.getDynamicPlaceholders(
+      `${quickreplyValue.question} ${quickreplyValue.responses}`,
+      productEventPayload,
+      integrations,
+      placeholders,
+    );
+    const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
+
+    // Step 2: Replace placeholders in question and responses
+    processedQuestion = Utils.processHandlebarsAndReplacePlaceholders(quickreplyValue.question, combinedPlaceholders);
+    processedResponses = responses.map((response) =>
+      Utils.processHandlebarsAndReplacePlaceholders(response, combinedPlaceholders),
+    );
   } catch (err) {
+    // Do nothing
+  }
+
+  try {
+    // Step 3: Send quickreply message
+    await freshchat.sendQuickreply(conversationId, processedQuestion, processedResponses);
+  } catch (err) {
+    Utils.log(
+      productEventPayload,
+      integrations,
+      ErrorCodes.FreshchatAction,
+      {
+        error: {
+          data: err?.response?.data,
+          headers: err?.response?.headers,
+        },
+        errorType: ErrorTypes.FreshchatSendQuickReply,
+      },
+      LogSeverity.ERROR,
+    );
     return Promise.reject();
   }
 

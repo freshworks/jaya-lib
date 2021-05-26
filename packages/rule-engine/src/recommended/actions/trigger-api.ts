@@ -158,7 +158,6 @@ export default async (
   integrations: Integrations,
   productEventPayload: ProductEventPayload,
   actionValue: unknown,
-  domain: string,
   placeholders: PlaceholdersMap,
   apis: Api[],
 ): Promise<PlaceholdersMap> => {
@@ -177,7 +176,6 @@ export default async (
       JSON.stringify(triggerApi.config),
       productEventPayload,
       integrations,
-      domain,
       placeholders,
     );
 

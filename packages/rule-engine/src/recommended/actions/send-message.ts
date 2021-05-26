@@ -4,12 +4,13 @@ import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Integrations } from '../../models/rule-engine';
 import { Utils } from '../../Utils';
 import { Api } from '../../models/rule';
+import { ErrorCodes, ErrorTypes } from '../../models/error-codes';
+import { LogSeverity } from '../../services/GoogleCloudLogging';
 
 export default async (
   integrations: Integrations,
   productEventPayload: ProductEventPayload,
   actionValue: unknown,
-  domain: string,
   placeholders: PlaceholdersMap,
   apis: Api[],
 ): Promise<PlaceholdersMap> => {
@@ -25,7 +26,6 @@ export default async (
       actionValue as string,
       productEventPayload,
       integrations,
-      domain,
       placeholders,
     );
     const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
@@ -35,6 +35,19 @@ export default async (
     );
     await freshchat.sendNormalReplyText(conversationId, textWithReplacedPlaceholders);
   } catch (err) {
+    Utils.log(
+      productEventPayload,
+      integrations,
+      ErrorCodes.FreshchatAction,
+      {
+        error: {
+          data: err?.response?.data,
+          headers: err?.response?.headers,
+        },
+        errorType: ErrorTypes.FreshchatSendMessage,
+      },
+      LogSeverity.ERROR,
+    );
     return Promise.reject();
   }
 

@@ -91,7 +91,6 @@ export default async (
   integrations: Integrations,
   productEventPayload: ProductEventPayload,
   actionValue: unknown,
-  domain: string,
   placeholders: PlaceholdersMap,
   apis: Api[],
 ): Promise<PlaceholdersMap> => {
@@ -110,7 +109,7 @@ export default async (
       freshchat,
       conversationId,
       modelProperties.app_id,
-      `https://${domain}`,
+      `https://${productEventPayload.domain}`,
       integrations.timezoneOffset,
     );
 
@@ -162,7 +161,10 @@ export default async (
     );
   } catch (err) {
     Utils.log(productEventPayload, integrations, ErrorCodes.FreshdeskTicket, {
-      error: err,
+      error: {
+        data: err?.response?.data,
+        headers: err?.response?.headers,
+      },
     });
     return Promise.reject('Error creating freshdesk ticket');
   }

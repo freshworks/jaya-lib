@@ -16,7 +16,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { ErrorCodes } from './models/error-codes';
 import { JsonMap } from './models/rule';
-import GoogleCloudLogging, { LogSeverity } from './GoogleCloudLogging';
+import { GoogleCloudLogging, LogSeverity } from './services/GoogleCloudLogging';
 
 dayjs.extend(utc);
 
@@ -66,17 +66,22 @@ export class Utils {
     info: JsonMap,
     severity?: LogSeverity,
   ): Promise<void> {
-    const conversation = productEventPayload.data.conversation || productEventPayload.data.message;
-    const conversationId = conversation.conversation_id;
-    const googleCloudLogging = new GoogleCloudLogging(integrations.googleServiceAccount);
-
     try {
+      const conversation = productEventPayload.data?.conversation || productEventPayload.data?.message;
+      const conversationId = conversation?.conversation_id;
+      const firstMessage = conversation?.messages && conversation.messages[0];
+      const messageId = firstMessage?.id;
+      const googleCloudLogging = new GoogleCloudLogging(integrations.googleCloudLoggingConfig);
+
       googleCloudLogging.log(
         {
           account_id: productEventPayload.account_id,
           conversation_id: conversationId,
+          domain: productEventPayload.domain,
           error_code: errorCode,
+          event_epoch: new Date(productEventPayload.timestamp * 1000).toISOString(),
           info,
+          message_id: messageId,
           region: productEventPayload.region,
         },
         severity || LogSeverity.ERROR,
@@ -125,7 +130,6 @@ export class Utils {
     text: string,
     productEventPayload: ProductEventPayload,
     integrations: Integrations,
-    domain: string,
     givenPlaceholders: PlaceholdersMap,
   ): Promise<PlaceholdersMap> {
     // Step 1: Extract dynamic placeholder keys from text
@@ -154,7 +158,6 @@ export class Utils {
             const value = await ruleConfig.dynamicPlaceholders[dynamicPlaceholderKey](
               productEventPayload,
               integrations,
-              domain,
             );
             generatedPlaceholders[dynamicPlaceholderKey] = value;
           } catch (err) {

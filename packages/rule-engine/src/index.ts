@@ -18,6 +18,8 @@ export * from './models/rule';
 export * from './models/rule-engine';
 export * from './models/plugin';
 export * from './TimerRuleEngine';
+export * from './services/GoogleCloudLogging';
+export * from './services/GoogleServiceAccount';
 
 export class RuleEngine {
   constructor(private plugins?: RulePlugin[]) {
@@ -47,7 +49,7 @@ export class RuleEngine {
     if (options.isSchedulerEnabled && kairosCredentials) {
       try {
         // Invalidate exising schedules
-        await TimerRuleEngine.invalidateTimers(payload, rules, externalEventUrl, kairosCredentials);
+        await TimerRuleEngine.invalidateTimers(payload, rules, externalEventUrl, kairosCredentials, integrations);
 
         // Process all timer rules.
         await TimerRuleEngine.triggerTimers(payload, rules, externalEventUrl, kairosCredentials, integrations);

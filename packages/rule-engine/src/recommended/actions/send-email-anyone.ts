@@ -5,12 +5,12 @@ import { Api, SendEmailAnyoneValue } from '../../models/rule';
 import { Utils } from '../../Utils';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { ErrorCodes } from '../../models/error-codes';
+import { LogSeverity } from '../../services/GoogleCloudLogging';
 
 export default async (
   integrations: Integrations,
   productEventPayload: ProductEventPayload,
   actionValue: unknown,
-  domain: string,
   placeholders: PlaceholdersMap,
   apis: Api[],
 ): Promise<PlaceholdersMap> => {
@@ -30,7 +30,6 @@ export default async (
       `${sendEmailAnyoneValue.subject} ${sendEmailAnyoneValue.body}`,
       productEventPayload,
       integrations,
-      domain,
       placeholders,
     );
 
@@ -53,7 +52,7 @@ export default async (
     };
 
     // Step 3: Make send email API call
-    await axios.post(
+    const emailResponse = await axios.post(
       `${integrations.emailService.url}/api/v1/email/send`,
       JSON.stringify({
         accountId: appId,
@@ -72,9 +71,22 @@ export default async (
         },
       },
     );
+
+    Utils.log(
+      productEventPayload,
+      integrations,
+      ErrorCodes.EmailTrace,
+      {
+        data: emailResponse?.data,
+      },
+      LogSeverity.INFO,
+    );
   } catch (err) {
     Utils.log(productEventPayload, integrations, ErrorCodes.SendEmail, {
-      error: err,
+      error: {
+        data: err?.response?.data,
+        headers: err?.response?.headers,
+      },
     });
     return Promise.reject('Failed to setup dynamic placeholders');
   }
