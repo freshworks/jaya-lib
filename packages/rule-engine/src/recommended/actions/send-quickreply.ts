@@ -21,13 +21,38 @@ export default async (
   const conversationId = modelProperties.conversation_id;
 
   const quickreplyValue = actionValue as QuickReplyValue;
-  const responses = quickreplyValue.responses
-    .split(',')
-    .map((response) => response.trim())
-    .filter(Boolean);
+  const responses =
+    quickreplyValue.responses
+      .split(',')
+      .map((response) => response.trim())
+      .filter(Boolean) || [];
+
+  let generatedPlaceholders: PlaceholdersMap = {};
+  let processedQuestion = '';
+  let processedResponses: string[] = [];
 
   try {
-    await freshchat.sendQuickreply(conversationId, quickreplyValue.question, responses);
+    // Step 1: Setup dynamic placeholders using values from question and responses
+    generatedPlaceholders = await Utils.getDynamicPlaceholders(
+      `${quickreplyValue.question} ${quickreplyValue.responses}`,
+      productEventPayload,
+      integrations,
+      placeholders,
+    );
+    const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
+
+    // Step 2: Replace placeholders in question and responses
+    processedQuestion = Utils.processHandlebarsAndReplacePlaceholders(quickreplyValue.question, combinedPlaceholders);
+    processedResponses = responses.map((response) =>
+      Utils.processHandlebarsAndReplacePlaceholders(response, combinedPlaceholders),
+    );
+  } catch (err) {
+    // Do nothing
+  }
+
+  try {
+    // Step 3: Send quickreply message
+    await freshchat.sendQuickreply(conversationId, processedQuestion, processedResponses);
   } catch (err) {
     Utils.log(
       productEventPayload,
