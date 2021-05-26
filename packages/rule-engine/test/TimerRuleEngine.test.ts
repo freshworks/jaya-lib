@@ -202,6 +202,23 @@ describe('TimerRuleEngine test', () => {
           url: 'kairos key',
           group: 'kairos group',
         },
+        {
+          freshchatv1: {
+            token: 'tokenv1',
+            url: 'urlv1',
+          },
+          freshchatv2: {
+            token: 'tokenv2',
+            url: 'urlv2',
+          },
+          googleCloudLoggingConfig: {
+            project_id: 'projectid',
+            private_key: 'privatekey',
+            client_email: 'emailaddresshere',
+            logName: 'jaya-lib',
+          },
+          timezoneOffset: -330,
+        },
       );
 
       assert.isFalse(spy.called);
@@ -218,6 +235,23 @@ describe('TimerRuleEngine test', () => {
           token: 'kairos token',
           url: 'kairos key',
           group: 'kairos group',
+        },
+        {
+          freshchatv1: {
+            token: 'tokenv1',
+            url: 'urlv1',
+          },
+          freshchatv2: {
+            token: 'tokenv2',
+            url: 'urlv2',
+          },
+          googleCloudLoggingConfig: {
+            project_id: 'projectid',
+            private_key: 'privatekey',
+            client_email: 'emailaddresshere',
+            logName: 'jaya-lib',
+          },
+          timezoneOffset: -330,
         },
       );
 
@@ -236,6 +270,23 @@ describe('TimerRuleEngine test', () => {
           url: 'kairos key',
           group: 'kairos group',
         },
+        {
+          freshchatv1: {
+            token: 'tokenv1',
+            url: 'urlv1',
+          },
+          freshchatv2: {
+            token: 'tokenv2',
+            url: 'urlv2',
+          },
+          googleCloudLoggingConfig: {
+            project_id: 'projectid',
+            private_key: 'privatekey',
+            client_email: 'emailaddresshere',
+            logName: 'jaya-lib',
+          },
+          timezoneOffset: -330,
+        },
       );
 
       assert.isFalse(spy.called);
@@ -252,6 +303,23 @@ describe('TimerRuleEngine test', () => {
           token: 'kairos token',
           url: 'kairos key',
           group: 'kairos group',
+        },
+        {
+          freshchatv1: {
+            token: 'tokenv1',
+            url: 'urlv1',
+          },
+          freshchatv2: {
+            token: 'tokenv2',
+            url: 'urlv2',
+          },
+          googleCloudLoggingConfig: {
+            project_id: 'projectid',
+            private_key: 'privatekey',
+            client_email: 'emailaddresshere',
+            logName: 'jaya-lib',
+          },
+          timezoneOffset: -330,
         },
       );
 
@@ -270,6 +338,23 @@ describe('TimerRuleEngine test', () => {
           url: 'kairos key',
           group: 'kairos group',
         },
+        {
+          freshchatv1: {
+            token: 'tokenv1',
+            url: 'urlv1',
+          },
+          freshchatv2: {
+            token: 'tokenv2',
+            url: 'urlv2',
+          },
+          googleCloudLoggingConfig: {
+            project_id: 'projectid',
+            private_key: 'privatekey',
+            client_email: 'emailaddresshere',
+            logName: 'jaya-lib',
+          },
+          timezoneOffset: -330,
+        },
       );
 
       assert.isTrue(stub.called);
@@ -287,6 +372,23 @@ describe('TimerRuleEngine test', () => {
             token: 'kairos token',
             url: 'kairos key',
             group: 'kairos group',
+          },
+          {
+            freshchatv1: {
+              token: 'tokenv1',
+              url: 'urlv1',
+            },
+            freshchatv2: {
+              token: 'tokenv2',
+              url: 'urlv2',
+            },
+            googleCloudLoggingConfig: {
+              project_id: 'projectid',
+              private_key: 'privatekey',
+              client_email: 'emailaddresshere',
+              logName: 'jaya-lib',
+            },
+            timezoneOffset: -330,
           },
         );
       } catch (err) {
