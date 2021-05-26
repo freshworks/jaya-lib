@@ -9,7 +9,6 @@ export type PluginActions = {
     integrations: Integrations,
     payload: ProductEventPayload,
     actionValue: unknown,
-    domain: string,
     placeholders: PlaceholdersMap,
     apis: Api[],
   ) => Promise<PlaceholdersMap>;
@@ -36,11 +35,7 @@ export type PluginConditions = {
 };
 
 export type PluginDynamicPlaceholders = {
-  [key: string]: (
-    productEventPayload: ProductEventPayload,
-    integrations: Integrations,
-    domain: string,
-  ) => Promise<string>;
+  [key: string]: (productEventPayload: ProductEventPayload, integrations: Integrations) => Promise<string>;
 };
 
 export interface RulePlugin {

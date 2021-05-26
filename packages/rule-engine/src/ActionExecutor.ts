@@ -29,14 +29,7 @@ export class ActionExecutor {
     const actionFunc = ruleConfig.actions && ruleConfig.actions[action.type];
 
     if (actionFunc) {
-      return actionFunc(
-        integrations,
-        productEventPayload,
-        action.value,
-        productEventPayload.domain,
-        placeholders,
-        apis,
-      );
+      return actionFunc(integrations, productEventPayload, action.value, placeholders, apis);
     }
     return Promise.reject('Invalid action type');
   }

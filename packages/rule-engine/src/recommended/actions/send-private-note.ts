@@ -12,7 +12,6 @@ export default async (
   integrations: Integrations,
   productEventPayload: ProductEventPayload,
   actionValue: unknown,
-  domain: string,
   placeholders: PlaceholdersMap,
   apis: Api[],
 ): Promise<PlaceholdersMap> => {
@@ -29,7 +28,6 @@ export default async (
       actionValue as string,
       productEventPayload,
       integrations,
-      domain,
       placeholders,
     );
 

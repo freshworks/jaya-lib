@@ -12,7 +12,6 @@ export default async (
   integrations: Integrations,
   productEventPayload: ProductEventPayload,
   actionValue: unknown,
-  domain: string,
   placeholders: PlaceholdersMap,
   apis: Api[],
 ): Promise<PlaceholdersMap> => {
@@ -38,7 +37,7 @@ export default async (
   try {
     const emailSubject = 'Transcript of Conversation';
     const conversationHtml = await freshchat.getConversationTranscript(
-      `https://${domain}`,
+      `https://${productEventPayload.domain}`,
       modelProperties.app_id,
       conversationId,
       {
