@@ -139,6 +139,7 @@ export class TimerRuleEngine {
               responseHeaders: err?.response?.headers,
             },
             errorType: ErrorTypes.KairosBulkCreateSchedules,
+            jobIds: schedulesToCreate.map((schedule) => schedule.jobId),
           },
           LogSeverity.CRITICAL,
         );

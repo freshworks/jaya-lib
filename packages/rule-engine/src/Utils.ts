@@ -69,15 +69,19 @@ export class Utils {
     try {
       const conversation = productEventPayload.data?.conversation || productEventPayload.data?.message;
       const conversationId = conversation?.conversation_id;
+      const firstMessage = conversation?.messages && conversation.messages[0];
+      const messageId = firstMessage?.id;
       const googleCloudLogging = new GoogleCloudLogging(integrations.googleCloudLoggingConfig);
 
       googleCloudLogging.log(
         {
           account_id: productEventPayload.account_id,
           conversation_id: conversationId,
+          domain: productEventPayload.domain,
           error_code: errorCode,
           event_epoch: new Date(productEventPayload.timestamp * 1000).toISOString(),
           info,
+          message_id: messageId,
           region: productEventPayload.region,
         },
         severity || LogSeverity.ERROR,

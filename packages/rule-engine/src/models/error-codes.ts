@@ -1,5 +1,6 @@
 export enum ErrorCodes {
   DynamicPlaceholder = 'DYNAMIC_PLACEHOLDER_ERROR',
+  EmailTrace = 'EMAIL_TRACE',
   FreshdeskTicket = 'FRESHDESK_TICKET_CREATE_ERROR',
   KairosError = 'KAIROS_ERROR',
   SendEmail = 'SEND_EMAIL_ERROR',

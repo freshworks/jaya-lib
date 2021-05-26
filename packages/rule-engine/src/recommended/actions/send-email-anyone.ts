@@ -5,6 +5,7 @@ import { Api, SendEmailAnyoneValue } from '../../models/rule';
 import { Utils } from '../../Utils';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { ErrorCodes } from '../../models/error-codes';
+import { LogSeverity } from '../../services/GoogleCloudLogging';
 
 export default async (
   integrations: Integrations,
@@ -53,7 +54,7 @@ export default async (
     };
 
     // Step 3: Make send email API call
-    await axios.post(
+    const emailResponse = await axios.post(
       `${integrations.emailService.url}/api/v1/email/send`,
       JSON.stringify({
         accountId: appId,
@@ -71,6 +72,16 @@ export default async (
           authorization: integrations.emailService.apiKey,
         },
       },
+    );
+
+    Utils.log(
+      productEventPayload,
+      integrations,
+      ErrorCodes.EmailTrace,
+      {
+        data: emailResponse?.data,
+      },
+      LogSeverity.INFO,
     );
   } catch (err) {
     Utils.log(productEventPayload, integrations, ErrorCodes.SendEmail, {

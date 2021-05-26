@@ -162,7 +162,10 @@ export default async (
     );
   } catch (err) {
     Utils.log(productEventPayload, integrations, ErrorCodes.FreshdeskTicket, {
-      error: err,
+      error: {
+        data: err?.response?.data,
+        headers: err?.response?.headers,
+      },
     });
     return Promise.reject('Error creating freshdesk ticket');
   }
