@@ -24,7 +24,7 @@ export enum ErrorTypes {
   FreshchatUpdatePhone = 'FRESHCHAT_UPDATE_PHONE_ERROR',
   FreshchatUpdateProperty = 'FRESHCHAT_UPDATE_PROPERTY_ERROR',
   KairosBulkCreateSchedules = 'BULK_CREATE_SCHEDULES_ERROR',
-  KairosCreteScheduleToInvalidateIntelliAssign = 'CREATE_SCHEDULE_INVALIDATE_INTELLIASSIGN',
+  KairosCreteScheduleToDelayInvalidation = 'CREATE_SCHEDULE_DELAY_INVALIDATION_ERROR',
   KairosDeleteCompletedSchedule = 'DELETE_COMPLETED_SCHEDULE_ERROR',
   KairosDeleteInvalidatedSchedules = 'DELETE_INVALIDATED_SCHEDULES_ERROR',
   KairosFetchExistingSchedule = 'FETCH_EXISTING_SCHEDULE_ERROR',

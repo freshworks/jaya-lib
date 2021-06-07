@@ -242,10 +242,36 @@ export class TimerRuleEngine {
               type: TriggerActorType.System,
             },
           },
+          {
+            action: {
+              change: {
+                from: 'ANY',
+                to: 'ASSIGNED',
+              },
+              type: TriggerActionType.ConversationAgentAssign,
+            },
+            actor: {
+              cause: TriggerActorCause.AssignmentRule,
+              type: TriggerActorType.System,
+            },
+          },
+          {
+            action: {
+              change: {
+                from: 'ANY',
+                to: 'ANY',
+              },
+              type: TriggerActionType.ConversationGroupAssign,
+            },
+            actor: {
+              cause: TriggerActorCause.AssignmentRule,
+              type: TriggerActorType.System,
+            },
+          },
         ])
       ) {
-        // Current event is IntelliAssign assigns an Agent, schedule to cancel it after 5 seconds
-        const createScheduleJobId = `${modelProperties.app_id}_${modelProperties.conversation_id}_intelliassign_invalidation`;
+        // Current event is IntelliAssign assigns an Agent, or assignment rule assigns an Agent or group schedule to cancel it after 3 seconds
+        const createScheduleJobId = `${modelProperties.app_id}_${modelProperties.conversation_id}_delay_invalidation`;
         return scheduler
           .createSchedule({
             jobId: createScheduleJobId,
@@ -270,7 +296,7 @@ export class TimerRuleEngine {
                     data: err?.response?.data,
                     responseHeaders: err?.response?.headers,
                   },
-                  errorType: ErrorTypes.KairosCreteScheduleToInvalidateIntelliAssign,
+                  errorType: ErrorTypes.KairosCreteScheduleToDelayInvalidation,
                   jobId: createScheduleJobId,
                 },
                 LogSeverity.CRITICAL,
