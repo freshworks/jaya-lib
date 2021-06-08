@@ -76,22 +76,7 @@ export class TimerRuleEngine {
         let existingSchedule;
         try {
           existingSchedule = (await scheduler.fetchSchedule(jobId)) as KairosSchedule;
-        } catch (err) {
-          Utils.log(
-            payload,
-            integrations,
-            ErrorCodes.KairosError,
-            {
-              error: {
-                data: err?.response?.data,
-                responseHeaders: err?.response?.headers,
-              },
-              errorType: ErrorTypes.KairosFetchExistingSchedule,
-              jobId,
-            },
-            LogSeverity.CRITICAL,
-          );
-        }
+        } catch (err) {}
         // If there are no existing schedules, create schedule object
         // and push it into the schedules array for bulk scheduling later.
 
@@ -169,7 +154,7 @@ export class TimerRuleEngine {
       await scheduler.deleteSchedule(externalEventPayload.data.jobId);
     } catch (err) {
       Utils.log(
-        (externalEventPayload as unknown) as ProductEventPayload,
+        externalEventPayload as unknown as ProductEventPayload,
         integrations,
         ErrorCodes.KairosError,
         {
