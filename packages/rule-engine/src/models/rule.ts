@@ -2,6 +2,7 @@ export enum MatchType {
   All = 'ALL',
   Any = 'ANY',
 }
+
 export enum TriggerActorType {
   Agent = 'AGENT',
   System = 'SYSTEM',
