@@ -154,20 +154,20 @@ export interface ModelProperties {
   response_due_type: ResponseDueType;
   source: string; // Can be moved to enum. Possible values WEBCHAT
   statistics: {
-    agent_reassignment_time_chrs: number,
-    agent_reassignment_time_bhrs: number,
-    first_agent_assignment_time_bhrs: number,
-    first_agent_assignment_time_chrs: number,
-    first_group_assignment_time_bhrs: number,
-    first_group_assignment_time_chrs: number,
-    first_response_time_bhrs: number,
-    first_response_time_chrs: number,
-    group_reassignment_time_bhrs: number,
-    group_reassignment_time_chrs: number,
-    resolution_time_bhrs: number,
-    resolution_time_chrs: number,
-    wait_time_chrs: number,
-    wait_time_bhrs: number,
+    agent_reassignment_time_bhrs: number;
+    agent_reassignment_time_chrs: number;
+    first_agent_assignment_time_bhrs: number;
+    first_agent_assignment_time_chrs: number;
+    first_group_assignment_time_bhrs: number;
+    first_group_assignment_time_chrs: number;
+    first_response_time_bhrs: number;
+    first_response_time_chrs: number;
+    group_reassignment_time_bhrs: number;
+    group_reassignment_time_chrs: number;
+    resolution_time_bhrs: number;
+    resolution_time_chrs: number;
+    wait_time_bhrs: number;
+    wait_time_chrs: number;
   };
   status: ConversationStatus;
   user_id: string;

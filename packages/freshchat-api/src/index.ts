@@ -411,9 +411,7 @@ export default class Freshchat {
       .then((response) => Promise.resolve(response.data));
   }
 
-  retrieveRawReports(
-    requestId: string,
-  ): Promise<{
+  retrieveRawReports(requestId: string): Promise<{
     id: string;
     interval: string;
     links: {
