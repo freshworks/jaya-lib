@@ -14,7 +14,7 @@ const isChangeMatching = (changedAssignee: string, assignChangeValue: string | n
 };
 
 const isTriggerChangeMatching = (productEventData: ProductEventData, triggerAction: TriggerAction): boolean => {
-  if (!productEventData.changes.model_changes.label_category_id || !productEventData.changes.model_changes.label_subcategory_id) {
+  if (!productEventData.changes.model_changes.label_category_id && !productEventData.changes.model_changes.label_subcategory_id) {
     return false;
   }
 
@@ -27,10 +27,12 @@ const isTriggerChangeMatching = (productEventData: ProductEventData, triggerActi
 
   return (
     (
+      conversationLabelCategoryChangeTuple &&
       isChangeMatching(conversationLabelCategoryChangeTuple[0], triggerAction.change.from) &&
       isChangeMatching(conversationLabelCategoryChangeTuple[1], triggerAction.change.to)
     ) ||
     (
+      conversationLabelSubcategoryChangeTuple &&
       isChangeMatching(conversationLabelSubcategoryChangeTuple[0], triggerAction.change.from) &&
       isChangeMatching(conversationLabelSubcategoryChangeTuple[1], triggerAction.change.to)
     )
