@@ -36,6 +36,7 @@ export enum ActorSubEntity {
 }
 
 export interface Group {
+  agents: string[];
   description: string;
   id: string;
   name: string;
@@ -43,13 +44,16 @@ export interface Group {
 }
 
 export interface Channel {
+  assign_to_group: string;
   enabled: boolean;
-  icon: unknown;
+  icon?: {
+    url: string;
+  };
   id: string;
   locale: string;
   name: string;
   public: boolean;
-  // "tags": any; // [],
+  tags: string[];
   updated_time: string;
   welcome_message: Message;
 }
@@ -68,8 +72,11 @@ export interface User {
   first_name?: string;
   id: string;
   last_name?: string;
+  org_contact_id: string;
   phone?: string;
   properties?: UserProperty[];
+  reference_id?: string;
+  updated_time?: string;
 }
 
 export interface MessagePart {
@@ -107,6 +114,7 @@ export interface Actor {
   first_name: string;
   id: string;
   last_name: string;
+  org_contact_id: string;
   phone: string;
   sub_entity?: ActorSubEntity;
   type: ActorType;
@@ -128,13 +136,39 @@ export interface ModelProperties {
   app_id: string;
   assigned_agent_id: string;
   assigned_group_id: string;
+  assigned_org_agent_id: string;
+  assigned_org_group_id: string;
   assigned_time: string;
   channel_id: string;
   conversation_id: string;
   created_time: string;
-  messages: Message[];
+  first_agent_assigned_time: string;
+  first_group_assigned_time: string;
+  group_assigned_time: string;
+  is_offline: boolean;
+  label_category_id: string;
+  label_subcategory_id: string;
+  messages?: Message[];
   reopened_time: string;
+  resolved_time: string;
   response_due_type: ResponseDueType;
+  source: string; // Can be moved to enum. Possible values WEBCHAT
+  statistics: {
+    agent_reassignment_time_chrs: number,
+    agent_reassignment_time_bhrs: number,
+    first_agent_assignment_time_bhrs: number,
+    first_agent_assignment_time_chrs: number,
+    first_group_assignment_time_bhrs: number,
+    first_group_assignment_time_chrs: number,
+    first_response_time_bhrs: number,
+    first_response_time_chrs: number,
+    group_reassignment_time_bhrs: number,
+    group_reassignment_time_chrs: number,
+    resolution_time_bhrs: number,
+    resolution_time_chrs: number,
+    wait_time_chrs: number,
+    wait_time_bhrs: number,
+  };
   status: ConversationStatus;
   user_id: string;
 }
@@ -147,18 +181,39 @@ export interface Agent {
   last_name: string;
 }
 
+export interface LabelCategory {
+  created_time: string;
+  id: string;
+  is_enabled: boolean;
+  name: string;
+  updated_time: string;
+}
+
+export interface LabelSubcategory {
+  category_id: string;
+  created_time: string;
+  id: string;
+  is_enabled: boolean;
+  name: string;
+  updated_time: string;
+}
+
 export interface ProductEventData {
   actor: Actor;
   associations: {
     agent: Agent;
     channel: Channel;
     group: Group;
+    label_category: LabelCategory;
+    label_subcategory: LabelSubcategory;
     user: User;
   };
   changes: {
     model_changes: {
       assigned_agent_id: [string, string];
       assigned_group_id: [string, string];
+      label_category_id: [string, string];
+      label_subcategory_id: [string, string];
       status: [ChangedStatus, ChangedStatus];
     };
   };
