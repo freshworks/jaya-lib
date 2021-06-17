@@ -20,6 +20,7 @@ import operatorMatchRegex from './operators/match-regex';
 import triggerActionConversationAgentAssign from './trigger-actions/conversation-agent-assign';
 import triggerActionConversationCreate from './trigger-actions/conversation-create';
 import triggerActionConversationGroupAssign from './trigger-actions/conversation-group-assign';
+import triggerActionConversationLabelAssign from './trigger-actions/conversation-label-assign';
 import triggerActionConversationStatusUpdate from './trigger-actions/conversation-status-update';
 import triggerActionMessageCreate from './trigger-actions/message-create';
 import triggerActionPrivateNoteCreate from './trigger-actions/private-note-create';
@@ -61,6 +62,8 @@ import conditionUnassignedCount from './conditions/unassigned-count';
 import conditionUserName from './conditions/user-name';
 import conditionUserEmail from './conditions/user-email';
 import conditionUserPhone from './conditions/user-phone';
+import conditionLabelCategoryName from './conditions/label-category-name';
+import conditionLabelSubcategoryName from './conditions/label-subcategory-name';
 
 // Import all dynamic placeholders
 import dynamicPlaceholderAverageWaitTime from './dynamic-placeholders/average-wait-time';
@@ -108,6 +111,8 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionKey.UserName]: conditionUserName,
       [ConditionKey.UserEmail]: conditionUserEmail,
       [ConditionKey.UserPhone]: conditionUserPhone,
+      [ConditionKey.LabelCategoryName]: conditionLabelCategoryName,
+      [ConditionKey.LabelSubcategoryName]: conditionLabelSubcategoryName,
     },
     dynamicPlaceholders: {
       'conversation.url': dynamicPlaceholderConversationUrl,
@@ -140,6 +145,7 @@ const recommendedPlugins: RulePlugin[] = [
       [TriggerActionType.ConversationAgentAssign]: triggerActionConversationAgentAssign,
       [TriggerActionType.ConversationCreate]: triggerActionConversationCreate,
       [TriggerActionType.ConversationGroupAssign]: triggerActionConversationGroupAssign,
+      [TriggerActionType.ConversationLabelAssign]: triggerActionConversationLabelAssign,
       [TriggerActionType.ConversationStatusUpdate]: triggerActionConversationStatusUpdate,
       [TriggerActionType.MessageCreate]: triggerActionMessageCreate,
       [TriggerActionType.PrivateNoteCreate]: triggerActionPrivateNoteCreate,
