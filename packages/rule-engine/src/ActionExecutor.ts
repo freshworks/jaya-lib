@@ -8,6 +8,8 @@ import {
   Group,
   ProductEventPayload,
   Actor,
+  LabelCategory,
+  LabelSubcategory,
 } from '@freshworks-jaya/marketplace-models';
 import { Action, Api, CustomPlaceholdersMap } from './models/rule';
 import { Integrations } from './models/rule-engine';
@@ -46,6 +48,9 @@ export class ActionExecutor {
       (productEventData.actor.type === ActorType.Agent ? productEventData.actor : ({} as Agent));
     const { channel } = productEventData.associations;
     const group = productEventData.associations.group || ({} as Group);
+    const labelCategory = productEventData.associations.label_category || ({} as LabelCategory);
+    const labelSubcategory = productEventData.associations.label_subcategory || ({} as LabelSubcategory);
+
     const conversation = productEventData.conversation || productEventData.message;
     const messageText =
       conversation.messages && Utils.getMessagePartsTextContent(conversation.messages[0].message_parts);
@@ -81,6 +86,12 @@ export class ActionExecutor {
       'group.description': group.description,
       'group.id': group.id,
       'group.name': group.name,
+      label_category: labelCategory,
+      'label_category.id': labelCategory.id,
+      'label_category.name': labelCategory.name,
+      label_subcategory: labelSubcategory,
+      'label_subcategory.id': labelSubcategory.id,
+      'label_subcategory.name': labelSubcategory.name,
       'message.text': messageText,
       'timezone.offset': integrations.timezoneOffset?.toString(),
       user: user,

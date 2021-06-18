@@ -81,7 +81,7 @@ export class Utils {
           error_code: errorCode,
           event_epoch: new Date(productEventPayload.timestamp * 1000).toISOString(),
           info,
-          message_id: messageId,
+          message_id: messageId || 0,
           region: productEventPayload.region,
         },
         severity || LogSeverity.ERROR,

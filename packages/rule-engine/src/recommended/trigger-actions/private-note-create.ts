@@ -3,6 +3,8 @@ import { TriggerAction } from '../../models/rule';
 
 export default (productEvent: Event, productEventData: ProductEventData, triggerAction: TriggerAction): boolean => {
   return (
-    productEvent === Event.MessageCreate && productEventData.message.messages[0].message_type === MessageType.Private
+    productEvent === Event.MessageCreate &&
+    !!productEventData.message.messages &&
+    productEventData.message.messages[0].message_type === MessageType.Private
   );
 };

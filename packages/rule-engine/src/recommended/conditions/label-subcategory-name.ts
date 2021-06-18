@@ -8,11 +8,9 @@ export default (
   productEventData: ProductEventData,
   integrations: Integrations,
 ): Promise<void> => {
-  const modelProperties = productEventData.conversation || productEventData.message;
-
   return Utils.evaluateCondition(
     condition.operator,
-    Utils.getMessagePartsTextContent(modelProperties.messages && modelProperties.messages[0].message_parts || []),
+    productEventData.associations.label_subcategory?.name || '',
     condition.value as string,
     integrations,
   );
