@@ -29,6 +29,7 @@ import triggerActionPrivateNoteCreate from './trigger-actions/private-note-creat
 import triggerActorAgent from './trigger-actors/agent';
 import triggerActorUser from './trigger-actors/user';
 import triggerActorSystem from './trigger-actors/system';
+import triggerActorBot from './trigger-actors/bot';
 
 // Import all actions
 import actionReopen from './actions/reopen';
@@ -156,6 +157,7 @@ const recommendedPlugins: RulePlugin[] = [
     },
     triggerActors: {
       [TriggerActorType.Agent]: triggerActorAgent,
+      [TriggerActorType.Bot]: triggerActorBot,
       [TriggerActorType.System]: triggerActorSystem,
       [TriggerActorType.User]: triggerActorUser,
     },
