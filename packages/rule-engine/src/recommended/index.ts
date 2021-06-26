@@ -118,12 +118,16 @@ const recommendedPlugins: RulePlugin[] = [
       'conversation.url': dynamicPlaceholderConversationUrl,
       'metrics.average_wait_time': dynamicPlaceholderAverageWaitTime,
       'transcript.conv_entire.html': dynamicPlaceholderTranscriptConvEntireHtml,
-      'transcript.conv_entire.includes_private_system.html': dynamicPlaceholderTranscriptConvEntireIncludesPrivateSystemHtml,
-      'transcript.conv_entire.includes_private_system.text': dynamicPlaceholderTranscriptConvEntireIncludesPrivateSystemText,
+      'transcript.conv_entire.includes_private_system.html':
+        dynamicPlaceholderTranscriptConvEntireIncludesPrivateSystemHtml,
+      'transcript.conv_entire.includes_private_system.text':
+        dynamicPlaceholderTranscriptConvEntireIncludesPrivateSystemText,
       'transcript.conv_entire.text': dynamicPlaceholderTranscriptConvEntireText,
       'transcript.conv_since_last_resolve.html': dynamicPlaceholderTranscriptConvSinceLastResolveHtml,
-      'transcript.conv_since_last_resolve.includes_private_system.html': dynamicPlaceholderTranscriptConvSinceLastResolveIncludesPrivateSystemHtml,
-      'transcript.conv_since_last_resolve.includes_private_system.text': dynamicPlaceholderTranscriptConvSinceLastResolveIncludesPrivateSystemText,
+      'transcript.conv_since_last_resolve.includes_private_system.html':
+        dynamicPlaceholderTranscriptConvSinceLastResolveIncludesPrivateSystemHtml,
+      'transcript.conv_since_last_resolve.includes_private_system.text':
+        dynamicPlaceholderTranscriptConvSinceLastResolveIncludesPrivateSystemText,
       'transcript.conv_since_last_resolve.text': dynamicPlaceholderTranscriptConvSinceLastResolveText,
     },
     operators: {

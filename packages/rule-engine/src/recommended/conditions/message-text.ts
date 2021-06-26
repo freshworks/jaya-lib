@@ -12,7 +12,7 @@ export default (
 
   return Utils.evaluateCondition(
     condition.operator,
-    Utils.getMessagePartsTextContent(modelProperties.messages && modelProperties.messages[0].message_parts || []),
+    Utils.getMessagePartsTextContent((modelProperties.messages && modelProperties.messages[0].message_parts) || []),
     condition.value as string,
     integrations,
   );
