@@ -14,7 +14,9 @@ export enum TriggerActorCause {
   AssignmentRule = 'ASSIGNMENT_RULE',
   AutoResolve = 'AUTO_RESOLVE',
   ChannelGroupMapping = 'CHANNEL_GROUP_MAPPING',
+  Freddy = 'FREDDY',
   IntelliAssign = 'INTELLI_ASSIGN',
+  PublicAPI = 'PUBLIC_API',
   User = 'USER',
 }
 

@@ -31,7 +31,7 @@ const actorCauseDict: {
 };
 
 export default (productEventData: ProductEventData, triggerActor: TriggerActor): boolean => {
-  const isActorTypeMatch = productEventData.actor.type === ActorType.System;
+  const isActorTypeMatch = productEventData.actor.type === ActorType.Bot;
   let isActorCauseMatch = true;
 
   if (triggerActor.cause && productEventData.actor.sub_entity && actorCauseDict[triggerActor.cause]) {
