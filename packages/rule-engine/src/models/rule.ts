@@ -5,6 +5,7 @@ export enum MatchType {
 
 export enum TriggerActorType {
   Agent = 'AGENT',
+  Bot = 'BOT',
   System = 'SYSTEM',
   User = 'USER',
 }
@@ -14,7 +15,9 @@ export enum TriggerActorCause {
   AssignmentRule = 'ASSIGNMENT_RULE',
   AutoResolve = 'AUTO_RESOLVE',
   ChannelGroupMapping = 'CHANNEL_GROUP_MAPPING',
+  Freddy = 'FREDDY',
   IntelliAssign = 'INTELLI_ASSIGN',
+  PublicAPI = 'PUBLIC_API',
   User = 'USER',
 }
 
@@ -52,9 +55,9 @@ export enum ConditionKey {
   AssignedGroup = 'ASSIGNED_GROUP',
   BusinessHours = 'BUSINESS_HOURS',
   Channel = 'CHANNEL',
-  MessageText = 'MESSAGE_TEXT',
   LabelCategoryName = 'LABEL_CATEGORY_NAME',
   LabelSubcategoryName = 'LABEL_SUBCATEGORY_NAME',
+  MessageText = 'MESSAGE_TEXT',
   ResponseDueType = 'RESPONSE_DUE_TYPE',
   Status = 'STATUS',
   UnassignedCount = 'UNASSIGNED_COUNT',

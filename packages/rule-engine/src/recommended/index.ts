@@ -29,6 +29,7 @@ import triggerActionPrivateNoteCreate from './trigger-actions/private-note-creat
 import triggerActorAgent from './trigger-actors/agent';
 import triggerActorUser from './trigger-actors/user';
 import triggerActorSystem from './trigger-actors/system';
+import triggerActorBot from './trigger-actors/bot';
 
 // Import all actions
 import actionReopen from './actions/reopen';
@@ -118,12 +119,16 @@ const recommendedPlugins: RulePlugin[] = [
       'conversation.url': dynamicPlaceholderConversationUrl,
       'metrics.average_wait_time': dynamicPlaceholderAverageWaitTime,
       'transcript.conv_entire.html': dynamicPlaceholderTranscriptConvEntireHtml,
-      'transcript.conv_entire.includes_private_system.html': dynamicPlaceholderTranscriptConvEntireIncludesPrivateSystemHtml,
-      'transcript.conv_entire.includes_private_system.text': dynamicPlaceholderTranscriptConvEntireIncludesPrivateSystemText,
+      'transcript.conv_entire.includes_private_system.html':
+        dynamicPlaceholderTranscriptConvEntireIncludesPrivateSystemHtml,
+      'transcript.conv_entire.includes_private_system.text':
+        dynamicPlaceholderTranscriptConvEntireIncludesPrivateSystemText,
       'transcript.conv_entire.text': dynamicPlaceholderTranscriptConvEntireText,
       'transcript.conv_since_last_resolve.html': dynamicPlaceholderTranscriptConvSinceLastResolveHtml,
-      'transcript.conv_since_last_resolve.includes_private_system.html': dynamicPlaceholderTranscriptConvSinceLastResolveIncludesPrivateSystemHtml,
-      'transcript.conv_since_last_resolve.includes_private_system.text': dynamicPlaceholderTranscriptConvSinceLastResolveIncludesPrivateSystemText,
+      'transcript.conv_since_last_resolve.includes_private_system.html':
+        dynamicPlaceholderTranscriptConvSinceLastResolveIncludesPrivateSystemHtml,
+      'transcript.conv_since_last_resolve.includes_private_system.text':
+        dynamicPlaceholderTranscriptConvSinceLastResolveIncludesPrivateSystemText,
       'transcript.conv_since_last_resolve.text': dynamicPlaceholderTranscriptConvSinceLastResolveText,
     },
     operators: {
@@ -152,6 +157,7 @@ const recommendedPlugins: RulePlugin[] = [
     },
     triggerActors: {
       [TriggerActorType.Agent]: triggerActorAgent,
+      [TriggerActorType.Bot]: triggerActorBot,
       [TriggerActorType.System]: triggerActorSystem,
       [TriggerActorType.User]: triggerActorUser,
     },
