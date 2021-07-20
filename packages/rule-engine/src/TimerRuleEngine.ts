@@ -265,7 +265,6 @@ export class TimerRuleEngine {
       ) {
         // Current event is IntelliAssign assigns an Agent, or assignment rule assigns an Agent or group schedule to cancel it after 3 seconds
         const createScheduleJobId = `${modelProperties.app_id}_${modelProperties.conversation_id}_delay_invalidation`;
-
         return scheduler
           .createSchedule({
             jobId: createScheduleJobId,
