@@ -39,7 +39,7 @@ export interface TimerCompletionPayload {
   eventType?: ExternalEventType;
   jobId: string;
   originalPayload: ProductEventPayload;
-  ruleAlias: string;
+  ruleAlias?: string;
   ruleIndex: number;
 }
 

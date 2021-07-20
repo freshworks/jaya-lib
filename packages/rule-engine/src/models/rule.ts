@@ -190,7 +190,7 @@ export interface Rule {
   isTimer: boolean;
   matchType: MatchType;
   name: string;
-  ruleAlias: string;
+  ruleAlias?: string;
   timerValue: number;
   triggers: Trigger[];
 }
