@@ -202,9 +202,9 @@ export default async (
       ErrorCodes.TriggerAPITrace,
       {
         apiName: triggerApi.name,
-        timestampBeforeTrigger: dateBeforeTrigger.toISOString(),
-        timestampAfterTrigger: dateAfterTrigger.toISOString(),
         apiResponseMillis: apiResponseTimeInMilliseconds,
+        timestampAfterTrigger: dateAfterTrigger.toISOString(),
+        timestampBeforeTrigger: dateBeforeTrigger.toISOString(),
       },
       LogSeverity.INFO,
     );
