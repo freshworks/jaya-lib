@@ -14,6 +14,7 @@ import querystring, { ParsedUrlQueryInput } from 'querystring';
 import { Utils } from '../../Utils';
 import * as _ from 'lodash';
 import { ErrorCodes } from '../../models/error-codes';
+import { LogSeverity } from '../../services/GoogleCloudLogging';
 
 const contentTypeMap: {
   [key in WebhookContentType]: string;
@@ -185,13 +186,30 @@ export default async (
   }
 
   const axiosRequestConfig = getRequestConfig(triggerApi.config, combinedPlaceholders);
+  const dateBeforeTrigger = new Date();
   let webhookResponse;
 
   try {
     // Step 6: Make the API call
     webhookResponse = await axios.request(axiosRequestConfig);
+
+    const dateAfterTrigger = new Date();
+    const apiResponseTimeInMilliseconds = dateAfterTrigger.getTime() - dateBeforeTrigger.getTime();
+
+    Utils.log(
+      productEventPayload,
+      integrations,
+      ErrorCodes.TriggerAPITrace,
+      {
+        apiName: triggerApi.name,
+        timestampBeforeTrigger: dateBeforeTrigger.toISOString(),
+        timestampAfterTrigger: dateAfterTrigger.toISOString(),
+        apiResponseMillis: apiResponseTimeInMilliseconds,
+      },
+      LogSeverity.INFO,
+    );
   } catch (err) {
-    Utils.log(productEventPayload, integrations, ErrorCodes.TriggerAPI, {
+    Utils.log(productEventPayload, integrations, ErrorCodes.TriggerAPIError, {
       apiName: triggerApi.name,
       error: {
         code: err.code,

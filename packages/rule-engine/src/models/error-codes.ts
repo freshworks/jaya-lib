@@ -6,7 +6,8 @@ export enum ErrorCodes {
   FreshdeskTicket = 'FRESHDESK_TICKET_CREATE_ERROR',
   KairosError = 'KAIROS_ERROR',
   SendEmail = 'SEND_EMAIL_ERROR',
-  TriggerAPI = 'TRIGGER_API_ERROR',
+  TriggerAPIError = 'TRIGGER_API_ERROR',
+  TriggerAPITrace = 'TRIGGER_API_TRACE',
 }
 
 export enum ErrorTypes {
