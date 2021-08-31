@@ -76,10 +76,13 @@ export class Utils {
       googleCloudLogging.log(
         {
           account_id: productEventPayload.account_id,
+          actor_subentity: productEventPayload.data.actor.sub_entity || null,
+          actor_type: productEventPayload.data.actor.type,
           conversation_id: conversationId,
           domain: productEventPayload.domain,
           error_code: errorCode,
           event_epoch: new Date(productEventPayload.timestamp * 1000).toISOString(),
+          event_name: productEventPayload.event,
           info,
           message_id: messageId || 0,
           region: productEventPayload.region,
