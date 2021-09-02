@@ -41,6 +41,7 @@ export interface TimerCompletionPayload {
   originalPayload: ProductEventPayload;
   ruleAlias?: string;
   ruleIndex: number;
+  scheduledTime?: string;
 }
 
 export interface KairosCredentials {
