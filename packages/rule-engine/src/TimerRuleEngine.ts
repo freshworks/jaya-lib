@@ -82,8 +82,6 @@ export class TimerRuleEngine {
         // and push it into the schedules array for bulk scheduling later.
 
         if (!existingSchedule) {
-          const scheduledTime = this.addSeconds(new Date(), rule.timerValue).toISOString();
-
           schedulesToCreate = [
             ...schedulesToCreate,
             {
@@ -106,9 +104,9 @@ export class TimerRuleEngine {
                 },
                 ruleAlias: rule.ruleAlias,
                 ruleIndex,
-                scheduledTime,
+                scheduledTime: this.addSeconds(new Date(), rule.timerValue).toISOString(),
               },
-              scheduledTime,
+              scheduledTime: this.addSeconds(new Date(), rule.timerValue).toISOString(),
               webhookUrl: externalEventUrl,
             },
           ];
@@ -268,7 +266,6 @@ export class TimerRuleEngine {
       ) {
         // Current event is IntelliAssign assigns an Agent, or assignment rule assigns an Agent or group schedule to cancel it after 3 seconds
         const createScheduleJobId = `${modelProperties.app_id}_${modelProperties.conversation_id}_delay_invalidation`;
-        const scheduledTime = this.addSeconds(new Date(), 3).toISOString();
         return scheduler
           .createSchedule({
             jobId: createScheduleJobId,
@@ -277,9 +274,9 @@ export class TimerRuleEngine {
                 jobsToDelete,
               },
               eventType: 'DELETE_SCHEDULES',
-              scheduledTime,
+              scheduledTime: this.addSeconds(new Date(), 3).toISOString(),
             },
-            scheduledTime,
+            scheduledTime: this.addSeconds(new Date(), 3).toISOString(),
             webhookUrl: externalEventUrl,
           })
           .then(
