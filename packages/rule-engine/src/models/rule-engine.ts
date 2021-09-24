@@ -3,6 +3,8 @@ import { GoogleCloudLoggingConfig } from '../services/GoogleCloudLogging';
 
 export interface RuleEngineOptions {
   isSchedulerEnabled: boolean;
+  isUseStaticIP: boolean;
+  maxProductEventDelay: number;
 }
 
 export enum ExternalEventType {
