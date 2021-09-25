@@ -2,7 +2,7 @@
 import { Event } from '@freshworks-jaya/marketplace-models';
 import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { Block, Condition, MatchType, Rule, Trigger, TriggerAction, TriggerActor } from './models/rule';
-import { Integrations } from './models/rule-engine';
+import { Integrations, RuleEngineOptions } from './models/rule-engine';
 import { Promise } from 'bluebird';
 import ruleConfig from './RuleConfig';
 
@@ -14,11 +14,12 @@ export class RuleProcessor {
     productEventData: ProductEventData,
     condition: Condition,
     integrations: Integrations,
+    options: RuleEngineOptions,
   ): Promise<void> {
     const conditionFunc = ruleConfig.conditions && ruleConfig.conditions[condition.key];
 
     if (conditionFunc) {
-      return conditionFunc(condition, productEventData, integrations);
+      return conditionFunc(condition, productEventData, integrations, options);
     }
     throw new Error('Invalid condition key');
   }
@@ -30,6 +31,7 @@ export class RuleProcessor {
     productEventData: ProductEventData,
     block: Block,
     integrations: Integrations,
+    options: RuleEngineOptions,
   ): Promise<void> {
     // Block is matching when there are no block conditions
     if (!block || !block.conditions || !block.conditions.length) {
@@ -40,7 +42,7 @@ export class RuleProcessor {
       case MatchType.All:
         return Promise.all(
           block.conditions.map((condition) => {
-            return this.isConditionMatching(productEventData, condition, integrations);
+            return this.isConditionMatching(productEventData, condition, integrations, options);
           }),
         )
           .then(() => {
@@ -52,7 +54,7 @@ export class RuleProcessor {
       case MatchType.Any:
         return Promise.any(
           block.conditions.map((condition) => {
-            return this.isConditionMatching(productEventData, condition, integrations);
+            return this.isConditionMatching(productEventData, condition, integrations, options);
           }),
         );
       default:
@@ -115,6 +117,7 @@ export class RuleProcessor {
     productEventData: ProductEventData,
     rule: Rule,
     integrations: Integrations,
+    options: RuleEngineOptions,
   ): Promise<void> {
     // Rule is matching if there are no blocks
     if (!rule.blocks || !rule.blocks.length) {
@@ -125,7 +128,7 @@ export class RuleProcessor {
       case MatchType.All:
         return Promise.all(
           rule.blocks.map((block) => {
-            return this.isBlockMatching(productEventData, block, integrations);
+            return this.isBlockMatching(productEventData, block, integrations, options);
           }),
         )
           .then(() => {
@@ -137,7 +140,7 @@ export class RuleProcessor {
       case MatchType.Any:
         return Promise.any(
           rule.blocks.map((block) => {
-            return this.isBlockMatching(productEventData, block, integrations);
+            return this.isBlockMatching(productEventData, block, integrations, options);
           }),
         );
       default:
@@ -153,6 +156,7 @@ export class RuleProcessor {
     productEventData: ProductEventData,
     rule: Rule,
     integrations: Integrations,
+    options: RuleEngineOptions,
   ): Promise<void> {
     const isTriggerConditionMatch: boolean = this.isTriggerConditionMatching(event, productEventData, rule.triggers);
     // Rule does not match if trigger conditions don't match
@@ -160,7 +164,7 @@ export class RuleProcessor {
       return Promise.reject('noTriggerConditionMatch');
     }
 
-    return this.isRuleBlocksMatching(productEventData, rule, integrations);
+    return this.isRuleBlocksMatching(productEventData, rule, integrations, options);
   }
 
   /**
@@ -178,6 +182,7 @@ export class RuleProcessor {
     productEventData: ProductEventData,
     rules: Rule[],
     integrations: Integrations,
+    options: RuleEngineOptions,
   ): Promise<Rule> {
     let firstMatchingRule: Rule | null = null;
 
@@ -185,7 +190,7 @@ export class RuleProcessor {
       const currentRule = rules[i];
       if (this.isEnabledNonTimerRule(currentRule)) {
         try {
-          await this.isRuleMatching(event, productEventData, currentRule, integrations);
+          await this.isRuleMatching(event, productEventData, currentRule, integrations, options);
           firstMatchingRule = currentRule;
           break;
         } catch (err) {}

@@ -12,7 +12,7 @@ import {
   LabelSubcategory,
 } from '@freshworks-jaya/marketplace-models';
 import { Action, Api, CustomPlaceholdersMap } from './models/rule';
-import { Integrations } from './models/rule-engine';
+import { Integrations, RuleEngineOptions } from './models/rule-engine';
 import ruleConfig from './RuleConfig';
 import { isUsernameGenerated, PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Utils } from './Utils';
@@ -27,11 +27,12 @@ export class ActionExecutor {
     productEventPayload: ProductEventPayload,
     placeholders: PlaceholdersMap,
     apis: Api[],
+    options: RuleEngineOptions,
   ): Promise<PlaceholdersMap> {
     const actionFunc = ruleConfig.actions && ruleConfig.actions[action.type];
 
     if (actionFunc) {
-      return actionFunc(integrations, productEventPayload, action.value, placeholders, apis);
+      return actionFunc(integrations, productEventPayload, action.value, placeholders, apis, options);
     }
     return Promise.reject('Invalid action type');
   }
@@ -127,6 +128,7 @@ export class ActionExecutor {
     productEventPayload: ProductEventPayload,
     apis: Api[],
     customPlaceholders: CustomPlaceholdersMap,
+    options: RuleEngineOptions,
   ): Promise<void> {
     let placeholders = this.getPlaceholders(productEventPayload.data, integrations);
 
@@ -141,6 +143,7 @@ export class ActionExecutor {
           productEventPayload,
           placeholders,
           apis,
+          options,
         );
 
         placeholders = { ...placeholders, ...placeholdersFromAction };

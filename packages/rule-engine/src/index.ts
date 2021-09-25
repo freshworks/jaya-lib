@@ -52,7 +52,7 @@ export class RuleEngine {
         await TimerRuleEngine.invalidateTimers(payload, rules, externalEventUrl, kairosCredentials, integrations);
 
         // Process all timer rules.
-        await TimerRuleEngine.triggerTimers(payload, rules, externalEventUrl, kairosCredentials, integrations);
+        await TimerRuleEngine.triggerTimers(payload, rules, externalEventUrl, kairosCredentials, integrations, options);
       } catch (err) {
         return Promise.reject(err);
       }
@@ -65,10 +65,18 @@ export class RuleEngine {
         payload.data,
         rules,
         integrations,
+        options,
       );
       // Perform all actions sequentially in order.
       if (firstMatchingRule.actions && firstMatchingRule.actions.length) {
-        await ActionExecutor.handleActions(integrations, firstMatchingRule.actions, payload, apis, customPlaceholders);
+        await ActionExecutor.handleActions(
+          integrations,
+          firstMatchingRule.actions,
+          payload,
+          apis,
+          customPlaceholders,
+          options,
+        );
       }
     } catch (err) {
       return Promise.reject(err);
@@ -95,6 +103,7 @@ export class RuleEngine {
           integrations,
           apis,
           customPlaceholders,
+          options,
         );
         return Promise.resolve();
       } catch (err) {

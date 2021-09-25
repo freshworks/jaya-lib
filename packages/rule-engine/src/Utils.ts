@@ -1,6 +1,6 @@
 import { ConditionOperator } from './index';
 import ruleConfig from './RuleConfig';
-import { Integrations } from './models/rule-engine';
+import { Integrations, RuleEngineOptions } from './models/rule-engine';
 import Helpers from 'handlebars-helpers';
 import axios from 'axios';
 import {
@@ -134,6 +134,7 @@ export class Utils {
     productEventPayload: ProductEventPayload,
     integrations: Integrations,
     givenPlaceholders: PlaceholdersMap,
+    options: RuleEngineOptions,
   ): Promise<PlaceholdersMap> {
     // Step 1: Extract dynamic placeholder keys from text
     // Step 2: Fetch data required by all matching keys
@@ -161,6 +162,7 @@ export class Utils {
             const value = await ruleConfig.dynamicPlaceholders[dynamicPlaceholderKey](
               productEventPayload,
               integrations,
+              options,
             );
             generatedPlaceholders[dynamicPlaceholderKey] = value;
           } catch (err) {
@@ -196,6 +198,7 @@ export class Utils {
     operand1: string,
     operand2: string,
     integrations: Integrations,
+    options: RuleEngineOptions,
   ): Promise<void> {
     const sanitizedOperand1 = this.convertOperand(operand1);
     const sanitizedOperand2 = this.convertOperand(operand2);
@@ -203,7 +206,7 @@ export class Utils {
     const operatorFunc = ruleConfig.operators && ruleConfig.operators[operator];
 
     if (operatorFunc) {
-      return operatorFunc(sanitizedOperand1, sanitizedOperand2, integrations);
+      return operatorFunc(sanitizedOperand1, sanitizedOperand2, integrations, options);
     }
 
     throw new Error('no matching condition');

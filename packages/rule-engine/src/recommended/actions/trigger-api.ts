@@ -1,5 +1,5 @@
 import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
-import { Integrations } from '../../models/rule-engine';
+import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import {
   Api,
   JsonArray,
@@ -9,12 +9,13 @@ import {
   WebhookRequestType,
 } from '../../models/rule';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
-import axios, { AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig } from 'axios';
 import querystring, { ParsedUrlQueryInput } from 'querystring';
 import { Utils } from '../../Utils';
 import * as _ from 'lodash';
 import { ErrorCodes } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
+import request from '../../services/Request';
 
 const contentTypeMap: {
   [key in WebhookContentType]: string;
@@ -161,6 +162,7 @@ export default async (
   actionValue: unknown,
   placeholders: PlaceholdersMap,
   apis: Api[],
+  options: RuleEngineOptions,
 ): Promise<PlaceholdersMap> => {
   const triggerApiModelName = actionValue as string;
   const triggerApi = apis.find((api) => api.responseModelName === triggerApiModelName);
@@ -178,6 +180,7 @@ export default async (
       productEventPayload,
       integrations,
       placeholders,
+      options,
     );
 
     combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
@@ -191,7 +194,7 @@ export default async (
 
   try {
     // Step 6: Make the API call
-    webhookResponse = await axios.request(axiosRequestConfig);
+    webhookResponse = await request<JsonMap>(axiosRequestConfig, { isUseStaticIP: options.isUseStaticIP });
 
     const dateAfterTrigger = new Date();
     const apiResponseTimeInMilliseconds = dateAfterTrigger.getTime() - dateBeforeTrigger.getTime();

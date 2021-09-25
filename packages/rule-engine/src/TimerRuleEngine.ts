@@ -10,7 +10,12 @@ import {
   TriggerActorType,
 } from './models/rule';
 import { RuleProcessor } from './RuleProcessor';
-import { KairosCredentials, RuleEngineExternalEventPayload, Integrations } from './models/rule-engine';
+import {
+  KairosCredentials,
+  RuleEngineExternalEventPayload,
+  Integrations,
+  RuleEngineOptions,
+} from './models/rule-engine';
 import { Utils } from './Utils';
 import { ErrorCodes, ErrorTypes } from './models/error-codes';
 import { LogSeverity } from './services/GoogleCloudLogging';
@@ -30,9 +35,10 @@ export class TimerRuleEngine {
     productEventData: ProductEventData,
     rule: Rule,
     integrations: Integrations,
+    options: RuleEngineOptions,
   ): Promise<void> {
     if (rule.isTimer && rule.isEnabled) {
-      return RuleProcessor.isRuleMatching(event, productEventData, rule, integrations);
+      return RuleProcessor.isRuleMatching(event, productEventData, rule, integrations, options);
     } else {
       return Promise.reject();
     }
@@ -54,6 +60,7 @@ export class TimerRuleEngine {
     externalEventUrl: string,
     kairosCredentials: KairosCredentials,
     integrations: Integrations,
+    options: RuleEngineOptions,
   ): Promise<void> {
     let schedulesToCreate: KairosScheduleOptions[] = [];
     const scheduler = new Kairos(kairosCredentials);
@@ -66,7 +73,7 @@ export class TimerRuleEngine {
       let isMatchingTimerRule = false;
       // Check for timer rules that are enabled and are matching the trigger conditions.
       try {
-        await this.isMatchingTimerRule(payload.event, payload.data, rule, integrations);
+        await this.isMatchingTimerRule(payload.event, payload.data, rule, integrations, options);
         isMatchingTimerRule = true;
       } catch (err) {}
       if (isMatchingTimerRule) {
@@ -151,6 +158,7 @@ export class TimerRuleEngine {
     integrations: Integrations,
     apis: Api[],
     customPlaceholders: CustomPlaceholdersMap,
+    options: RuleEngineOptions,
   ): Promise<void> {
     const scheduler = new Kairos(kairosCredentials);
 
@@ -191,6 +199,7 @@ export class TimerRuleEngine {
         externalEventPayload.data.originalPayload,
         apis,
         customPlaceholders,
+        options,
       );
     }
   }

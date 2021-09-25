@@ -1,7 +1,7 @@
 import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
-import { Integrations } from '../../models/rule-engine';
+import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import { Utils } from '../../Utils';
 import { Api, UserConditionValue } from '../../models/rule';
 import { ErrorCodes, ErrorTypes } from '../../models/error-codes';
@@ -13,6 +13,7 @@ export default async (
   actionValue: unknown,
   placeholders: PlaceholdersMap,
   apis: Api[],
+  options: RuleEngineOptions,
 ): Promise<PlaceholdersMap> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
@@ -27,6 +28,7 @@ export default async (
       productEventPayload,
       integrations,
       placeholders,
+      options,
     );
 
     const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
