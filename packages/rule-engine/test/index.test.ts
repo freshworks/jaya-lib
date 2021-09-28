@@ -150,15 +150,17 @@ describe('RuleEngine test', () => {
       const ruleEngine = new RuleEngine();
       ruleEngine
         .processProductEvent(
-          (productEventPayload as any) as ProductEventPayload,
-          (rules as any) as Rule[],
+          productEventPayload as any as ProductEventPayload,
+          rules as any as Rule[],
           [],
           {},
           {
             isSchedulerEnabled: false,
+            isUseStaticIP: false,
+            maxProductEventDelay: 30000,
           },
           'some-external-event-url',
-          (integrations as any) as Integrations,
+          integrations as any as Integrations,
         )
         .catch((error) => {
           assert.equal('no matching rule', error);
@@ -171,15 +173,17 @@ describe('RuleEngine test', () => {
       const ruleEngine = new RuleEngine();
       ruleEngine
         .processProductEvent(
-          (productEventPayload as any) as ProductEventPayload,
-          (rules as any) as Rule[],
+          productEventPayload as any as ProductEventPayload,
+          rules as any as Rule[],
           [],
           {},
           {
             isSchedulerEnabled: false,
+            isUseStaticIP: false,
+            maxProductEventDelay: 30000,
           },
           'some-external-event-url',
-          (integrations as any) as Integrations,
+          integrations as any as Integrations,
         )
         .then(() => {
           assert.ok('triggers processProductEvent function with params and matching rule');

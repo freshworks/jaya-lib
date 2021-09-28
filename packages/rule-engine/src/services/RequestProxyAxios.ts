@@ -1,5 +1,28 @@
-import $request, { RequestProxyOptions } from './RequestProxy';
 import { AxiosResponse } from 'axios';
+
+export interface RequestProxyResponse<T = never> {
+  headers: never;
+  response: T;
+  status: number;
+}
+
+export interface RequestProxyOptions {
+  body?: string;
+  headers?: never;
+  maxAttempts?: number;
+  retryDelay?: number;
+  staticIP?: boolean;
+}
+
+export interface RequestProxy {
+  delete<T = never, R = RequestProxyResponse<T>>(url: string, options?: RequestProxyOptions): Promise<R>;
+  get<T = never, R = RequestProxyResponse<T>>(url: string, options?: RequestProxyOptions): Promise<R>;
+  patch<T = never, R = RequestProxyResponse<T>>(url: string, options?: RequestProxyOptions): Promise<R>;
+  post<T = never, R = RequestProxyResponse<T>>(url: string, options?: RequestProxyOptions): Promise<R>;
+  put<T = never, R = RequestProxyResponse<T>>(url: string, options?: RequestProxyOptions): Promise<R>;
+}
+
+declare const $request: RequestProxy;
 
 export enum Method {
   Delete = 'delete',
@@ -15,18 +38,22 @@ const requestProxyFunc = <T = unknown>(
   options: RequestProxyOptions,
 ): Promise<AxiosResponse<T>> => {
   return new Promise((resolve, reject) => {
-    $request[method]<T>(url, options).then(
-      (data) => {
-        resolve({
-          data: data.response,
-          headers: data.headers,
-          status: data.status,
-        } as unknown as AxiosResponse);
-      },
-      (error) => {
-        reject(error);
-      },
-    );
+    if ($request) {
+      $request[method]<T>(url, options).then(
+        (data) => {
+          resolve({
+            data: data.response,
+            headers: data.headers,
+            status: data.status,
+          } as unknown as AxiosResponse);
+        },
+        (error) => {
+          reject(error);
+        },
+      );
+    } else {
+      reject(new Error('$request is not defined'));
+    }
   });
 };
 

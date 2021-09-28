@@ -38,7 +38,7 @@ describe('Utils test', () => {
     });
 
     it('should return an empty string when param is not string', () => {
-      assert.equal('', Utils.convertOperand((undefined as any) as string));
+      assert.equal('', Utils.convertOperand(undefined as any as string));
     });
   });
 
@@ -60,21 +60,29 @@ describe('Utils test', () => {
     });
 
     it('should evaluate EQUALS condition', async () => {
-      Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'a', (integrations as any) as Integrations).then(
-        () => {
-          assert.ok('a is equal a');
-        },
-      );
-      Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'b', (integrations as any) as Integrations).catch(
-        () => {
-          assert.ok('a is not equal b');
-        },
-      );
+      Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'a', integrations as any as Integrations, {
+        isSchedulerEnabled: false,
+        isUseStaticIP: false,
+        maxProductEventDelay: 30000,
+      }).then(() => {
+        assert.ok('a is equal a');
+      });
+      Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'b', integrations as any as Integrations, {
+        isSchedulerEnabled: false,
+        isUseStaticIP: false,
+        maxProductEventDelay: 30000,
+      }).catch(() => {
+        assert.ok('a is not equal b');
+      });
     });
 
     it('should handle the condition when operator is not available', () => {
       try {
-        Utils.evaluateCondition('NOT_EQUALS' as ConditionOperator, 'a', 'b', (integrations as any) as Integrations);
+        Utils.evaluateCondition('NOT_EQUALS' as ConditionOperator, 'a', 'b', integrations as any as Integrations, {
+          isSchedulerEnabled: false,
+          isUseStaticIP: false,
+          maxProductEventDelay: 30000,
+        });
       } catch (err) {
         assert('threw an exception when operator was not available');
       }
