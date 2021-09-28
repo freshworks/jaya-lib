@@ -145,6 +145,7 @@ export default async (
       },
       {
         isUseStaticIP: options.isUseStaticIP,
+        requestProxy: integrations.marketplaceServices.requestProxy,
       },
     );
 
@@ -169,6 +170,7 @@ export default async (
       },
       {
         isUseStaticIP: options.isUseStaticIP,
+        requestProxy: integrations.marketplaceServices.requestProxy,
       },
     );
   } catch (err) {

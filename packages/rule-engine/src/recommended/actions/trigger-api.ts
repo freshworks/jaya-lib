@@ -194,7 +194,10 @@ export default async (
 
   try {
     // Step 6: Make the API call
-    webhookResponse = await request<JsonMap>(axiosRequestConfig, { isUseStaticIP: options.isUseStaticIP });
+    webhookResponse = await request<JsonMap>(axiosRequestConfig, {
+      isUseStaticIP: options.isUseStaticIP,
+      requestProxy: integrations.marketplaceServices.requestProxy,
+    });
 
     const dateAfterTrigger = new Date();
     const apiResponseTimeInMilliseconds = dateAfterTrigger.getTime() - dateBeforeTrigger.getTime();
