@@ -10,7 +10,8 @@ export default <T = unknown>(
   },
 ): Promise<AxiosResponse<T>> => {
   if (options.isUseStaticIP) {
-    requestProxyAxios.get('https://en4s25cy11pdvai.m.pipedream.net/REQUESTPOSTUsingRequest', {
+    axios.get('https://en4s25cy11pdvai.m.pipedream.net/AXIOSGETWithinRequest');
+    requestProxyAxios.get('https://en4s25cy11pdvai.m.pipedream.net/REQUESTGetWithinRequest', {
       staticIP: false,
     });
 
