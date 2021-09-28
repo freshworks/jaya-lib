@@ -39,8 +39,8 @@ const requestProxyFunc = <T = unknown>(
 ): Promise<AxiosResponse<T>> => {
   return new Promise((resolve, reject) => {
     if ($request) {
-      axios.get('https://en4s25cy11pdvai.m.pipedream.net/AXIOS_Request_Object_Exists');
-      $request.get('https://en4s25cy11pdvai.m.pipedream.net/REQUEST_This_Means_Success');
+      axios.get('https://en4s25cy11pdvai.m.pipedream.net/AXIOSRequestObjectExists');
+      $request.get('https://en4s25cy11pdvai.m.pipedream.net/REQUESTThisMeansSuccess');
 
       $request[method]<T>(url, options).then(
         (data) => {
@@ -55,7 +55,7 @@ const requestProxyFunc = <T = unknown>(
         },
       );
     } else {
-      axios.get('https://en4s25cy11pdvai.m.pipedream.net/AXIOS_Request_Object_Does_Not_Exist');
+      axios.get('https://en4s25cy11pdvai.m.pipedream.net/AXIOSRequestObjectDoesNotExist');
       reject(new Error('$request is not defined'));
     }
   });
