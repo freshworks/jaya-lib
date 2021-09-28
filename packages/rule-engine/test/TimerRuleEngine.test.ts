@@ -11,6 +11,7 @@ import recommendedPlugins from '../src/recommended/index';
 import { ActionExecutor } from '../src/ActionExecutor';
 import { AxiosPromise } from 'axios';
 import { Integrations } from '../src/models/rule-engine';
+import RequestProxy from '../src/services/RequestProxy';
 
 describe('TimerRuleEngine test', () => {
   const productEventPayload = {
@@ -217,6 +218,9 @@ describe('TimerRuleEngine test', () => {
             client_email: 'emailaddresshere',
             logName: 'jaya-lib',
           },
+          marketplaceServices: {
+            requestProxy: {} as unknown as RequestProxy,
+          },
           timezoneOffset: -330,
         },
       );
@@ -250,6 +254,9 @@ describe('TimerRuleEngine test', () => {
             private_key: 'privatekey',
             client_email: 'emailaddresshere',
             logName: 'jaya-lib',
+          },
+          marketplaceServices: {
+            requestProxy: {} as unknown as RequestProxy,
           },
           timezoneOffset: -330,
         },
@@ -285,6 +292,9 @@ describe('TimerRuleEngine test', () => {
             client_email: 'emailaddresshere',
             logName: 'jaya-lib',
           },
+          marketplaceServices: {
+            requestProxy: {} as unknown as RequestProxy,
+          },
           timezoneOffset: -330,
         },
       );
@@ -318,6 +328,9 @@ describe('TimerRuleEngine test', () => {
             private_key: 'privatekey',
             client_email: 'emailaddresshere',
             logName: 'jaya-lib',
+          },
+          marketplaceServices: {
+            requestProxy: {} as unknown as RequestProxy,
           },
           timezoneOffset: -330,
         },
@@ -353,6 +366,9 @@ describe('TimerRuleEngine test', () => {
             client_email: 'emailaddresshere',
             logName: 'jaya-lib',
           },
+          marketplaceServices: {
+            requestProxy: {} as unknown as RequestProxy,
+          },
           timezoneOffset: -330,
         },
       );
@@ -387,6 +403,9 @@ describe('TimerRuleEngine test', () => {
               private_key: 'privatekey',
               client_email: 'emailaddresshere',
               logName: 'jaya-lib',
+            },
+            marketplaceServices: {
+              requestProxy: {} as unknown as RequestProxy,
             },
             timezoneOffset: -330,
           },

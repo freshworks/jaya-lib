@@ -7,6 +7,7 @@ import { Integrations } from '../src/models/rule-engine';
 import { BusinessHour } from '@freshworks-jaya/utilities';
 import nock from 'nock';
 import chaiAsPromised from 'chai-as-promised';
+import RequestProxy from '../src/services/RequestProxy';
 chai.use(chaiAsPromised);
 const { expect } = chai;
 
@@ -25,6 +26,9 @@ describe('Utils test', () => {
       private_key: 'privatekey',
       client_email: 'emailaddresshere',
       logName: 'jaya-lib',
+    },
+    marketplaceServices: {
+      requestProxy: {} as unknown as RequestProxy,
     },
     timezoneOffset: -330,
   };

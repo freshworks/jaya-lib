@@ -5,6 +5,7 @@ import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import ruleConfig from '../src/RuleConfig';
 import recommendedPlugins from '../src/recommended/index';
 import { ActionExecutor } from '../src/ActionExecutor';
+import RequestProxy from '../src/services/RequestProxy';
 
 describe('ActionExecutor test', () => {
   const productEventDataForGeneratedUsername = {
@@ -34,7 +35,7 @@ describe('ActionExecutor test', () => {
 
     it('check for generated username', () => {
       const placeholders = ActionExecutor.getPlaceholders(
-        (productEventDataForGeneratedUsername as any) as ProductEventData,
+        productEventDataForGeneratedUsername as any as ProductEventData,
         {
           freshchatv1: {
             token: 'tokenv1',
@@ -49,6 +50,9 @@ describe('ActionExecutor test', () => {
             private_key: 'privatekey',
             client_email: 'emailaddresshere',
             logName: 'jaya-lib',
+          },
+          marketplaceServices: {
+            requestProxy: {} as unknown as RequestProxy,
           },
           timezoneOffset: -330,
         },
