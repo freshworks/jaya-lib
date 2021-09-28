@@ -25,7 +25,7 @@ export default <T = unknown>(
       axiosRequestConfig.data = Utils.safelyParseJson(axiosRequestConfig.data) || {};
     }
 
-    return requestProxyAxios[axiosRequestConfig.method as Method]<T>(axiosRequestConfig.url as string, {
+    return requestProxyAxios[axiosRequestConfig.method?.toLowerCase() as Method]<T>(axiosRequestConfig.url as string, {
       body: JSON.stringify(axiosRequestConfig.data),
       headers: axiosRequestConfig.headers as never,
       staticIP: true,
