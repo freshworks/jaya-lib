@@ -1,8 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { JsonMap } from '../models/rule';
 import requestProxyAxios, { Method } from '../services/RequestProxyAxios';
-import { Utils } from '../Utils';
 import RequestProxy from './RequestProxy';
+import { Buffer } from 'safe-buffer';
 
 export default <T = unknown>(
   axiosRequestConfig: AxiosRequestConfig,
@@ -13,11 +12,12 @@ export default <T = unknown>(
 ): Promise<AxiosResponse<T>> => {
   if (options.isUseStaticIP) {
     const headers = axiosRequestConfig.headers ? { ...axiosRequestConfig.headers } : {};
-    let jsonData: JsonMap | null = null;
     let isContentTypeJson = false;
 
-    if (axiosRequestConfig.auth) {
-      const authBuffer = new Buffer(`${axiosRequestConfig.auth.username}:${axiosRequestConfig.auth.password}`).toString;
+    if (axiosRequestConfig.auth?.username && axiosRequestConfig.auth?.password) {
+      const authBuffer = new Buffer(`${axiosRequestConfig.auth.username}:${axiosRequestConfig.auth.password}`).toString(
+        'base64',
+      );
       const authHeader = `Basic ${authBuffer}`;
 
       headers['Authorization'] = authHeader;
@@ -25,14 +25,13 @@ export default <T = unknown>(
 
     if (headers['Content-Type'] === 'application/json') {
       isContentTypeJson = true;
-      jsonData = Utils.safelyParseJson(axiosRequestConfig.data) || null;
     }
 
     return requestProxyAxios[axiosRequestConfig.method?.toLowerCase() as Method]<T>(
       options.requestProxy,
       axiosRequestConfig.url as string,
       {
-        body: isContentTypeJson ? (jsonData ? JSON.stringify(jsonData) : '') : axiosRequestConfig.data,
+        body: isContentTypeJson ? JSON.stringify(axiosRequestConfig.data) : axiosRequestConfig.data,
         headers,
         staticIP: true,
       },

@@ -26,16 +26,16 @@ const contentTypeMap: {
 };
 
 const contentMap: {
-  [key in WebhookContentType]: (content: string | JsonMap) => string | JsonMap;
+  [key in WebhookContentType]: (content: string | JsonMap) => string;
 } = {
   [WebhookContentType.Json]: (content: string | JsonMap) => {
-    return content;
+    return JSON.stringify(content);
   },
   [WebhookContentType.UrlEncoded]: (content: string | JsonMap) => {
     return querystring.stringify(content as ParsedUrlQueryInput, '&', '=');
   },
   [WebhookContentType.Xml]: (content: string | JsonMap) => {
-    return content;
+    return content as string;
   },
 };
 
