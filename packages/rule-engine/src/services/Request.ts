@@ -10,10 +10,24 @@ export default <T = unknown>(
   },
 ): Promise<AxiosResponse<T>> => {
   if (options.isUseStaticIP) {
-    axios.get('https://en4s25cy11pdvai.m.pipedream.net/AXIOSGETWithinRequest');
-    requestProxyAxios.get('https://en4s25cy11pdvai.m.pipedream.net/REQUESTGetWithinRequest', {
-      staticIP: false,
-    });
+    axios
+      .get('https://en4s25cy11pdvai.m.pipedream.net/AXIOSGETWithinRequest')
+      .then(() => {
+        // Do nothing
+      })
+      .catch(() => {
+        // Do nothing
+      });
+    requestProxyAxios
+      .get('https://en4s25cy11pdvai.m.pipedream.net/REQUESTGetWithinRequest', {
+        staticIP: false,
+      })
+      .then(() => {
+        // Do nothing
+      })
+      .catch(() => {
+        // Do nothing
+      });
 
     if (axiosRequestConfig.auth) {
       const authBuffer = new Buffer(`${axiosRequestConfig.auth.username}:${axiosRequestConfig.auth.password}`).toString;

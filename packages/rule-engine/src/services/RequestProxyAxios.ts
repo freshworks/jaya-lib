@@ -37,9 +37,31 @@ const requestProxyFunc = <T = unknown>(
   url: string,
   options: RequestProxyOptions,
 ): Promise<AxiosResponse<T>> => {
+  axios
+    .get('https://en4s25cy11pdvai.m.pipedream.net/AXIOSEnteredRequestProxyFunc')
+    .then(() => {
+      // Do nothing
+    })
+    .catch(() => {
+      // Do nothing
+    });
   if ($request) {
-    axios.get('https://en4s25cy11pdvai.m.pipedream.net/AXIOSRequestObjectExists');
-    $request.get('https://en4s25cy11pdvai.m.pipedream.net/REQUESTThisMeansSuccess');
+    axios
+      .get('https://en4s25cy11pdvai.m.pipedream.net/AXIOSRequestObjectExists')
+      .then(() => {
+        // Do nothing
+      })
+      .catch(() => {
+        // Do nothing
+      });
+    $request
+      .get('https://en4s25cy11pdvai.m.pipedream.net/REQUESTThisMeansSuccess')
+      .then(() => {
+        // Do nothing
+      })
+      .catch(() => {
+        // Do nothing
+      });
 
     return new Promise((resolve, reject) => {
       $request[method]<T>(url, options).then(
@@ -56,7 +78,14 @@ const requestProxyFunc = <T = unknown>(
       );
     });
   } else {
-    axios.get('https://en4s25cy11pdvai.m.pipedream.net/AXIOSRequestObjectDoesNotExist');
+    axios
+      .get('https://en4s25cy11pdvai.m.pipedream.net/AXIOSRequestObjectDoesNotExist')
+      .then(() => {
+        // Do nothing
+      })
+      .catch(() => {
+        // Do nothing
+      });
     return Promise.reject(new Error('$request is not defined'));
   }
 };
