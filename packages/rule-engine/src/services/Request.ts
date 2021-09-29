@@ -12,7 +12,6 @@ export default <T = unknown>(
 ): Promise<AxiosResponse<T>> => {
   if (options.isUseStaticIP) {
     const headers = axiosRequestConfig.headers ? { ...axiosRequestConfig.headers } : {};
-    let isContentTypeJson = false;
 
     if (axiosRequestConfig.auth?.username && axiosRequestConfig.auth?.password) {
       const authBuffer = new Buffer(`${axiosRequestConfig.auth.username}:${axiosRequestConfig.auth.password}`).toString(
@@ -23,15 +22,11 @@ export default <T = unknown>(
       headers['Authorization'] = authHeader;
     }
 
-    if (headers['Content-Type'] === 'application/json') {
-      isContentTypeJson = true;
-    }
-
     return requestProxyAxios[axiosRequestConfig.method?.toLowerCase() as Method]<T>(
       options.requestProxy,
       axiosRequestConfig.url as string,
       {
-        body: isContentTypeJson ? JSON.stringify(axiosRequestConfig.data) : axiosRequestConfig.data,
+        body: axiosRequestConfig.data,
         headers,
         staticIP: true,
       },
