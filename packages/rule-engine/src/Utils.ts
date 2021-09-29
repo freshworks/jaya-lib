@@ -46,10 +46,14 @@ Handlebars.registerHelper('htmlToText', function (context: string) {
 });
 
 export class Utils {
-  public static safelyParseJson(value: string): JsonMap | null {
+  public static safelyParseJson(value: string, options?: { allowArray?: boolean }): JsonMap | null {
     try {
-      const jsonMap = JSON.parse(value);
+      const jsonMap: JsonMap = JSON.parse(value);
       if (typeof jsonMap === 'object' && jsonMap.constructor === Object) {
+        return jsonMap;
+      }
+
+      if (options?.allowArray && Array.isArray(jsonMap)) {
         return jsonMap;
       }
 
