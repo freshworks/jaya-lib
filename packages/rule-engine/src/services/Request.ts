@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import requestProxyAxios, { Method } from '../services/RequestProxyAxios';
 import RequestProxy from './RequestProxy';
-import { Buffer } from 'safe-buffer';
 
 export default <T = unknown>(
   axiosRequestConfig: AxiosRequestConfig,
@@ -14,9 +13,9 @@ export default <T = unknown>(
     const headers = axiosRequestConfig.headers ? { ...axiosRequestConfig.headers } : {};
 
     if (axiosRequestConfig.auth?.username && axiosRequestConfig.auth?.password) {
-      const authBuffer = new Buffer(`${axiosRequestConfig.auth.username}:${axiosRequestConfig.auth.password}`).toString(
-        'base64',
-      );
+      const authBuffer = Buffer.from(
+        `${axiosRequestConfig.auth.username}:${axiosRequestConfig.auth.password}`,
+      ).toString('base64');
       const authHeader = `Basic ${authBuffer}`;
 
       headers['Authorization'] = authHeader;

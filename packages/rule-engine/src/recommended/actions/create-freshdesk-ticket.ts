@@ -8,7 +8,6 @@ import { Utils } from '../../Utils';
 import { Api } from '../../models/rule';
 import { ErrorCodes } from '../../models/error-codes';
 import request from '../../services/Request';
-import { Buffer } from 'safe-buffer';
 
 const getTicketConversationContent = async (
   freshchat: Freshchat,
@@ -120,7 +119,7 @@ export default async (
 
     const { email, first_name: name, id: userAlias, phone } = productEventPayload.data.associations.user;
     const headers = {
-      Authorization: 'Basic ' + new Buffer(`${freshdeskApiToken}:X`).toString('base64'),
+      Authorization: 'Basic ' + Buffer.from(`${freshdeskApiToken}:X`).toString('base64'),
       'Content-Type': 'application/json',
     };
 
