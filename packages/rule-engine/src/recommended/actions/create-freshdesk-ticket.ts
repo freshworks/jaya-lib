@@ -1,4 +1,5 @@
 import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
+import { requestAxiosWrapper } from '@freshworks-jaya/marketplace-models/lib/services/request';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import Freshchat, { User as FreshchatUser } from '@freshworks-jaya/freshchat-api';
@@ -7,7 +8,6 @@ import { isUsernameGenerated } from '@freshworks-jaya/utilities';
 import { Utils } from '../../Utils';
 import { Api } from '../../models/rule';
 import { ErrorCodes } from '../../models/error-codes';
-import request from '../../services/Request';
 
 const getTicketConversationContent = async (
   freshchat: Freshchat,
@@ -124,7 +124,7 @@ export default async (
     };
 
     // Step 2: Create Freshdesk Ticket
-    const ticketCreateResponse = await request<{
+    const ticketCreateResponse = await requestAxiosWrapper<{
       id: string;
     }>(
       {
@@ -156,7 +156,7 @@ export default async (
     };
 
     // Step 4: Create Private Note for Freshdesk Ticket
-    await request(
+    await requestAxiosWrapper(
       {
         data: {
           body: ticketConversationContent.privateNote,

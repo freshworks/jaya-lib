@@ -1,11 +1,10 @@
 import 'mocha';
 import { assert } from 'chai';
 import sinon, { SinonSandbox } from 'sinon';
-import { ProductEventData } from '@freshworks-jaya/marketplace-models';
+import { ProductEventData, RequestProxy } from '@freshworks-jaya/marketplace-models';
 import ruleConfig from '../src/RuleConfig';
 import recommendedPlugins from '../src/recommended/index';
 import { ActionExecutor } from '../src/ActionExecutor';
-import RequestProxy from '../src/services/RequestProxy';
 
 describe('ActionExecutor test', () => {
   const productEventDataForGeneratedUsername = {

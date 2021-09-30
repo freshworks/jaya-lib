@@ -1,4 +1,4 @@
-import RequestProxy, { RequestProxyOptions } from './RequestProxy';
+import { RequestProxy, RequestProxyOptions } from './Request';
 import { AxiosResponse } from 'axios';
 
 export enum Method {
@@ -31,7 +31,7 @@ const requestProxyFunc = <T = unknown>(
   });
 };
 
-const requestProxyAxios: {
+const requestAxiosify: {
   [key in Method]: <T = unknown>(
     requestProxy: RequestProxy,
     url: string,
@@ -50,4 +50,4 @@ const requestProxyAxios: {
     requestProxyFunc<T>(requestProxy, Method.Put, url, options),
 };
 
-export default requestProxyAxios;
+export { requestAxiosify };

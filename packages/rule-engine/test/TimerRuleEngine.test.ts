@@ -11,7 +11,7 @@ import recommendedPlugins from '../src/recommended/index';
 import { ActionExecutor } from '../src/ActionExecutor';
 import { AxiosPromise } from 'axios';
 import { Integrations } from '../src/models/rule-engine';
-import RequestProxy from '../src/services/RequestProxy';
+import { RequestProxy } from '@freshworks-jaya/marketplace-models';
 
 describe('TimerRuleEngine test', () => {
   const productEventPayload = {

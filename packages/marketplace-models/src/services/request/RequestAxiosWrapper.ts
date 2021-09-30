@@ -1,8 +1,8 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import requestProxyAxios, { Method } from '../services/RequestProxyAxios';
-import RequestProxy from './RequestProxy';
+import { Method, requestAxiosify } from './RequestAxiosify';
+import { RequestProxy } from './Request';
 
-export default <T = unknown>(
+const requestAxiosWrapper = <T = unknown>(
   axiosRequestConfig: AxiosRequestConfig,
   options: {
     isUseStaticIP: boolean;
@@ -21,7 +21,7 @@ export default <T = unknown>(
       headers['Authorization'] = authHeader;
     }
 
-    return requestProxyAxios[axiosRequestConfig.method?.toLowerCase() as Method]<T>(
+    return requestAxiosify[axiosRequestConfig.method?.toLowerCase() as Method]<T>(
       options.requestProxy,
       axiosRequestConfig.url as string,
       {
@@ -34,3 +34,5 @@ export default <T = unknown>(
     return axios.request<T>(axiosRequestConfig);
   }
 };
+
+export { requestAxiosWrapper };

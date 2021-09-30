@@ -20,9 +20,6 @@ export * from './models/plugin';
 export * from './TimerRuleEngine';
 export * from './services/GoogleCloudLogging';
 export * from './services/GoogleServiceAccount';
-export * from './services/Request';
-export * from './services/RequestProxy';
-export * from './services/RequestProxyAxios';
 
 export class RuleEngine {
   constructor(private plugins?: RulePlugin[]) {

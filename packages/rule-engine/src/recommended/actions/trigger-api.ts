@@ -1,4 +1,5 @@
 import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
+import { requestAxiosWrapper } from '@freshworks-jaya/marketplace-models/lib/services/request';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import {
   Api,
@@ -15,7 +16,6 @@ import { Utils } from '../../Utils';
 import * as _ from 'lodash';
 import { ErrorCodes } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
-import request from '../../services/Request';
 
 const contentTypeMap: {
   [key in WebhookContentType]: string;
@@ -197,7 +197,7 @@ export default async (
 
   try {
     // Step 6: Make the API call
-    webhookResponse = await request<JsonMap>(axiosRequestConfig, {
+    webhookResponse = await requestAxiosWrapper<JsonMap>(axiosRequestConfig, {
       isUseStaticIP: options.isUseStaticIP,
       requestProxy: integrations.marketplaceServices.requestProxy,
     });

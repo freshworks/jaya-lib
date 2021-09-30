@@ -1,6 +1,6 @@
 import { ExternalEventPayload, ProductEventPayload } from '@freshworks-jaya/marketplace-models';
+import { RequestProxy } from '@freshworks-jaya/marketplace-models/lib/services/request';
 import { GoogleCloudLoggingConfig } from '../services/GoogleCloudLogging';
-import RequestProxy from '../services/RequestProxy';
 
 export interface RuleEngineOptions {
   isSchedulerEnabled: boolean;

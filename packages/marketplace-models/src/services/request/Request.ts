@@ -12,7 +12,7 @@ export interface RequestProxyOptions {
   staticIP?: boolean;
 }
 
-export default interface RequestProxy {
+export interface RequestProxy {
   delete<T = never, R = RequestProxyResponse<T>>(url: string, options?: RequestProxyOptions): Promise<R>;
   get<T = never, R = RequestProxyResponse<T>>(url: string, options?: RequestProxyOptions): Promise<R>;
   patch<T = never, R = RequestProxyResponse<T>>(url: string, options?: RequestProxyOptions): Promise<R>;
