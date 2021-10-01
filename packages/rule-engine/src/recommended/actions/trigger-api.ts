@@ -72,9 +72,6 @@ const getReplacedContent = (
 
   const jsonContent = Utils.safelyParseJson(content, { allowArray: true });
 
-  // eslint-disable-next-line no-console
-  console.log('Parsed Json', jsonContent);
-
   if (jsonContent) {
     replacePlaceholdersInObject(jsonContent, combinedPlaceholders);
   }
