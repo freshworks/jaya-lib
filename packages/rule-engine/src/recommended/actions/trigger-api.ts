@@ -198,7 +198,7 @@ export default async (
   try {
     // Step 6: Make the API call
     webhookResponse = await requestAxiosWrapper<JsonMap>(axiosRequestConfig, {
-      isUseStaticIP: options.isUseStaticIP,
+      isUseStaticIP: triggerApi.isUseStaticIP,
       requestProxy: integrations.marketplaceServices.requestProxy,
     });
 

@@ -197,6 +197,7 @@ export interface Rule {
 
 export interface Api {
   config: TriggerWebhookValue;
+  isUseStaticIP: boolean;
   name: string;
   responseModelName: string;
 }
