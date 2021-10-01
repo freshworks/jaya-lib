@@ -1,5 +1,6 @@
 import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
-import { Integrations } from '../../models/rule-engine';
+import { requestAxiosWrapper } from '@freshworks-jaya/marketplace-models/lib/services/request';
+import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import {
   Api,
   JsonArray,
@@ -9,7 +10,7 @@ import {
   WebhookRequestType,
 } from '../../models/rule';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
-import axios, { AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig } from 'axios';
 import querystring, { ParsedUrlQueryInput } from 'querystring';
 import { Utils } from '../../Utils';
 import * as _ from 'lodash';
@@ -25,16 +26,16 @@ const contentTypeMap: {
 };
 
 const contentMap: {
-  [key in WebhookContentType]: (content: string | JsonMap) => string | JsonMap;
+  [key in WebhookContentType]: (content: string | JsonMap) => string;
 } = {
   [WebhookContentType.Json]: (content: string | JsonMap) => {
-    return content;
+    return JSON.stringify(content);
   },
   [WebhookContentType.UrlEncoded]: (content: string | JsonMap) => {
     return querystring.stringify(content as ParsedUrlQueryInput, '&', '=');
   },
   [WebhookContentType.Xml]: (content: string | JsonMap) => {
-    return content;
+    return content as string;
   },
 };
 
@@ -69,7 +70,7 @@ const getReplacedContent = (
     return Utils.processHandlebarsAndReplacePlaceholders(content, combinedPlaceholders);
   }
 
-  const jsonContent = Utils.safelyParseJson(content);
+  const jsonContent = Utils.safelyParseJson(content, { allowArray: true });
 
   if (jsonContent) {
     replacePlaceholdersInObject(jsonContent, combinedPlaceholders);
@@ -161,6 +162,7 @@ export default async (
   actionValue: unknown,
   placeholders: PlaceholdersMap,
   apis: Api[],
+  options: RuleEngineOptions,
 ): Promise<PlaceholdersMap> => {
   const triggerApiModelName = actionValue as string;
   const triggerApi = apis.find((api) => api.responseModelName === triggerApiModelName);
@@ -178,6 +180,7 @@ export default async (
       productEventPayload,
       integrations,
       placeholders,
+      options,
     );
 
     combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
@@ -191,7 +194,10 @@ export default async (
 
   try {
     // Step 6: Make the API call
-    webhookResponse = await axios.request(axiosRequestConfig);
+    webhookResponse = await requestAxiosWrapper<JsonMap>(axiosRequestConfig, {
+      isUseStaticIP: triggerApi.isUseStaticIP,
+      requestProxy: integrations.marketplaceServices.requestProxy,
+    });
 
     const dateAfterTrigger = new Date();
     const apiResponseTimeInMilliseconds = dateAfterTrigger.getTime() - dateBeforeTrigger.getTime();

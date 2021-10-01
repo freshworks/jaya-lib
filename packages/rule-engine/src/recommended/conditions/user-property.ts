@@ -1,7 +1,7 @@
 import { ProductEventData, User } from '@freshworks-jaya/marketplace-models';
 import { Condition, UserConditionValue, ConditionOperator } from '../../models/rule';
 import { Utils } from '../../Utils';
-import { Integrations } from '../../models/rule-engine';
+import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 
 /**
  * Check if the given userProperty condition is satisfied by the userObj.
@@ -11,6 +11,7 @@ const evaluateUserPropertyCondition = (
   userObj: User,
   conditionValue: UserConditionValue,
   integrations: Integrations,
+  options: RuleEngineOptions,
 ): Promise<void> => {
   const matchedProperty =
     userObj.properties && userObj.properties.find((property) => property.name === conditionValue.propertyKey);
@@ -20,6 +21,7 @@ const evaluateUserPropertyCondition = (
     (matchedProperty && matchedProperty.value) || '',
     conditionValue.propertyValue,
     integrations,
+    options,
   );
 };
 
@@ -27,11 +29,13 @@ export default (
   condition: Condition,
   productEventData: ProductEventData,
   integrations: Integrations,
+  options: RuleEngineOptions,
 ): Promise<void> => {
   return evaluateUserPropertyCondition(
     condition.operator,
     productEventData.associations.user,
     condition.value as UserConditionValue,
     integrations,
+    options,
   );
 };

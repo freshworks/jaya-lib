@@ -23,8 +23,7 @@ describe('RuleProcessor test', () => {
       email: 'arun.rajkumar@freshworks.com',
       type: 'agent',
       avatar: {
-        url:
-          'https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/fcb80e8034a0573c0a7cc62e8bad2320543cc3d25331762d72b601490b1d305f/f_marketingpicFull/u_511f4df397673630823df3cf364152b62cc8159e0232403603c3e81c431178f1/img_1585901259097.png',
+        url: 'https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/fcb80e8034a0573c0a7cc62e8bad2320543cc3d25331762d72b601490b1d305f/f_marketingpicFull/u_511f4df397673630823df3cf364152b62cc8159e0232403603c3e81c431178f1/img_1585901259097.png',
       },
       id: '652ac361-304e-47af-9c8f-598e649570a6',
       phone: '9003011800',
@@ -176,9 +175,14 @@ describe('RuleProcessor test', () => {
     it('should not return any rule when no rules are passed', () => {
       RuleProcessor.getFirstMatchingRule(
         Event.MessageCreate,
-        (productEventData as any) as ProductEventData,
+        productEventData as any as ProductEventData,
         [],
-        (integrations as any) as Integrations,
+        integrations as any as Integrations,
+        {
+          isSchedulerEnabled: false,
+          isUseStaticIP: false,
+          maxProductEventDelay: 30000,
+        },
       ).catch((err) => {
         assert.equal(err, 'no matching rule');
       });
@@ -187,9 +191,14 @@ describe('RuleProcessor test', () => {
     it('should not match a rule', () => {
       RuleProcessor.getFirstMatchingRule(
         Event.MessageCreate,
-        (productEventData as any) as ProductEventData,
-        (notMatchingRules as any) as Rule[],
-        (integrations as any) as Integrations,
+        productEventData as any as ProductEventData,
+        notMatchingRules as any as Rule[],
+        integrations as any as Integrations,
+        {
+          isSchedulerEnabled: false,
+          isUseStaticIP: false,
+          maxProductEventDelay: 30000,
+        },
       ).catch((err) => {
         assert.equal(err, 'no matching rule');
       });
@@ -198,9 +207,14 @@ describe('RuleProcessor test', () => {
     it('should match a rule', () => {
       RuleProcessor.getFirstMatchingRule(
         Event.MessageCreate,
-        (productEventData as any) as ProductEventData,
-        (matchingRules as any) as Rule[],
-        (integrations as any) as Integrations,
+        productEventData as any as ProductEventData,
+        matchingRules as any as Rule[],
+        integrations as any as Integrations,
+        {
+          isSchedulerEnabled: false,
+          isUseStaticIP: false,
+          maxProductEventDelay: 30000,
+        },
       ).then((rule) => {
         assert.equal(rule.name, matchingRules[0].name);
       });
@@ -274,9 +288,14 @@ describe('RuleProcessor test', () => {
     it('should not match the trigger actor', () => {
       RuleProcessor.isRuleMatching(
         Event.MessageCreate,
-        (productEventData as any) as ProductEventData,
-        (ruleFailUserTriggerCondition as any) as Rule,
-        (integrations as any) as Integrations,
+        productEventData as any as ProductEventData,
+        ruleFailUserTriggerCondition as any as Rule,
+        integrations as any as Integrations,
+        {
+          isSchedulerEnabled: false,
+          isUseStaticIP: false,
+          maxProductEventDelay: 30000,
+        },
       ).catch((err) => {
         assert.equal('noTriggerConditionMatch', err);
       });
@@ -285,9 +304,14 @@ describe('RuleProcessor test', () => {
     it('should not match the trigger action', () => {
       RuleProcessor.isRuleMatching(
         Event.MessageCreate,
-        (productEventData as any) as ProductEventData,
-        (ruleFailActionTriggerCondition as any) as Rule,
-        (integrations as any) as Integrations,
+        productEventData as any as ProductEventData,
+        ruleFailActionTriggerCondition as any as Rule,
+        integrations as any as Integrations,
+        {
+          isSchedulerEnabled: false,
+          isUseStaticIP: false,
+          maxProductEventDelay: 30000,
+        },
       ).catch((err) => {
         assert.equal('noTriggerConditionMatch', err);
       });
@@ -298,11 +322,11 @@ describe('RuleProcessor test', () => {
     it('should throw an exception for invalid actor', () => {
       try {
         RuleProcessor.isTriggerActionMatch(
-          ({
+          {
             type: 'INVALID_ACTION_TYPE',
-          } as any) as TriggerAction,
+          } as any as TriggerAction,
           Event.MessageCreate,
-          (productEventData as any) as ProductEventData,
+          productEventData as any as ProductEventData,
         );
       } catch (err) {
         assert.ok(err);
@@ -311,23 +335,22 @@ describe('RuleProcessor test', () => {
 
     it('should match the trigger action for conversation status updated', () => {
       const isMatch = RuleProcessor.isTriggerActionMatch(
-        ({
+        {
           type: 'CONVERSATION_STATUS_UPDATE',
           change: {
             from: 'ASSIGNED',
             to: 'NEW',
           },
-        } as any) as TriggerAction,
+        } as any as TriggerAction,
         Event.ConversationUpdate,
-        ({
+        {
           actor: {
             last_name: 'Rajkumar',
             first_name: 'Arun',
             email: 'arun.rajkumar@freshworks.com',
             type: 'agent',
             avatar: {
-              url:
-                'https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/fcb80e8034a0573c0a7cc62e8bad2320543cc3d25331762d72b601490b1d305f/f_marketingpicFull/u_511f4df397673630823df3cf364152b62cc8159e0232403603c3e81c431178f1/img_1585901259097.png',
+              url: 'https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/fcb80e8034a0573c0a7cc62e8bad2320543cc3d25331762d72b601490b1d305f/f_marketingpicFull/u_511f4df397673630823df3cf364152b62cc8159e0232403603c3e81c431178f1/img_1585901259097.png',
             },
             id: '652ac361-304e-47af-9c8f-598e649570a6',
             phone: '9003011800',
@@ -338,7 +361,7 @@ describe('RuleProcessor test', () => {
             },
           },
           event: 'onConversationUpdate',
-        } as any) as ProductEventData,
+        } as any as ProductEventData,
       );
 
       assert.isTrue(isMatch);
@@ -346,23 +369,22 @@ describe('RuleProcessor test', () => {
 
     it('should match the trigger action for label added', () => {
       const isMatch = RuleProcessor.isTriggerActionMatch(
-        ({
+        {
           type: 'CONVERSATION_LABEL_ASSIGN',
           change: {
             from: 'ANY',
             to: 'ASSIGNED',
           },
-        } as any) as TriggerAction,
+        } as any as TriggerAction,
         Event.ConversationUpdate,
-        ({
+        {
           actor: {
             last_name: 'Rajkumar',
             first_name: 'Arun',
             email: 'arun.rajkumar@freshworks.com',
             type: 'agent',
             avatar: {
-              url:
-                'https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/fcb80e8034a0573c0a7cc62e8bad2320543cc3d25331762d72b601490b1d305f/f_marketingpicFull/u_511f4df397673630823df3cf364152b62cc8159e0232403603c3e81c431178f1/img_1585901259097.png',
+              url: 'https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/fcb80e8034a0573c0a7cc62e8bad2320543cc3d25331762d72b601490b1d305f/f_marketingpicFull/u_511f4df397673630823df3cf364152b62cc8159e0232403603c3e81c431178f1/img_1585901259097.png',
             },
             id: '652ac361-304e-47af-9c8f-598e649570a6',
             phone: '9003011800',
@@ -374,7 +396,7 @@ describe('RuleProcessor test', () => {
             },
           },
           event: 'onConversationUpdate',
-        } as any) as ProductEventData,
+        } as any as ProductEventData,
       );
 
       assert.isTrue(isMatch);
@@ -382,33 +404,31 @@ describe('RuleProcessor test', () => {
 
     it('should not match the trigger action for label added', () => {
       const isMatch = RuleProcessor.isTriggerActionMatch(
-        ({
+        {
           type: 'CONVERSATION_LABEL_ASSIGN',
           change: {
             from: 'ANY',
             to: 'ASSIGNED',
           },
-        } as any) as TriggerAction,
+        } as any as TriggerAction,
         Event.ConversationUpdate,
-        ({
+        {
           actor: {
             last_name: 'Rajkumar',
             first_name: 'Arun',
             email: 'arun.rajkumar@freshworks.com',
             type: 'agent',
             avatar: {
-              url:
-                'https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/fcb80e8034a0573c0a7cc62e8bad2320543cc3d25331762d72b601490b1d305f/f_marketingpicFull/u_511f4df397673630823df3cf364152b62cc8159e0232403603c3e81c431178f1/img_1585901259097.png',
+              url: 'https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/fcb80e8034a0573c0a7cc62e8bad2320543cc3d25331762d72b601490b1d305f/f_marketingpicFull/u_511f4df397673630823df3cf364152b62cc8159e0232403603c3e81c431178f1/img_1585901259097.png',
             },
             id: '652ac361-304e-47af-9c8f-598e649570a6',
             phone: '9003011800',
           },
           changes: {
-            model_changes: {
-            },
+            model_changes: {},
           },
           event: 'onConversationUpdate',
-        } as any) as ProductEventData,
+        } as any as ProductEventData,
       );
 
       assert.isFalse(isMatch);
@@ -416,23 +436,22 @@ describe('RuleProcessor test', () => {
 
     it('should not match the trigger action for conversation assigned_agent_id updated', () => {
       const isMatch = RuleProcessor.isTriggerActionMatch(
-        ({
+        {
           type: 'CONVERSATION_STATUS_UPDATE',
           change: {
             from: 'ASSIGNED',
             to: 'NEW',
           },
-        } as any) as TriggerAction,
+        } as any as TriggerAction,
         Event.ConversationUpdate,
-        ({
+        {
           actor: {
             last_name: 'Rajkumar',
             first_name: 'Arun',
             email: 'arun.rajkumar@freshworks.com',
             type: 'agent',
             avatar: {
-              url:
-                'https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/fcb80e8034a0573c0a7cc62e8bad2320543cc3d25331762d72b601490b1d305f/f_marketingpicFull/u_511f4df397673630823df3cf364152b62cc8159e0232403603c3e81c431178f1/img_1585901259097.png',
+              url: 'https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/fcb80e8034a0573c0a7cc62e8bad2320543cc3d25331762d72b601490b1d305f/f_marketingpicFull/u_511f4df397673630823df3cf364152b62cc8159e0232403603c3e81c431178f1/img_1585901259097.png',
             },
             id: '652ac361-304e-47af-9c8f-598e649570a6',
             phone: '9003011800',
@@ -443,7 +462,7 @@ describe('RuleProcessor test', () => {
             },
           },
           event: 'onConversationUpdate',
-        } as any) as ProductEventData,
+        } as any as ProductEventData,
       );
 
       assert.isFalse(isMatch);
@@ -558,9 +577,14 @@ describe('RuleProcessor test', () => {
 
     it('should return resolved promise when no blocks are there', () => {
       RuleProcessor.isRuleBlocksMatching(
-        (productEventData as any) as ProductEventData,
-        (ruleWithoutBlocks as any) as Rule,
-        (integrations as any) as Integrations,
+        productEventData as any as ProductEventData,
+        ruleWithoutBlocks as any as Rule,
+        integrations as any as Integrations,
+        {
+          isSchedulerEnabled: false,
+          isUseStaticIP: false,
+          maxProductEventDelay: 30000,
+        },
       ).then(() => {
         assert.ok('returns resolved promise when no blocks are there');
       });
@@ -568,9 +592,14 @@ describe('RuleProcessor test', () => {
 
     it('should return resolved promise when blocks is an empty array', () => {
       RuleProcessor.isRuleBlocksMatching(
-        (productEventData as any) as ProductEventData,
-        (ruleWithEmptyArrayBlocks as any) as Rule,
-        (integrations as any) as Integrations,
+        productEventData as any as ProductEventData,
+        ruleWithEmptyArrayBlocks as any as Rule,
+        integrations as any as Integrations,
+        {
+          isSchedulerEnabled: false,
+          isUseStaticIP: false,
+          maxProductEventDelay: 30000,
+        },
       ).then(() => {
         assert.ok('returns resolved promise when blocks is an empty array');
       });
@@ -578,9 +607,14 @@ describe('RuleProcessor test', () => {
 
     it('should return resolved promise all blocks are matching', () => {
       RuleProcessor.isRuleBlocksMatching(
-        (productEventData as any) as ProductEventData,
-        (ruleWithBlockMatchAll as any) as Rule,
-        (integrations as any) as Integrations,
+        productEventData as any as ProductEventData,
+        ruleWithBlockMatchAll as any as Rule,
+        integrations as any as Integrations,
+        {
+          isSchedulerEnabled: false,
+          isUseStaticIP: false,
+          maxProductEventDelay: 30000,
+        },
       ).then(() => {
         assert.ok('returns resolved promise when all blocks are matching');
       });
@@ -589,9 +623,14 @@ describe('RuleProcessor test', () => {
     it('should throw an error for invalid matchtype', () => {
       try {
         RuleProcessor.isRuleBlocksMatching(
-          (productEventData as any) as ProductEventData,
-          (ruleWithInvalidMatchType as any) as Rule,
-          (integrations as any) as Integrations,
+          productEventData as any as ProductEventData,
+          ruleWithInvalidMatchType as any as Rule,
+          integrations as any as Integrations,
+          {
+            isSchedulerEnabled: false,
+            isUseStaticIP: false,
+            maxProductEventDelay: 30000,
+          },
         );
       } catch (err) {
         assert.ok(err);
@@ -603,8 +642,8 @@ describe('RuleProcessor test', () => {
     it('should return false if trigger actor is not matching', () => {
       assert.isFalse(
         RuleProcessor.isTriggerActorMatch(
-          ({ type: 'SYSTEM' } as any) as TriggerActor,
-          (productEventData as any) as ProductEventData,
+          { type: 'SYSTEM' } as any as TriggerActor,
+          productEventData as any as ProductEventData,
         ),
       );
     });
@@ -612,13 +651,13 @@ describe('RuleProcessor test', () => {
     it('system intelliassign as trigger actor should match', () => {
       assert.isTrue(
         RuleProcessor.isTriggerActorMatch(
-          ({ type: 'SYSTEM', cause: 'INTELLI_ASSIGN' } as any) as TriggerActor,
-          ({
+          { type: 'SYSTEM', cause: 'INTELLI_ASSIGN' } as any as TriggerActor,
+          {
             actor: {
               type: 'system',
               sub_type: 'intelli_assign',
             },
-          } as any) as ProductEventData,
+          } as any as ProductEventData,
         ),
       );
     });
@@ -627,9 +666,14 @@ describe('RuleProcessor test', () => {
   describe('isBlockMatching', () => {
     it('should return resolved promise if no block is there', () => {
       RuleProcessor.isBlockMatching(
-        (productEventData as any) as ProductEventData,
-        (null as any) as Block,
-        (integrations as any) as Integrations,
+        productEventData as any as ProductEventData,
+        null as any as Block,
+        integrations as any as Integrations,
+        {
+          isSchedulerEnabled: false,
+          isUseStaticIP: false,
+          maxProductEventDelay: 30000,
+        },
       ).then(() => {
         assert.ok('returns resolved promise if no block is there');
       });
@@ -637,8 +681,8 @@ describe('RuleProcessor test', () => {
 
     it('should return resolved promise if all blocks are matching', () => {
       RuleProcessor.isBlockMatching(
-        (productEventData as any) as ProductEventData,
-        ({
+        productEventData as any as ProductEventData,
+        {
           matchType: 'ALL',
           conditions: [
             {
@@ -647,8 +691,13 @@ describe('RuleProcessor test', () => {
               value: '6ae7cb7a-68cb-4713-9f3d-16db9a177d76',
             },
           ],
-        } as any) as Block,
-        (integrations as any) as Integrations,
+        } as any as Block,
+        integrations as any as Integrations,
+        {
+          isSchedulerEnabled: false,
+          isUseStaticIP: false,
+          maxProductEventDelay: 30000,
+        },
       ).then(() => {
         assert.ok('returns resolved promise if all blocks are matching');
       });
@@ -656,8 +705,8 @@ describe('RuleProcessor test', () => {
 
     it('should return rejected promise if no blocks are matching', () => {
       RuleProcessor.isBlockMatching(
-        (productEventData as any) as ProductEventData,
-        ({
+        productEventData as any as ProductEventData,
+        {
           matchType: 'ALL',
           conditions: [
             {
@@ -666,8 +715,13 @@ describe('RuleProcessor test', () => {
               value: 'not-macthing-value',
             },
           ],
-        } as any) as Block,
-        (integrations as any) as Integrations,
+        } as any as Block,
+        integrations as any as Integrations,
+        {
+          isSchedulerEnabled: false,
+          isUseStaticIP: false,
+          maxProductEventDelay: 30000,
+        },
       ).catch(() => {
         assert.ok('returns rejected promise if no blocks are matching');
       });
@@ -676,8 +730,8 @@ describe('RuleProcessor test', () => {
     it('should throw an error when match type is invalid', () => {
       try {
         RuleProcessor.isBlockMatching(
-          (productEventData as any) as ProductEventData,
-          ({
+          productEventData as any as ProductEventData,
+          {
             matchType: 'INVALID',
             conditions: [
               {
@@ -686,8 +740,13 @@ describe('RuleProcessor test', () => {
                 value: '6ae7cb7a-68cb-4713-9f3d-16db9a177d76',
               },
             ],
-          } as any) as Block,
-          (integrations as any) as Integrations,
+          } as any as Block,
+          integrations as any as Integrations,
+          {
+            isSchedulerEnabled: false,
+            isUseStaticIP: false,
+            maxProductEventDelay: 30000,
+          },
         );
       } catch (err) {
         assert.ok(err);
@@ -699,13 +758,18 @@ describe('RuleProcessor test', () => {
     it('should throw an error when condition is invalid', () => {
       try {
         RuleProcessor.isConditionMatching(
-          (productEventData as any) as ProductEventData,
-          ({
+          productEventData as any as ProductEventData,
+          {
             key: 'INVALID_CONDITION',
             operator: 'EQUALS',
             value: '6ae7cb7a-68cb-4713-9f3d-16db9a177d76',
-          } as any) as Condition,
-          (integrations as any) as Integrations,
+          } as any as Condition,
+          integrations as any as Integrations,
+          {
+            isSchedulerEnabled: false,
+            isUseStaticIP: false,
+            maxProductEventDelay: 30000,
+          },
         );
       } catch (err) {
         assert.ok(err);

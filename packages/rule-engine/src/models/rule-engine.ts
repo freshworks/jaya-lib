@@ -1,8 +1,11 @@
 import { ExternalEventPayload, ProductEventPayload } from '@freshworks-jaya/marketplace-models';
+import { RequestProxy } from '@freshworks-jaya/marketplace-models/lib/services/request';
 import { GoogleCloudLoggingConfig } from '../services/GoogleCloudLogging';
 
 export interface RuleEngineOptions {
   isSchedulerEnabled: boolean;
+  isUseStaticIP: boolean;
+  maxProductEventDelay: number;
 }
 
 export enum ExternalEventType {
@@ -18,6 +21,9 @@ export interface Integrations {
   freshchatv2: ProductCredentials;
   freshdesk?: ProductCredentials;
   googleCloudLoggingConfig: GoogleCloudLoggingConfig;
+  marketplaceServices: {
+    requestProxy: RequestProxy;
+  };
   timezoneOffset: number;
 }
 

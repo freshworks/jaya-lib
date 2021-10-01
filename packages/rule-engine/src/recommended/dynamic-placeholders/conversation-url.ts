@@ -1,7 +1,11 @@
 import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
-import { Integrations } from '../../models/rule-engine';
+import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 
-export default (productEventPayload: ProductEventPayload, integrations: Integrations): Promise<string> => {
+export default (
+  productEventPayload: ProductEventPayload,
+  integrations: Integrations,
+  options: RuleEngineOptions,
+): Promise<string> => {
   const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
 
   return Promise.resolve(

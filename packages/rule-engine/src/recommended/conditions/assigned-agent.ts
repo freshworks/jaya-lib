@@ -1,12 +1,13 @@
 import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { Condition } from '../../models/rule';
 import { Utils } from '../../Utils';
-import { Integrations } from '../../models/rule-engine';
+import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 
 export default (
   condition: Condition,
   productEventData: ProductEventData,
   integrations: Integrations,
+  options: RuleEngineOptions,
 ): Promise<void> => {
   const modelProperties = productEventData.conversation || productEventData.message;
 
@@ -15,5 +16,6 @@ export default (
     modelProperties.assigned_agent_id,
     condition.value as string,
     integrations,
+    options,
   );
 };

@@ -1,8 +1,12 @@
 import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
-import { Integrations } from '../../models/rule-engine';
+import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 
-export default (productEventPayload: ProductEventPayload, integrations: Integrations): Promise<string> => {
+export default (
+  productEventPayload: ProductEventPayload,
+  integrations: Integrations,
+  options: RuleEngineOptions,
+): Promise<string> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);

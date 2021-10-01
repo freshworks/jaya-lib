@@ -1,5 +1,5 @@
 import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
-import { Integrations } from '../../models/rule-engine';
+import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import axios from 'axios';
 import { Api, SendEmailAnyoneValue } from '../../models/rule';
 import { Utils } from '../../Utils';
@@ -13,6 +13,7 @@ export default async (
   actionValue: unknown,
   placeholders: PlaceholdersMap,
   apis: Api[],
+  options: RuleEngineOptions,
 ): Promise<PlaceholdersMap> => {
   const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
   const appId = modelProperties.app_id;
@@ -31,6 +32,7 @@ export default async (
       productEventPayload,
       integrations,
       placeholders,
+      options,
     );
 
     const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };

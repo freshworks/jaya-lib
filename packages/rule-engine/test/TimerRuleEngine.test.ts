@@ -11,6 +11,7 @@ import recommendedPlugins from '../src/recommended/index';
 import { ActionExecutor } from '../src/ActionExecutor';
 import { AxiosPromise } from 'axios';
 import { Integrations } from '../src/models/rule-engine';
+import { RequestProxy } from '@freshworks-jaya/marketplace-models';
 
 describe('TimerRuleEngine test', () => {
   const productEventPayload = {
@@ -194,8 +195,8 @@ describe('TimerRuleEngine test', () => {
       const spy = sandbox.spy(RuleProcessor.isTriggerConditionMatching);
 
       TimerRuleEngine.invalidateTimers(
-        (productEventPayload as any) as ProductEventPayload,
-        ([disabledRule] as any) as Rule[],
+        productEventPayload as any as ProductEventPayload,
+        [disabledRule] as any as Rule[],
         '',
         {
           token: 'kairos token',
@@ -216,6 +217,9 @@ describe('TimerRuleEngine test', () => {
             private_key: 'privatekey',
             client_email: 'emailaddresshere',
             logName: 'jaya-lib',
+          },
+          marketplaceServices: {
+            requestProxy: {} as unknown as RequestProxy,
           },
           timezoneOffset: -330,
         },
@@ -228,8 +232,8 @@ describe('TimerRuleEngine test', () => {
       const spy = sandbox.spy(RuleProcessor.isTriggerConditionMatching);
 
       TimerRuleEngine.invalidateTimers(
-        (productEventPayload as any) as ProductEventPayload,
-        ([enabledNonTimerRule] as any) as Rule[],
+        productEventPayload as any as ProductEventPayload,
+        [enabledNonTimerRule] as any as Rule[],
         '',
         {
           token: 'kairos token',
@@ -250,6 +254,9 @@ describe('TimerRuleEngine test', () => {
             private_key: 'privatekey',
             client_email: 'emailaddresshere',
             logName: 'jaya-lib',
+          },
+          marketplaceServices: {
+            requestProxy: {} as unknown as RequestProxy,
           },
           timezoneOffset: -330,
         },
@@ -262,8 +269,8 @@ describe('TimerRuleEngine test', () => {
       const spy = sandbox.spy(RuleProcessor.isTriggerConditionMatching);
 
       TimerRuleEngine.invalidateTimers(
-        (productEventPayload as any) as ProductEventPayload,
-        ([ruleWitoutInvalidators] as any) as Rule[],
+        productEventPayload as any as ProductEventPayload,
+        [ruleWitoutInvalidators] as any as Rule[],
         '',
         {
           token: 'kairos token',
@@ -284,6 +291,9 @@ describe('TimerRuleEngine test', () => {
             private_key: 'privatekey',
             client_email: 'emailaddresshere',
             logName: 'jaya-lib',
+          },
+          marketplaceServices: {
+            requestProxy: {} as unknown as RequestProxy,
           },
           timezoneOffset: -330,
         },
@@ -296,8 +306,8 @@ describe('TimerRuleEngine test', () => {
       const spy = sandbox.spy(Kairos.prototype.bulkDeleteSchedules);
 
       TimerRuleEngine.invalidateTimers(
-        (productEventPayload as any) as ProductEventPayload,
-        ([ruleWithInvalidatorsNotMatching] as any) as Rule[],
+        productEventPayload as any as ProductEventPayload,
+        [ruleWithInvalidatorsNotMatching] as any as Rule[],
         '',
         {
           token: 'kairos token',
@@ -318,6 +328,9 @@ describe('TimerRuleEngine test', () => {
             private_key: 'privatekey',
             client_email: 'emailaddresshere',
             logName: 'jaya-lib',
+          },
+          marketplaceServices: {
+            requestProxy: {} as unknown as RequestProxy,
           },
           timezoneOffset: -330,
         },
@@ -330,8 +343,8 @@ describe('TimerRuleEngine test', () => {
       const stub = sandbox.stub(Kairos.prototype, 'bulkDeleteSchedules');
 
       TimerRuleEngine.invalidateTimers(
-        (productEventPayload as any) as ProductEventPayload,
-        ([ruleWithInvalidatorsMatching] as any) as Rule[],
+        productEventPayload as any as ProductEventPayload,
+        [ruleWithInvalidatorsMatching] as any as Rule[],
         '',
         {
           token: 'kairos token',
@@ -352,6 +365,9 @@ describe('TimerRuleEngine test', () => {
             private_key: 'privatekey',
             client_email: 'emailaddresshere',
             logName: 'jaya-lib',
+          },
+          marketplaceServices: {
+            requestProxy: {} as unknown as RequestProxy,
           },
           timezoneOffset: -330,
         },
@@ -365,8 +381,8 @@ describe('TimerRuleEngine test', () => {
 
       try {
         TimerRuleEngine.invalidateTimers(
-          (productEventPayload as any) as ProductEventPayload,
-          ([ruleWithInvalidatorsMatching] as any) as Rule[],
+          productEventPayload as any as ProductEventPayload,
+          [ruleWithInvalidatorsMatching] as any as Rule[],
           '',
           {
             token: 'kairos token',
@@ -387,6 +403,9 @@ describe('TimerRuleEngine test', () => {
               private_key: 'privatekey',
               client_email: 'emailaddresshere',
               logName: 'jaya-lib',
+            },
+            marketplaceServices: {
+              requestProxy: {} as unknown as RequestProxy,
             },
             timezoneOffset: -330,
           },
@@ -475,16 +494,21 @@ describe('TimerRuleEngine test', () => {
 
       try {
         TimerRuleEngine.executeTimerActions(
-          (externalEventPayload as any) as RuleEngineExternalEventPayload,
-          ([ruleWithActions] as any) as Rule[],
+          externalEventPayload as any as RuleEngineExternalEventPayload,
+          [ruleWithActions] as any as Rule[],
           {
             group: 'some group',
             token: 'some token',
             url: 'some url',
           },
-          (integrations as any) as Integrations,
+          integrations as any as Integrations,
           [],
           {},
+          {
+            isSchedulerEnabled: false,
+            isUseStaticIP: false,
+            maxProductEventDelay: 30000,
+          },
         );
       } catch (err) {
         assert('delete schedule threw an error');
@@ -496,16 +520,21 @@ describe('TimerRuleEngine test', () => {
       const spy = sandbox.spy(ActionExecutor.handleActions);
 
       TimerRuleEngine.executeTimerActions(
-        (externalEventPaylodWrongRuleIndex as any) as RuleEngineExternalEventPayload,
-        ([ruleWithActions] as any) as Rule[],
+        externalEventPaylodWrongRuleIndex as any as RuleEngineExternalEventPayload,
+        [ruleWithActions] as any as Rule[],
         {
           group: 'some group',
           token: 'some token',
           url: 'some url',
         },
-        (integrations as any) as Integrations,
+        integrations as any as Integrations,
         [],
         {},
+        {
+          isSchedulerEnabled: false,
+          isUseStaticIP: false,
+          maxProductEventDelay: 30000,
+        },
       );
 
       assert.isFalse(spy.called);
@@ -516,16 +545,21 @@ describe('TimerRuleEngine test', () => {
       sandbox.stub(ActionExecutor.handleActions);
 
       TimerRuleEngine.executeTimerActions(
-        (externalEventPayload as any) as RuleEngineExternalEventPayload,
-        ([ruleWithActions] as any) as Rule[],
+        externalEventPayload as any as RuleEngineExternalEventPayload,
+        [ruleWithActions] as any as Rule[],
         {
           group: 'some group',
           token: 'some token',
           url: 'some url',
         },
-        (integrations as any) as Integrations,
+        integrations as any as Integrations,
         [],
         {},
+        {
+          isSchedulerEnabled: false,
+          isUseStaticIP: false,
+          maxProductEventDelay: 30000,
+        },
       );
     });
   });
@@ -643,18 +677,23 @@ describe('TimerRuleEngine test', () => {
       sandbox.stub(Kairos.prototype, 'fetchSchedule').throws('schedule does not exist');
       const createStub = sandbox
         .stub(Kairos.prototype, 'bulkCreateSchedules')
-        .returns((Promise.resolve('something') as any) as AxiosPromise<string>);
+        .returns(Promise.resolve('something') as any as AxiosPromise<string>);
 
       TimerRuleEngine.triggerTimers(
-        (productEventPayload as any) as ProductEventPayload,
-        ([ruleNotMatchingConditions] as any) as Rule[],
+        productEventPayload as any as ProductEventPayload,
+        [ruleNotMatchingConditions] as any as Rule[],
         'external event url',
         {
           group: 'some group',
           url: 'some url',
           token: 'some token',
         },
-        (integrations as any) as Integrations,
+        integrations as any as Integrations,
+        {
+          isSchedulerEnabled: false,
+          isUseStaticIP: false,
+          maxProductEventDelay: 30000,
+        },
       );
 
       assert.isFalse(createStub.called);
@@ -666,15 +705,20 @@ describe('TimerRuleEngine test', () => {
 
       try {
         TimerRuleEngine.triggerTimers(
-          (productEventPayload as any) as ProductEventPayload,
-          ([ruleWithActions] as any) as Rule[],
+          productEventPayload as any as ProductEventPayload,
+          [ruleWithActions] as any as Rule[],
           'external event url',
           {
             group: 'some group',
             url: 'some url',
             token: 'some token',
           },
-          (integrations as any) as Integrations,
+          integrations as any as Integrations,
+          {
+            isSchedulerEnabled: false,
+            isUseStaticIP: false,
+            maxProductEventDelay: 30000,
+          },
         );
       } catch (err) {
         assert('bulk create throws error');
@@ -696,18 +740,23 @@ describe('TimerRuleEngine test', () => {
       });
       const createStub = sandbox
         .stub(Kairos.prototype, 'bulkCreateSchedules')
-        .returns((Promise.resolve('something') as any) as AxiosPromise<string>);
+        .returns(Promise.resolve('something') as any as AxiosPromise<string>);
 
       TimerRuleEngine.triggerTimers(
-        (productEventPayload as any) as ProductEventPayload,
-        ([ruleNotMatchingConditions] as any) as Rule[],
+        productEventPayload as any as ProductEventPayload,
+        [ruleNotMatchingConditions] as any as Rule[],
         'external event url',
         {
           group: 'some group',
           url: 'some url',
           token: 'some token',
         },
-        (integrations as any) as Integrations,
+        integrations as any as Integrations,
+        {
+          isSchedulerEnabled: false,
+          isUseStaticIP: false,
+          maxProductEventDelay: 30000,
+        },
       );
 
       assert.isFalse(createStub.called);

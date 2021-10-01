@@ -1,7 +1,7 @@
 import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
+import { requestAxiosWrapper } from '@freshworks-jaya/marketplace-models/lib/services/request';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
-import { Integrations } from '../../models/rule-engine';
-import axios from 'axios';
+import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import Freshchat, { User as FreshchatUser } from '@freshworks-jaya/freshchat-api';
 import { Utils as FreshchatUtils } from '@freshworks-jaya/freshchat-api/lib/Utils';
 import { isUsernameGenerated } from '@freshworks-jaya/utilities';
@@ -93,6 +93,7 @@ export default async (
   actionValue: unknown,
   placeholders: PlaceholdersMap,
   apis: Api[],
+  options: RuleEngineOptions,
 ): Promise<PlaceholdersMap> => {
   const freshdeskApiUrl = integrations.freshdesk && integrations.freshdesk.url;
   const freshdeskApiToken = integrations.freshdesk && integrations.freshdesk.token;
@@ -118,25 +119,32 @@ export default async (
 
     const { email, first_name: name, id: userAlias, phone } = productEventPayload.data.associations.user;
     const headers = {
-      Authorization: 'Basic ' + new Buffer(`${freshdeskApiToken}:X`).toString('base64'),
+      Authorization: 'Basic ' + Buffer.from(`${freshdeskApiToken}:X`).toString('base64'),
       'Content-Type': 'application/json',
     };
 
     // Step 2: Create Freshdesk Ticket
-    const ticketCreateResponse = await axios.post(
-      `${freshdeskApiUrl}/api/channel/v2/tickets`,
-      JSON.stringify({
-        description: ticketConversationContent.description,
-        email: email ? email : `${userAlias}@aa-freshchat.com`,
-        name: isUsernameGenerated(name || '') ? undefined : name,
-        phone,
-        priority: 1,
-        source: 7,
-        status: 2,
-        subject: ticketSubject,
-      }),
+    const ticketCreateResponse = await requestAxiosWrapper<{
+      id: string;
+    }>(
       {
+        data: {
+          description: ticketConversationContent.description,
+          email: email ? email : `${userAlias}@aa-freshchat.com`,
+          name: isUsernameGenerated(name || '') ? undefined : name,
+          phone,
+          priority: 1,
+          source: 7,
+          status: 2,
+          subject: ticketSubject,
+        },
         headers,
+        method: 'post',
+        url: `${freshdeskApiUrl}/api/channel/v2/tickets`,
+      },
+      {
+        isUseStaticIP: options.isUseStaticIP,
+        requestProxy: integrations.marketplaceServices.requestProxy,
       },
     );
 
@@ -148,15 +156,20 @@ export default async (
     };
 
     // Step 4: Create Private Note for Freshdesk Ticket
-    await axios.post(
-      `${freshdeskApiUrl}/api/v2/tickets/${freshdeskTicketId}/notes`,
-      JSON.stringify({
-        body: ticketConversationContent.privateNote,
-        incoming: true,
-        private: true,
-      }),
+    await requestAxiosWrapper(
       {
+        data: {
+          body: ticketConversationContent.privateNote,
+          incoming: true,
+          private: true,
+        },
         headers,
+        method: 'post',
+        url: `${freshdeskApiUrl}/api/v2/tickets/${freshdeskTicketId}/notes`,
+      },
+      {
+        isUseStaticIP: options.isUseStaticIP,
+        requestProxy: integrations.marketplaceServices.requestProxy,
       },
     );
   } catch (err) {
