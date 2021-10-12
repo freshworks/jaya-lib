@@ -118,16 +118,16 @@ export default async (
     ticketSubject = Utils.processHandlebarsAndReplacePlaceholders(ticketSubject, placeholders);
 
     const { email, first_name: name, id: userAlias, phone } = productEventPayload.data.associations.user;
-    const headers = {
-      Authorization: 'Basic ' + Buffer.from(`${freshdeskApiToken}:X`).toString('base64'),
-      'Content-Type': 'application/json',
-    };
 
     // Step 2: Create Freshdesk Ticket
     const ticketCreateResponse = await requestAxiosWrapper<{
       id: string;
     }>(
       {
+        auth: {
+          password: 'X',
+          username: freshdeskApiToken as string,
+        },
         data: JSON.stringify({
           description: ticketConversationContent.description,
           email: email ? email : `${userAlias}@aa-freshchat.com`,
@@ -138,7 +138,9 @@ export default async (
           status: 2,
           subject: ticketSubject,
         }),
-        headers,
+        headers: {
+          'Content-Type': 'application/json',
+        },
         method: WebhookRequestType.Post,
         url: `${freshdeskApiUrl}/api/channel/v2/tickets`,
       },
@@ -158,12 +160,18 @@ export default async (
     // Step 4: Create Private Note for Freshdesk Ticket
     await requestAxiosWrapper(
       {
+        auth: {
+          password: 'X',
+          username: freshdeskApiToken as string,
+        },
         data: JSON.stringify({
           body: ticketConversationContent.privateNote,
           incoming: true,
           private: true,
         }),
-        headers,
+        headers: {
+          'Content-Type': 'application/json',
+        },
         method: WebhookRequestType.Post,
         url: `${freshdeskApiUrl}/api/v2/tickets/${freshdeskTicketId}/notes`,
       },
