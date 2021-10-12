@@ -128,7 +128,7 @@ export default async (
       id: string;
     }>(
       {
-        data: {
+        data: JSON.stringify({
           description: ticketConversationContent.description,
           email: email ? email : `${userAlias}@aa-freshchat.com`,
           name: isUsernameGenerated(name || '') ? undefined : name,
@@ -137,7 +137,7 @@ export default async (
           source: 7,
           status: 2,
           subject: ticketSubject,
-        },
+        }),
         headers,
         method: WebhookRequestType.Post,
         url: `${freshdeskApiUrl}/api/channel/v2/tickets`,
