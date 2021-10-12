@@ -139,6 +139,7 @@ export default async (
           subject: ticketSubject,
         }),
         headers: {
+          Accept: 'application/json, text/plain, */*',
           'Content-Type': 'application/json',
         },
         method: WebhookRequestType.Post,
@@ -170,6 +171,7 @@ export default async (
           private: true,
         }),
         headers: {
+          Accept: 'application/json, text/plain, */*',
           'Content-Type': 'application/json',
         },
         method: WebhookRequestType.Post,
