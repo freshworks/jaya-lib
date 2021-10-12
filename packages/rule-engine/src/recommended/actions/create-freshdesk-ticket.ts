@@ -158,11 +158,11 @@ export default async (
     // Step 4: Create Private Note for Freshdesk Ticket
     await requestAxiosWrapper(
       {
-        data: {
+        data: JSON.stringify({
           body: ticketConversationContent.privateNote,
           incoming: true,
           private: true,
-        },
+        }),
         headers,
         method: WebhookRequestType.Post,
         url: `${freshdeskApiUrl}/api/v2/tickets/${freshdeskTicketId}/notes`,
