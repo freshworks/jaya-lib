@@ -15,6 +15,7 @@ const getTicketConversationContent = async (
   appId: string,
   baseUrl: string,
   timezoneOffset: number,
+  isUseStaticIP: boolean,
 ): Promise<{ description: string; privateNote: string }> => {
   let description = '';
   let privateNote = '';
@@ -23,6 +24,7 @@ const getTicketConversationContent = async (
     // Step 1: Get conversation messages until last resolve
     const allMessages = await freshchat.getConversationMessages(conversationId, {
       isFetchUntilLastResolve: true,
+      messagesLimit: isUseStaticIP ? 50 : 500,
       timezoneOffset,
     });
 
@@ -112,6 +114,7 @@ export default async (
       modelProperties.app_id,
       `https://${productEventPayload.domain}`,
       integrations.timezoneOffset,
+      options.isUseStaticIP,
     );
 
     // Step 1: Replace placeholders

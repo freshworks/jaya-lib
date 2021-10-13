@@ -13,7 +13,7 @@ const safelyParseJson = <T = unknown>(string: string): T => {
   try {
     return JSON.parse(string);
   } catch (e) {
-    return undefined as unknown as T;
+    return string as unknown as T;
   }
 };
 
