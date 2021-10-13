@@ -4,6 +4,7 @@ import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import { Utils } from '../../Utils';
 import { ErrorCodes, ErrorTypes } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
+import Constants from '../Constants';
 
 export default (
   productEventPayload: ProductEventPayload,
@@ -23,6 +24,9 @@ export default (
       {
         isFetchUntilLastResolve: true,
         isIncludeFreshchatLink: true,
+        messagesLimit: options.isUseStaticIP
+          ? Constants.MAX_MESSAGES_TRANSCRIPT_STATIC_IP
+          : Constants.MAX_MESSAGES_TRANSCRIPT,
         timezoneOffset: integrations.timezoneOffset,
       },
     )
