@@ -9,6 +9,14 @@ export enum Method {
   Put = 'put',
 }
 
+const safelyParseJson = <T = unknown>(string: string): T => {
+  try {
+    return JSON.parse(string);
+  } catch (e) {
+    return string as unknown as T;
+  }
+};
+
 const requestProxyFunc = <T = unknown>(
   requestProxy: RequestProxy,
   method: Method,
@@ -16,10 +24,10 @@ const requestProxyFunc = <T = unknown>(
   options: RequestProxyOptions,
 ): Promise<AxiosResponse<T>> => {
   return new Promise((resolve, reject) => {
-    requestProxy[method]<T>(url, options).then(
+    requestProxy[method](url, options).then(
       (data) => {
         resolve({
-          data: data.response,
+          data: safelyParseJson<T>(data.response),
           headers: data.headers,
           status: data.status,
         } as unknown as AxiosResponse);

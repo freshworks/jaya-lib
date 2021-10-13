@@ -8,6 +8,7 @@ import { isUsernameGenerated } from '@freshworks-jaya/utilities';
 import { Utils } from '../../Utils';
 import { Api, WebhookRequestType } from '../../models/rule';
 import { ErrorCodes } from '../../models/error-codes';
+import Constants from '../Constants';
 
 const getTicketConversationContent = async (
   freshchat: Freshchat,
@@ -15,6 +16,7 @@ const getTicketConversationContent = async (
   appId: string,
   baseUrl: string,
   timezoneOffset: number,
+  isUseStaticIP: boolean,
 ): Promise<{ description: string; privateNote: string }> => {
   let description = '';
   let privateNote = '';
@@ -23,6 +25,7 @@ const getTicketConversationContent = async (
     // Step 1: Get conversation messages until last resolve
     const allMessages = await freshchat.getConversationMessages(conversationId, {
       isFetchUntilLastResolve: true,
+      messagesLimit: isUseStaticIP ? Constants.MAX_MESSAGES_TRANSCRIPT_STATIC_IP : Constants.MAX_MESSAGES_TRANSCRIPT,
       timezoneOffset,
     });
 
@@ -112,6 +115,7 @@ export default async (
       modelProperties.app_id,
       `https://${productEventPayload.domain}`,
       integrations.timezoneOffset,
+      options.isUseStaticIP,
     );
 
     // Step 1: Replace placeholders

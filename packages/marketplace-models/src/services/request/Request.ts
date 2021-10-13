@@ -1,6 +1,6 @@
-export interface RequestProxyResponse<T = never> {
+export interface RequestProxyResponse {
   headers: never;
-  response: T;
+  response: string;
   status: number;
 }
 
@@ -13,9 +13,9 @@ export interface RequestProxyOptions {
 }
 
 export interface RequestProxy {
-  delete<T = never, R = RequestProxyResponse<T>>(url: string, options?: RequestProxyOptions): Promise<R>;
-  get<T = never, R = RequestProxyResponse<T>>(url: string, options?: RequestProxyOptions): Promise<R>;
-  patch<T = never, R = RequestProxyResponse<T>>(url: string, options?: RequestProxyOptions): Promise<R>;
-  post<T = never, R = RequestProxyResponse<T>>(url: string, options?: RequestProxyOptions): Promise<R>;
-  put<T = never, R = RequestProxyResponse<T>>(url: string, options?: RequestProxyOptions): Promise<R>;
+  delete(url: string, options?: RequestProxyOptions): Promise<RequestProxyResponse>;
+  get(url: string, options?: RequestProxyOptions): Promise<RequestProxyResponse>;
+  patch(url: string, options?: RequestProxyOptions): Promise<RequestProxyResponse>;
+  post(url: string, options?: RequestProxyOptions): Promise<RequestProxyResponse>;
+  put(url: string, options?: RequestProxyOptions): Promise<RequestProxyResponse>;
 }
