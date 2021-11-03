@@ -1,7 +1,17 @@
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
-import { Utils } from '../../Utils';
-export default (op1: string, op2: string, integrations: Integrations, options: RuleEngineOptions): Promise<void> => {
+import { RuleMatchCache, RuleMatchResponse } from '../../models/plugin';
+
+export default (
+  op1: string,
+  op2: string,
+  integrations: Integrations,
+  options: RuleEngineOptions,
+  ruleMatchCache: Partial<RuleMatchCache>,
+): Promise<RuleMatchResponse> => {
   const regex = new RegExp(op2, 'g');
 
-  return Utils.promisify(regex.test(op1));
+  return Promise.resolve({
+    data: ruleMatchCache,
+    result: regex.test(op1),
+  });
 };

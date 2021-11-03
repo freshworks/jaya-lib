@@ -1,6 +1,15 @@
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
-import { Utils } from '../../Utils';
+import { RuleMatchCache, RuleMatchResponse } from '../../models/plugin';
 
-export default (op1: string, op2: string, integrations: Integrations, options: RuleEngineOptions): Promise<void> => {
-  return Utils.promisify(op1.toLowerCase().includes(op2.toLowerCase()));
+export default (
+  op1: string,
+  op2: string,
+  integrations: Integrations,
+  options: RuleEngineOptions,
+  ruleMatchCache: Partial<RuleMatchCache>,
+): Promise<RuleMatchResponse> => {
+  return Promise.resolve({
+    data: ruleMatchCache,
+    result: op1.toLowerCase().includes(op2.toLowerCase()),
+  });
 };

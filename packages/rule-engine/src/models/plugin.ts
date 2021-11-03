@@ -2,7 +2,17 @@ import { Event, ProductEventData, ProductEventPayload } from '@freshworks-jaya/m
 import { Api, Condition } from './rule';
 import { Integrations, RuleEngineOptions } from './rule-engine';
 import { TriggerAction, TriggerActor } from './rule';
-import { PlaceholdersMap } from '@freshworks-jaya/utilities';
+import { BusinessHour, PlaceholdersMap } from '@freshworks-jaya/utilities';
+
+export interface RuleMatchCache {
+  businessHours: BusinessHour[];
+  unassignedCount: number;
+}
+
+export interface RuleMatchResponse {
+  data: Partial<RuleMatchCache>;
+  result: boolean;
+}
 
 export type PluginActions = {
   [key: string]: (
@@ -16,7 +26,13 @@ export type PluginActions = {
 };
 
 export type PluginOperators = {
-  [key: string]: (op1: string, op2: string, integrations: Integrations, options: RuleEngineOptions) => Promise<void>;
+  [key: string]: (
+    op1: string,
+    op2: string,
+    integrations: Integrations,
+    options: RuleEngineOptions,
+    ruleMatchCache: Partial<RuleMatchCache>,
+  ) => Promise<RuleMatchResponse>;
 };
 
 export type PluginTriggerActions = {
@@ -33,7 +49,8 @@ export type PluginConditions = {
     productEventData: ProductEventData,
     integrations: Integrations,
     options: RuleEngineOptions,
-  ) => Promise<void>;
+    ruleMatchCache: Partial<RuleMatchCache>,
+  ) => Promise<RuleMatchResponse>;
 };
 
 export type PluginDynamicPlaceholders = {
