@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 // Simple library to process the rules
 import { Event } from '@freshworks-jaya/marketplace-models';
 import { ProductEventData } from '@freshworks-jaya/marketplace-models';
@@ -5,6 +6,7 @@ import { Block, Condition, MatchType, Rule, Trigger, TriggerAction, TriggerActor
 import { Integrations, RuleEngineOptions } from './models/rule-engine';
 import { Promise } from 'bluebird';
 import ruleConfig from './RuleConfig';
+import { RuleMatchCache, RuleMatchResponse } from './models/plugin';
 
 export class RuleProcessor {
   /**
@@ -15,11 +17,12 @@ export class RuleProcessor {
     condition: Condition,
     integrations: Integrations,
     options: RuleEngineOptions,
-  ): Promise<void> {
+    ruleMatchCache: Partial<RuleMatchCache>,
+  ): Promise<RuleMatchResponse> {
     const conditionFunc = ruleConfig.conditions && ruleConfig.conditions[condition.key];
 
     if (conditionFunc) {
-      return conditionFunc(condition, productEventData, integrations, options);
+      return conditionFunc(condition, productEventData, integrations, options, ruleMatchCache);
     }
     throw new Error('Invalid condition key');
   }
@@ -27,36 +30,97 @@ export class RuleProcessor {
   /**
    * Check if all the conditions in block are matching.
    */
-  public static isBlockMatching(
+  public static async isBlockMatching(
     productEventData: ProductEventData,
     block: Block,
     integrations: Integrations,
     options: RuleEngineOptions,
-  ): Promise<void> {
+    ruleMatchCache: Partial<RuleMatchCache>,
+  ): Promise<RuleMatchResponse> {
     // Block is matching when there are no block conditions
     if (!block || !block.conditions || !block.conditions.length) {
-      return Promise.resolve();
+      return Promise.resolve({
+        data: ruleMatchCache,
+        result: true,
+      });
     }
+
+    let conditionMatchCache = { ...ruleMatchCache };
+    let result: boolean;
 
     switch (block.matchType) {
       case MatchType.All:
-        return Promise.all(
-          block.conditions.map((condition) => {
-            return this.isConditionMatching(productEventData, condition, integrations, options);
-          }),
-        )
-          .then(() => {
-            return Promise.resolve();
-          })
-          .catch(() => {
-            return Promise.reject('Some conditions did not match');
-          });
+        result = true;
+
+        for (let i = 0; i < block.conditions.length; i++) {
+          const condition = block.conditions[i];
+
+          try {
+            const conditionMatchResponse = await this.isConditionMatching(
+              productEventData,
+              condition,
+              integrations,
+              options,
+              conditionMatchCache,
+            );
+
+            conditionMatchCache = {
+              ...conditionMatchCache,
+              ...conditionMatchResponse.data,
+            };
+
+            // Even if one condition does not match, result is false
+            if (!conditionMatchResponse.result) {
+              result = false;
+              break;
+            }
+          } catch (err) {
+            result = false;
+            break;
+          }
+        }
+
+        // result is true when all the conditions match
+        return Promise.resolve({
+          data: conditionMatchCache,
+          result,
+        });
       case MatchType.Any:
-        return Promise.any(
-          block.conditions.map((condition) => {
-            return this.isConditionMatching(productEventData, condition, integrations, options);
-          }),
-        );
+        result = false;
+
+        for (let i = 0; i < block.conditions.length; i++) {
+          const condition = block.conditions[i];
+
+          try {
+            const conditionMatchResponse = await this.isConditionMatching(
+              productEventData,
+              condition,
+              integrations,
+              options,
+              conditionMatchCache,
+            );
+
+            conditionMatchCache = {
+              ...conditionMatchCache,
+              ...conditionMatchResponse.data,
+            };
+
+            // result is true when just one condition matches
+            if (conditionMatchResponse.result) {
+              result = true;
+              break;
+            }
+          } catch (err) {
+            result = false;
+            break;
+          }
+        }
+
+        // result is false when none of the conditions match
+        return Promise.resolve({
+          data: conditionMatchCache,
+          result,
+        });
       default:
         throw new Error('Invalid conditions matchType');
     }
@@ -113,36 +177,95 @@ export class RuleProcessor {
   /**
    * Check if all blocks in a rule are matching.
    */
-  public static isRuleBlocksMatching(
+  public static async isRuleBlocksMatching(
     productEventData: ProductEventData,
     rule: Rule,
     integrations: Integrations,
     options: RuleEngineOptions,
-  ): Promise<void> {
+    ruleMatchCache: Partial<RuleMatchCache>,
+  ): Promise<RuleMatchResponse> {
     // Rule is matching if there are no blocks
     if (!rule.blocks || !rule.blocks.length) {
-      return Promise.resolve();
+      return Promise.resolve({
+        data: ruleMatchCache,
+        result: true,
+      });
     }
+
+    let blockMatchCache = { ...ruleMatchCache };
+    let result: boolean;
 
     switch (rule.matchType) {
       case MatchType.All:
-        return Promise.all(
-          rule.blocks.map((block) => {
-            return this.isBlockMatching(productEventData, block, integrations, options);
-          }),
-        )
-          .then(() => {
-            return Promise.resolve();
-          })
-          .catch(() => {
-            return Promise.reject('Some blocks did not match');
-          });
+        result = true;
+
+        for (let i = 0; i < rule.blocks.length; i++) {
+          const block = rule.blocks[i];
+
+          try {
+            const blockMatchResponse = await this.isBlockMatching(
+              productEventData,
+              block,
+              integrations,
+              options,
+              blockMatchCache,
+            );
+
+            blockMatchCache = {
+              ...blockMatchCache,
+              ...blockMatchResponse.data,
+            };
+
+            // Even if one condition does not match, result is false
+            if (!blockMatchResponse.result) {
+              result = false;
+              break;
+            }
+          } catch (err) {
+            result = false;
+          }
+        }
+
+        // result is true when all the conditions match
+        return Promise.resolve({
+          data: blockMatchCache,
+          result,
+        });
       case MatchType.Any:
-        return Promise.any(
-          rule.blocks.map((block) => {
-            return this.isBlockMatching(productEventData, block, integrations, options);
-          }),
-        );
+        result = false;
+
+        for (let i = 0; i < rule.blocks.length; i++) {
+          const block = rule.blocks[i];
+
+          try {
+            const blockMatchResponse = await this.isBlockMatching(
+              productEventData,
+              block,
+              integrations,
+              options,
+              blockMatchCache,
+            );
+
+            blockMatchCache = {
+              ...blockMatchCache,
+              ...blockMatchResponse.data,
+            };
+
+            // Result is true when just one condition matches
+            if (blockMatchResponse.result) {
+              result = true;
+              break;
+            }
+          } catch (err) {
+            result = false;
+          }
+        }
+
+        // result is false when none of the conditions match
+        return Promise.resolve({
+          data: blockMatchCache,
+          result,
+        });
       default:
         throw new Error('Invalid blocks matchType');
     }
@@ -157,14 +280,18 @@ export class RuleProcessor {
     rule: Rule,
     integrations: Integrations,
     options: RuleEngineOptions,
-  ): Promise<void> {
+    ruleMatchCache: Partial<RuleMatchCache>,
+  ): Promise<RuleMatchResponse> {
     const isTriggerConditionMatch: boolean = this.isTriggerConditionMatching(event, productEventData, rule.triggers);
     // Rule does not match if trigger conditions don't match
     if (!isTriggerConditionMatch) {
-      return Promise.reject('noTriggerConditionMatch');
+      return Promise.resolve({
+        data: ruleMatchCache,
+        result: false,
+      });
     }
 
-    return this.isRuleBlocksMatching(productEventData, rule, integrations, options);
+    return this.isRuleBlocksMatching(productEventData, rule, integrations, options, ruleMatchCache);
   }
 
   /**
@@ -183,16 +310,33 @@ export class RuleProcessor {
     rules: Rule[],
     integrations: Integrations,
     options: RuleEngineOptions,
+    ruleMatchCache: Partial<RuleMatchCache>,
   ): Promise<Rule> {
     let firstMatchingRule: Rule | null = null;
+    let cache = { ...ruleMatchCache };
 
     for (let i = 0; rules && i < rules.length; i += 1) {
       const currentRule = rules[i];
       if (this.isEnabledNonTimerRule(currentRule)) {
         try {
-          await this.isRuleMatching(event, productEventData, currentRule, integrations, options);
-          firstMatchingRule = currentRule;
-          break;
+          const ruleMatchResponse = await this.isRuleMatching(
+            event,
+            productEventData,
+            currentRule,
+            integrations,
+            options,
+            cache,
+          );
+
+          cache = {
+            ...cache,
+            ...ruleMatchResponse.data,
+          };
+
+          if (ruleMatchResponse.result) {
+            firstMatchingRule = currentRule;
+            break;
+          }
         } catch (err) {}
       }
     }

@@ -19,6 +19,7 @@ import {
 import { Utils } from './Utils';
 import { ErrorCodes, ErrorTypes } from './models/error-codes';
 import { LogSeverity } from './services/GoogleCloudLogging';
+import { RuleMatchCache, RuleMatchResponse } from './models/plugin';
 export class TimerRuleEngine {
   /**
    * Add minutes to date object.
@@ -36,11 +37,15 @@ export class TimerRuleEngine {
     rule: Rule,
     integrations: Integrations,
     options: RuleEngineOptions,
-  ): Promise<void> {
+    ruleMatchCache: Partial<RuleMatchCache>,
+  ): Promise<RuleMatchResponse> {
     if (rule.isTimer && rule.isEnabled) {
-      return RuleProcessor.isRuleMatching(event, productEventData, rule, integrations, options);
+      return RuleProcessor.isRuleMatching(event, productEventData, rule, integrations, options, ruleMatchCache);
     } else {
-      return Promise.reject();
+      return Promise.resolve({
+        data: ruleMatchCache,
+        result: false,
+      });
     }
   }
 
@@ -61,9 +66,11 @@ export class TimerRuleEngine {
     kairosCredentials: KairosCredentials,
     integrations: Integrations,
     options: RuleEngineOptions,
-  ): Promise<void> {
+    ruleMatchCache: Partial<RuleMatchCache>,
+  ): Promise<Partial<RuleMatchCache>> {
     let schedulesToCreate: KairosScheduleOptions[] = [];
     const scheduler = new Kairos(kairosCredentials);
+    let cache = { ...ruleMatchCache };
 
     // Iterate through each rule
     for (let ruleIndex = 0, len = rules.length; ruleIndex < len; ruleIndex += 1) {
@@ -73,8 +80,21 @@ export class TimerRuleEngine {
       let isMatchingTimerRule = false;
       // Check for timer rules that are enabled and are matching the trigger conditions.
       try {
-        await this.isMatchingTimerRule(payload.event, payload.data, rule, integrations, options);
-        isMatchingTimerRule = true;
+        const ruleMatchResponse = await this.isMatchingTimerRule(
+          payload.event,
+          payload.data,
+          rule,
+          integrations,
+          options,
+          cache,
+        );
+
+        cache = {
+          ...cache,
+          ...ruleMatchResponse.data,
+        };
+
+        isMatchingTimerRule = ruleMatchResponse.result;
       } catch (err) {}
       if (isMatchingTimerRule) {
         const ruleIdentifier = rule.ruleAlias ? rule.ruleAlias : ruleIndex;
@@ -145,7 +165,7 @@ export class TimerRuleEngine {
       }
     }
 
-    return Promise.resolve();
+    return Promise.resolve(cache);
   }
 
   /**

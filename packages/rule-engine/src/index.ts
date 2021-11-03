@@ -7,7 +7,7 @@ import {
 } from './models/rule-engine';
 
 import { Api, CustomPlaceholdersMap, Rule } from './models/rule';
-import { RulePlugin } from './models/plugin';
+import { RuleMatchCache, RulePlugin } from './models/plugin';
 import { RuleProcessor } from './RuleProcessor';
 import { ActionExecutor } from './ActionExecutor';
 import { TimerRuleEngine } from './TimerRuleEngine';
@@ -46,13 +46,23 @@ export class RuleEngine {
     integrations: Integrations,
     kairosCredentials?: KairosCredentials,
   ): Promise<void> => {
+    let ruleMatchCache: Partial<RuleMatchCache> = {};
+
     if (options.isSchedulerEnabled && kairosCredentials) {
       try {
         // Invalidate exising schedules
         await TimerRuleEngine.invalidateTimers(payload, rules, externalEventUrl, kairosCredentials, integrations);
 
         // Process all timer rules.
-        await TimerRuleEngine.triggerTimers(payload, rules, externalEventUrl, kairosCredentials, integrations, options);
+        ruleMatchCache = await TimerRuleEngine.triggerTimers(
+          payload,
+          rules,
+          externalEventUrl,
+          kairosCredentials,
+          integrations,
+          options,
+          {},
+        );
       } catch (err) {
         return Promise.reject(err);
       }
@@ -66,6 +76,7 @@ export class RuleEngine {
         rules,
         integrations,
         options,
+        ruleMatchCache,
       );
       // Perform all actions sequentially in order.
       if (firstMatchingRule.actions && firstMatchingRule.actions.length) {

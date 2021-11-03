@@ -2,13 +2,15 @@ import { ProductEventData } from '@freshworks-jaya/marketplace-models';
 import { Condition } from '../../models/rule';
 import { Utils } from '../../Utils';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
+import { RuleMatchCache, RuleMatchResponse } from '../../models/plugin';
 
 export default (
   condition: Condition,
   productEventData: ProductEventData,
   integrations: Integrations,
   options: RuleEngineOptions,
-): Promise<void> => {
+  ruleMatchCache: Partial<RuleMatchCache>,
+): Promise<RuleMatchResponse> => {
   const modelProperties = productEventData.conversation || productEventData.message;
 
   return Utils.evaluateCondition(
@@ -17,5 +19,6 @@ export default (
     condition.value as string,
     integrations,
     options,
+    ruleMatchCache,
   );
 };

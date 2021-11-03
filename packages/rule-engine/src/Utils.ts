@@ -1,4 +1,4 @@
-import { ConditionOperator } from './index';
+import { ConditionOperator, RuleMatchCache, RuleMatchResponse } from './index';
 import ruleConfig from './RuleConfig';
 import { Integrations, RuleEngineOptions } from './models/rule-engine';
 import Helpers from 'handlebars-helpers';
@@ -202,14 +202,15 @@ export class Utils {
     operand2: string,
     integrations: Integrations,
     options: RuleEngineOptions,
-  ): Promise<void> {
+    ruleMatchCache: Partial<RuleMatchCache>,
+  ): Promise<RuleMatchResponse> {
     const sanitizedOperand1 = this.convertOperand(operand1);
     const sanitizedOperand2 = this.convertOperand(operand2);
 
     const operatorFunc = ruleConfig.operators && ruleConfig.operators[operator];
 
     if (operatorFunc) {
-      return operatorFunc(sanitizedOperand1, sanitizedOperand2, integrations, options);
+      return operatorFunc(sanitizedOperand1, sanitizedOperand2, integrations, options, ruleMatchCache);
     }
 
     throw new Error('no matching condition');
@@ -225,30 +226,18 @@ export class Utils {
   /**
    * Gets business hour for an account based on businessHourId provided.
    */
-  public static getBusinessHour = (businessHourId: string, integrations: Integrations): Promise<BusinessHour> => {
+  public static getBusinessHours = (integrations: Integrations): Promise<BusinessHour[]> => {
     const freshchatApiUrl = integrations.freshchatv1.url;
     const freshchatApiToken = integrations.freshchatv1.token;
-    return new Promise((resolve, reject) => {
-      axios
-        .get(`${freshchatApiUrl}/operating_hours_v2`, {
-          headers: {
-            Authorization: freshchatApiToken,
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response: { data: { operatingHours: BusinessHour[] } }) => {
-          const matchingBusinessHour = response.data.operatingHours.find((businessHour) => {
-            return businessHour.operatingHoursId === parseInt(businessHourId, 10);
-          });
-          if (matchingBusinessHour) {
-            resolve(matchingBusinessHour);
-          } else {
-            reject();
-          }
-        })
-        .catch((err) => {
-          reject(err);
-        });
-    });
+    return axios
+      .get<{ operatingHours: BusinessHour[] }>(`${freshchatApiUrl}/operating_hours_v2`, {
+        headers: {
+          Authorization: freshchatApiToken,
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        return response.data.operatingHours;
+      });
   };
 }
