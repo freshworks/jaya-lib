@@ -143,6 +143,7 @@ export interface ModelProperties {
   channel_id: string;
   conversation_id: string;
   created_time: string;
+  do_not_auto_resolve: boolean;
   first_agent_assigned_time: string;
   first_group_assigned_time: string;
   group_assigned_time: string;
@@ -213,6 +214,7 @@ export interface ProductEventData {
     model_changes: {
       assigned_agent_id: [string, string];
       assigned_group_id: [string, string];
+      do_not_auto_resolve: [boolean, boolean];
       label_category_id: [string, string];
       label_subcategory_id: [string, string];
       status: [ChangedStatus, ChangedStatus];

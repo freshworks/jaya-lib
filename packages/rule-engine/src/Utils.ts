@@ -15,7 +15,7 @@ import { htmlToText } from 'html-to-text';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { ErrorCodes } from './models/error-codes';
-import { JsonMap } from './models/rule';
+import { ConditionDataType, JsonMap } from './models/rule';
 import { GoogleCloudLogging, LogSeverity } from './services/GoogleCloudLogging';
 
 dayjs.extend(utc);
@@ -198,18 +198,20 @@ export class Utils {
    */
   public static evaluateCondition(
     operator: ConditionOperator,
-    operand1: string,
-    operand2: string,
+    operand1: string | boolean,
+    operand2: string | boolean,
     integrations: Integrations,
     options: RuleEngineOptions,
+    conditionDataType?: ConditionDataType,
   ): Promise<void> {
-    const sanitizedOperand1 = this.convertOperand(operand1);
-    const sanitizedOperand2 = this.convertOperand(operand2);
+    const sanitizedOperand1 =
+      conditionDataType === ConditionDataType.Boolean ? operand1 : this.convertOperand(operand1 as string);
+    const sanitizedOperand2 = this.convertOperand(operand2 as string);
 
     const operatorFunc = ruleConfig.operators && ruleConfig.operators[operator];
 
     if (operatorFunc) {
-      return operatorFunc(sanitizedOperand1, sanitizedOperand2, integrations, options);
+      return operatorFunc(sanitizedOperand1 as string, sanitizedOperand2, integrations, options);
     }
 
     throw new Error('no matching condition');

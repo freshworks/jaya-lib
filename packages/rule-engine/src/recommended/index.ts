@@ -19,6 +19,7 @@ import operatorMatchRegex from './operators/match-regex';
 // Import all trigger actions
 import triggerActionConversationAgentAssign from './trigger-actions/conversation-agent-assign';
 import triggerActionConversationCreate from './trigger-actions/conversation-create';
+import triggerActionConversationDoNotAutoResolve from './trigger-actions/conversation-do-not-auto-resolve';
 import triggerActionConversationGroupAssign from './trigger-actions/conversation-group-assign';
 import triggerActionConversationLabelAssign from './trigger-actions/conversation-label-assign';
 import triggerActionConversationStatusUpdate from './trigger-actions/conversation-status-update';
@@ -56,6 +57,7 @@ import conditionChannel from './conditions/channel';
 import conditionStatus from './conditions/status';
 import conditionAssignedGroup from './conditions/assigned-group';
 import conditionAssignedAgent from './conditions/assigned-agent';
+import conditionAutoResolve from './conditions/auto-resolve';
 import conditionResponseDueType from './conditions/response-due-type';
 import conditionUserProperty from './conditions/user-property';
 import conditionBusinessHour from './conditions/business-hour';
@@ -100,6 +102,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ActionType.UpdateUserPhone]: actionUpdateUserPhone,
     },
     conditions: {
+      [ConditionKey.AutoResolve]: conditionAutoResolve,
       [ConditionKey.MessageText]: conditionMessageText,
       [ConditionKey.Channel]: conditionChannel,
       [ConditionKey.Status]: conditionStatus,
@@ -149,6 +152,7 @@ const recommendedPlugins: RulePlugin[] = [
     triggerActions: {
       [TriggerActionType.ConversationAgentAssign]: triggerActionConversationAgentAssign,
       [TriggerActionType.ConversationCreate]: triggerActionConversationCreate,
+      [TriggerActionType.ConversationDoNotAutoResolve]: triggerActionConversationDoNotAutoResolve,
       [TriggerActionType.ConversationGroupAssign]: triggerActionConversationGroupAssign,
       [TriggerActionType.ConversationLabelAssign]: triggerActionConversationLabelAssign,
       [TriggerActionType.ConversationStatusUpdate]: triggerActionConversationStatusUpdate,
