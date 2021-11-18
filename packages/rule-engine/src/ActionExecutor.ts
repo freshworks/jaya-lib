@@ -75,7 +75,7 @@ export class ActionExecutor {
       'conversation.app_id': conversation.app_id,
       'conversation.assigned_agent_id': conversation.assigned_group_id,
       'conversation.assigned_group_id': conversation.assigned_group_id,
-      'conversation.do_not_auto_resolve': !!conversation.do_not_auto_resolve,
+      'conversation.do_not_auto_resolve': (!!conversation.do_not_auto_resolve).toString(),
       'conversation.id': conversation.conversation_id,
       'conversation.status': conversation.status,
       'freshchat.api_token_v1': integrations.freshchatv1.token,
