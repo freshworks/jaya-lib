@@ -24,6 +24,7 @@ export enum TriggerActorCause {
 export enum TriggerActionType {
   ConversationAgentAssign = 'CONVERSATION_AGENT_ASSIGN',
   ConversationCreate = 'CONVERSATION_CREATE',
+  ConversationDoNotAutoResolve = 'CONVERSATION_DO_NOT_AUTO_RESOLVE',
   ConversationGroupAssign = 'CONVERSATION_GROUP_ASSIGN',
   ConversationLabelAssign = 'CONVERSATION_LABEL_ASSIGN',
   ConversationStatusUpdate = 'CONVERSATION_STATUS_UPDATE',
@@ -53,6 +54,7 @@ export enum ActionType {
 export enum ConditionKey {
   AssignedAgent = 'ASSIGNED_AGENT',
   AssignedGroup = 'ASSIGNED_GROUP',
+  AutoResolve = 'AUTO_RESOLVE',
   BusinessHours = 'BUSINESS_HOURS',
   Channel = 'CHANNEL',
   LabelCategoryName = 'LABEL_CATEGORY_NAME',
@@ -100,6 +102,12 @@ export enum WebhookRequestType {
   Patch = 'PATCH',
   Post = 'POST',
   Put = 'PUT',
+}
+
+export enum ConditionDataType {
+  Boolean = 'BOOLEAN',
+  Number = 'NUMBER',
+  String = 'STRING',
 }
 
 export enum WebhookContentType {
