@@ -1,8 +1,43 @@
 import { assert } from 'chai';
 import 'mocha';
-import { isUsernameGenerated, findAndReplacePlaceholders, findMatchingKeys } from '../src/index';
+import {
+  isUsernameGenerated,
+  findAndReplacePlaceholders,
+  findMatchingKeys,
+  capitalizeAll,
+  capitalize,
+} from '../src/index';
 
 describe('Utils test', () => {
+  describe('capitalize', () => {
+    it('should return empty string when the type does not match', () => {
+      assert.equal('', capitalize(123 as unknown as string));
+      assert.equal('', capitalize(null as unknown as string));
+      assert.equal('', capitalize(undefined));
+    });
+
+    it('should capitalize the first letter of a word or a sentence', () => {
+      assert.equal('Arun', capitalize('arun'));
+      assert.equal('Arun rajkumar', capitalize('arun rajkumar'));
+      assert.equal('Arun  rajkumar', capitalize('arun  rajkumar'));
+    });
+  });
+
+  describe('capitalizeAll', () => {
+    it('should return empty string when the type does not match', () => {
+      assert.equal('', capitalizeAll(123 as unknown as string));
+      assert.equal('', capitalizeAll(null as unknown as string));
+      assert.equal('', capitalizeAll(undefined));
+    });
+
+    it('should capitalizeAll the first letter of every word in a sentence', () => {
+      assert.equal('Arun', capitalizeAll('arun'));
+      assert.equal('Arun Rajkumar', capitalizeAll('arun rajkumar'));
+      assert.equal('Arun Rajkumar', capitalizeAll('arun  rajkumar'));
+      assert.equal('Arun Rajkumar Here', capitalizeAll('arun rajkumar here'));
+    });
+  });
+
   describe('isUsernameGenerated', () => {
     it('should return false when word count is not 2', () => {
       assert.equal(false, isUsernameGenerated('Random'), 'length 1');
