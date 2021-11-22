@@ -5,6 +5,28 @@ export interface PlaceholdersMap {
   [key: string]: string | unknown;
 }
 
+const capitalize = (word: string | undefined): string => {
+  if (!word || typeof word !== 'string') {
+    return '';
+  }
+
+  return word.charAt(0).toUpperCase() + word.slice(1);
+};
+
+const capitalizeAll = (sentence: string | undefined): string => {
+  if (!sentence || typeof sentence !== 'string') {
+    return '';
+  }
+
+  const words = sentence.split(/\s+/);
+
+  for (let i = 0; i < words.length; i++) {
+    words[i] = capitalize(words[i]);
+  }
+
+  return words.join(' ');
+};
+
 /**
  * Returns true if username is generated
  */
@@ -100,4 +122,6 @@ export {
   BusinessHour,
   isOutsideBusinessHours,
   isUsernameGenerated,
+  capitalize,
+  capitalizeAll,
 };

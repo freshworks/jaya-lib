@@ -14,7 +14,7 @@ import {
 import { Action, Api, CustomPlaceholdersMap } from './models/rule';
 import { Integrations, RuleEngineOptions } from './models/rule-engine';
 import ruleConfig from './RuleConfig';
-import { isUsernameGenerated, PlaceholdersMap } from '@freshworks-jaya/utilities';
+import { isUsernameGenerated, PlaceholdersMap, capitalizeAll } from '@freshworks-jaya/utilities';
 import { Utils } from './Utils';
 
 export class ActionExecutor {
@@ -107,6 +107,9 @@ export class ActionExecutor {
     if (isUsernameGenerated(user.first_name || '')) {
       placeholders['user.first_name'] = '';
       placeholders['user.last_name'] = '';
+    } else {
+      placeholders['user.first_name'] = capitalizeAll(user.first_name);
+      placeholders['user.last_name'] = capitalizeAll(user.last_name);
     }
 
     // Register dynamic placeholders
