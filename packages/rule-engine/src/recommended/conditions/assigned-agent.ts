@@ -13,7 +13,7 @@ export default (
 
   return Utils.evaluateCondition(
     condition.operator,
-    modelProperties.assigned_agent_id,
+    modelProperties.assigned_agent_id || '',
     condition.value as string,
     integrations,
     options,

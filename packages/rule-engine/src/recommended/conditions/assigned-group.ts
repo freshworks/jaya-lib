@@ -13,7 +13,7 @@ export default (
 
   return Utils.evaluateCondition(
     condition.operator,
-    modelProperties.assigned_group_id,
+    modelProperties.assigned_group_id || '',
     condition.value as string,
     integrations,
     options,

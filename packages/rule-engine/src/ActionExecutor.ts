@@ -53,8 +53,9 @@ export class ActionExecutor {
     const labelSubcategory = productEventData.associations.label_subcategory || ({} as LabelSubcategory);
 
     const conversation = productEventData.conversation || productEventData.message;
-    const messageText =
-      conversation.messages && Utils.getMessagePartsTextContent(conversation.messages[0].message_parts);
+    const firstMessage = conversation.messages && conversation.messages.length && conversation.messages[0];
+    const firstMessageText = (firstMessage && Utils.getMessagePartsTextContent(firstMessage.message_parts)) || '';
+    const interactionId = (firstMessage && firstMessage.interaction_id) || '';
 
     // Register static placeholders
     const placeholders = {
@@ -94,7 +95,9 @@ export class ActionExecutor {
       label_subcategory: labelSubcategory,
       'label_subcategory.id': labelSubcategory.id,
       'label_subcategory.name': labelSubcategory.name,
-      'message.text': messageText,
+      message: firstMessage,
+      'message.interaction_id': interactionId,
+      'message.text': firstMessageText,
       'timezone.offset': integrations.timezoneOffset?.toString(),
       user: user,
       'user.email': user.email,

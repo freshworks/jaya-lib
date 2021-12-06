@@ -3,22 +3,51 @@ export enum ConversationStatus {
   New = 'new',
   Resolved = 'resolved',
 }
+
 export enum ChangedStatus {
   Assigned = 'assigned',
   New = 'new',
   Resolved = 'resolved',
 }
+
 export enum MessageType {
   Normal = 'normal',
   Private = 'private',
   System = 'system',
 }
+
 export enum ActorType {
   Agent = 'agent',
   Bot = 'bot',
   System = 'system',
   User = 'user',
 }
+
+export enum ConversationSource {
+  AppleBusinessChat = 'ABC',
+  FacebookMessenger = 'FACEBOOK_MESSENGER',
+  FacebookNative = 'FB_NATIVE',
+  FreshbotsWidget = 'FRESHBOTS_WIDGET',
+  GoogleBusinessMessages = 'GBM',
+  LineMessenger = 'LINE',
+  MobileSDK = 'MOBILE',
+  WebMessenger = 'WEBCHAT',
+  WhatsApp = 'WHATSAPP',
+}
+
+export enum MessageSource {
+  Api = 'api',
+  FacebookMessenger = 'facebook_messenger',
+  FacebookNative = 'facebook_native',
+  Freshdesk = 'freshdesk',
+  Invalid = 'invalid',
+  Mobile = 'mobile',
+  Smooch = 'smooch',
+  System = 'system',
+  Web = 'web',
+  Zendesk = 'zendesk',
+}
+
 export enum ResponseDueType {
   FirstResponseDue = 'FIRST_RESPONSE_DUE',
   NoResponseDue = 'NO_RESPONSE_DUE',
@@ -115,7 +144,8 @@ export interface Actor {
   first_name: string;
   id: string;
   last_name: string;
-  org_contact_id: string;
+  org_actor_id: string | null;
+  org_contact_id: string | null;
   phone: string;
   sub_entity?: ActorSubEntity;
   type: ActorType;
@@ -129,32 +159,40 @@ export interface Message {
   conversation_id: string;
   created_time: string;
   id: string;
+  interaction_id: string;
+  is_agent_first_response: boolean;
+  is_agent_interim_first_response: boolean;
+  is_first_message: boolean;
   message_parts: MessagePart[];
+  message_source?: MessageSource;
   message_type: MessageType;
+  org_actor_id: string | null;
+  org_contact_id: string | null;
   reply_parts: ReplyPart[];
 }
 export interface ModelProperties {
   app_id: string;
-  assigned_agent_id: string;
-  assigned_group_id: string;
-  assigned_org_agent_id: string;
-  assigned_org_group_id: string;
-  assigned_time: string;
+  assigned_agent_id: string | null;
+  assigned_group_id: string | null;
+  assigned_org_agent_id: string | null;
+  assigned_org_group_id: string | null;
+  assigned_time: string | null;
   channel_id: string;
   conversation_id: string;
   created_time: string;
   do_not_auto_resolve: boolean;
-  first_agent_assigned_time: string;
-  first_group_assigned_time: string;
-  group_assigned_time: string;
+  first_agent_assigned_time: string | null;
+  first_group_assigned_time: string | null;
+  group_assigned_time: string | null;
   is_offline: boolean;
-  label_category_id: string;
-  label_subcategory_id: string;
+  label_category_id: string | null;
+  label_subcategory_id: string | null;
   messages?: Message[];
-  reopened_time: string;
-  resolved_time: string;
+  org_contact_id: string | null;
+  reopened_time: string | null;
+  resolved_time: string | null;
   response_due_type: ResponseDueType;
-  source: string; // Can be moved to enum. Possible values WEBCHAT
+  source?: ConversationSource;
   statistics: {
     agent_reassignment_time_bhrs: number;
     agent_reassignment_time_chrs: number;
