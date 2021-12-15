@@ -2,14 +2,12 @@ import dayjs from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
+import { findTimeZone, getZonedTime } from 'timezone-support';
+import { formatZonedTime } from 'timezone-support/dist/parse-format';
 
 dayjs.extend(advancedFormat);
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
-dayjs.extend(utc);
-dayjs.extend(timezone);
 
 type DateInput = Date | number;
 
@@ -55,7 +53,11 @@ const getWorkingHours = (data: string): string[][] => {
 const toTimeZone = (timeStamp: DateInput, preferredTimeZone: string): string => {
   if (timeStamp && preferredTimeZone) {
     try {
-      return dayjs(timeStamp).tz(preferredTimeZone).format('YYYY-MM-DD HH:mm:ss');
+      const timeZoneData = findTimeZone(preferredTimeZone);
+      const convertedTime = getZonedTime(timeStamp, timeZoneData);
+      const format = 'YYYY-MM-DD HH:mm:ss';
+
+      return formatZonedTime(convertedTime, format);
     } catch (err) {
       return '';
     }

@@ -52,24 +52,7 @@ describe('Utils test', () => {
       };
       assert.equal(false, isOutsideBusinessHours(businessHour, agentTime));
     });
-    it('should return false when agent is within hours in Brazil/East',() =>{
-      businessHour.enabled = true;
-      // 11:29 AM in BST
-      businessHour.timezone = 'Brazil/East';
-      const agentTime = 1638887393000;
-      businessHour.working = {
-        '0': 'true',
-        '1': 'true',
-        '2': 'true',
-        '3': 'true',
-        '4': 'true',
-        '5': 'true',
-        '6': 'true',
-      };
-      assert.equal(false, isOutsideBusinessHours(businessHour, agentTime));
-    });
     it('should return true when agent is outside business hour but working on that week', () => {
-      businessHour.timezone='UTC';
       businessHour.enabled = true;
       // 01:10 PM in UTC
       const agentTime = 1586437800201;
@@ -94,7 +77,6 @@ describe('Utils test', () => {
       businessHour.enabled = true;
       assert.equal(true, isOutsideBusinessHours(businessHour, 0));
     });
-
     it('should return true when wrong timezone is passed', () => {
       businessHour.enabled = true;
       businessHour.timezone = 'test';
