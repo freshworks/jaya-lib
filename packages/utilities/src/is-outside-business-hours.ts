@@ -1,13 +1,4 @@
-import dayjs from 'dayjs';
-import advancedFormat from 'dayjs/plugin/advancedFormat';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
-import { findTimeZone, getZonedTime } from 'timezone-support';
-import { formatZonedTime } from 'timezone-support/dist/parse-format';
-
-dayjs.extend(advancedFormat);
-dayjs.extend(relativeTime);
-dayjs.extend(localizedFormat);
+import moment from 'moment-timezone';
 
 type DateInput = Date | number;
 
@@ -53,11 +44,8 @@ const getWorkingHours = (data: string): string[][] => {
 const toTimeZone = (timeStamp: DateInput, preferredTimeZone: string): string => {
   if (timeStamp && preferredTimeZone) {
     try {
-      const timeZoneData = findTimeZone(preferredTimeZone);
-      const convertedTime = getZonedTime(timeStamp, timeZoneData);
       const format = 'YYYY-MM-DD HH:mm:ss';
-
-      return formatZonedTime(convertedTime, format);
+      return moment(timeStamp).tz(preferredTimeZone).format(format);
     } catch (err) {
       return '';
     }
@@ -77,7 +65,7 @@ const isOutsideBusinessHours = (businessHour: BusinessHour, currentTimeInMillis:
   if (!operatingHours.enabled) {
     isAway = false;
   } else {
-    agentTime = dayjs(toTimeZone(currentTimeInMillis, operatingHours.timezone.replace(' - ', '/')));
+    agentTime = moment(toTimeZone(currentTimeInMillis, operatingHours.timezone.replace(' - ', '/')));
     agentDayOfWeek = (agentTime.day() + 6) % 7;
     if (operatingHours.working[agentDayOfWeek] !== 'true') {
       isAway = true;
@@ -89,6 +77,7 @@ const isOutsideBusinessHours = (businessHour: BusinessHour, currentTimeInMillis:
           toTimeSeconds = parseInt(fromToArr[1], 10),
           agentTimeFrom = agentTime.clone().startOf('day').add(fromTimeSeconds, 's'),
           agentTimeTo = agentTime.clone().startOf('day').add(toTimeSeconds, 's');
+
         if (agentTime.isAfter(agentTimeFrom) && agentTime.isBefore(agentTimeTo)) {
           isAway = false;
           break;
