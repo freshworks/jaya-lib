@@ -43,12 +43,9 @@ const getWorkingHours = (data: string): string[][] => {
  */
 const toTimeZone = (timeStamp: DateInput, preferredTimeZone: string): string => {
   if (timeStamp && preferredTimeZone) {
-    try {
-      const format = 'YYYY-MM-DD HH:mm:ss';
-      return moment(timeStamp).tz(preferredTimeZone).format(format);
-    } catch (err) {
-      return '';
-    }
+    const format = 'YYYY-MM-DD HH:mm:ss';
+    const convertedTime = moment(timeStamp).tz(preferredTimeZone);
+    return convertedTime.isValid() ? convertedTime.format(format) : '';
   }
   return '';
 };

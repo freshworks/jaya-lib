@@ -83,5 +83,9 @@ describe('Utils test', () => {
       const agentTime = 1586437800201;
       assert.equal(true, isOutsideBusinessHours(businessHour, agentTime));
     });
+    it('should go to the error block when wrong timestamp is provided', () => {
+      businessHour.enabled = true;
+      assert.equal(true, isOutsideBusinessHours(businessHour, 'agentTime' as unknown as number));
+    });
   });
 });
