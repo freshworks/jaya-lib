@@ -7,7 +7,7 @@ describe('Utils test', () => {
     appId: 123,
     created: '2020-04-08T12:51:20.654Z',
     days: {
-      //8-12am, 2-4pm and 4-6pm UTC working hours
+      //8-12pm, 2-4pm and 4-6pm UTC working hours
       '0': '28800;43200;50400;57600;57600;64800;',
       '1': '28800;43200;50400;57600;57600;64800;',
       '2': '28800;43200;50400;57600;57600;64800;',
@@ -82,6 +82,10 @@ describe('Utils test', () => {
       businessHour.timezone = 'test';
       const agentTime = 1586437800201;
       assert.equal(true, isOutsideBusinessHours(businessHour, agentTime));
+    });
+    it('should go to the error block when wrong timestamp is provided', () => {
+      businessHour.enabled = true;
+      assert.equal(true, isOutsideBusinessHours(businessHour, 'agentTime' as unknown as number));
     });
   });
 });
