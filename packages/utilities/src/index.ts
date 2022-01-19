@@ -102,7 +102,7 @@ const findAndReplacePlaceholders = (message: string, placeholdersMap: Placeholde
       // Constructed replacement regex string will look like so.
       // Eg. \\{user\\.first_name(\\|there)?\\}
       const value = (placeholdersMap && placeholdersMap[field]) || altValue || '';
-      const regExpReplaceString = `\\{${field.replace('.', '\\.')}(\\|${altValue})?\\}`;
+      const regExpReplaceString = `\\{${field.replace('.', '\\.')}(?:\\|${altValue})?\\}`;
 
       // Replace all occurrences of placeholder with value.
       if (typeof value === 'string') {
