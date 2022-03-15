@@ -44,6 +44,28 @@ Handlebars.registerHelper(
 Handlebars.registerHelper('htmlToText', function (context: string) {
   return htmlToText(context);
 });
+Handlebars.registerHelper('match', function (sentence: string, regex: RegExp) {
+  const isRegExp = (val: RegExp | JsonMap): boolean => {
+    if (val instanceof RegExp) {
+      return true;
+    }
+
+    return (
+      typeof val.flags === 'string' &&
+      typeof val.ignoreCase === 'boolean' &&
+      typeof val.multiline === 'boolean' &&
+      typeof val.global === 'boolean'
+    );
+  };
+
+  if (!(typeof sentence === 'string' && sentence !== '')) {
+    return [];
+  }
+  if (!isRegExp(regex)) {
+    throw new TypeError('expected a regular expression');
+  }
+  return sentence.match(regex);
+});
 
 export class Utils {
   public static safelyParseJson(value: string, options?: { allowArray?: boolean }): JsonMap | null {
