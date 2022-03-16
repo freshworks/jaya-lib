@@ -39,9 +39,9 @@ describe('Utils test', () => {
       assert.equal('11262022', result);
     });
 
-    it('should evaluate match helper', () => {
+    it('should evaluate matchRegex helper', () => {
       const result = Utils.processHanldebars(
-        '{{first (match "hi there how do you do? My order number is TN23" (toRegex "[a-zA-Z]{2}\\d{2}"))}}',
+        '{{first (matchRegex "hi there how do you do? My order number is TN23" (toRegex "[a-zA-Z]{2}\\d{2}"))}}',
         {},
       );
       assert.equal('TN23', result);

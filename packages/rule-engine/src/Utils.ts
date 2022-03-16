@@ -44,7 +44,7 @@ Handlebars.registerHelper(
 Handlebars.registerHelper('htmlToText', function (context: string) {
   return htmlToText(context);
 });
-Handlebars.registerHelper('match', function (sentence: string, regex: RegExp) {
+Handlebars.registerHelper('matchRegex', function (sentence: string, regex: RegExp) {
   const isRegExp = (val: RegExp | JsonMap): boolean => {
     if (val instanceof RegExp) {
       return true;
