@@ -33,6 +33,21 @@ describe('Utils test', () => {
     timezoneOffset: -330,
   };
 
+  describe('validate handlebars expressions', () => {
+    it('should evaluate date helper', () => {
+      const result = Utils.processHanldebars('{{date "2022-11-26T16:00:00.000Z" format="MMDDYYYY" offset="330"}}', {});
+      assert.equal('11262022', result);
+    });
+
+    it('should evaluate match helper', () => {
+      const result = Utils.processHanldebars(
+        '{{first (match "hi there how do you do? My order number is TN23" (toRegex "[a-zA-Z]{2}\\d{2}"))}}',
+        {},
+      );
+      assert.equal('TN23', result);
+    });
+  });
+
   describe('convertOperand', () => {
     it('should trim the string', () => {
       assert.equal('one', Utils.convertOperand('one '));
