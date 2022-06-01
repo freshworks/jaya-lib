@@ -3,10 +3,12 @@ import path from 'path';
 import Handlebars from 'handlebars';
 import Helpers from 'handlebars-helpers';
 import dayjs from 'dayjs';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
 import utc from 'dayjs/plugin/utc';
 import { htmlToText } from 'html-to-text';
 
 dayjs.extend(utc);
+dayjs.extend(advancedFormat);
 
 import {
   Message,
