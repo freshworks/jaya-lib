@@ -357,7 +357,7 @@ describe('RuleProcessor test', () => {
           },
           changes: {
             model_changes: {
-              status: ['assigned', 'new'],
+              status: ['resolved', 'new'],
             },
           },
           event: 'onConversationUpdate',
