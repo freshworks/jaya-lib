@@ -22,6 +22,14 @@ const isTriggerChangeMatching = (productEventData: ProductEventData, triggerActi
   }
 
   const conversationStatusChangeTuple = productEventData.changes.model_changes.status;
+
+  // For "conversation_status_update" event type the status can never turn out to be "assigned" to "new"
+  // FC-89844 - "Agent reopens a conversation" rule getting executed on group reassignment issue fix
+  if((conversationStatusChangeTuple[0] === ChangedStatus.Assigned) && 
+  (conversationStatusChangeTuple[1] === ChangedStatus.New)) {
+    return false;
+  }
+
   const triggerActionStatusChange = triggerAction.change as ConversationStatusChange;
 
   return (
