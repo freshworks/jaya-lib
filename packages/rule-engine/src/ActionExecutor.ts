@@ -28,11 +28,13 @@ export class ActionExecutor {
     placeholders: PlaceholdersMap,
     apis: Api[],
     options: RuleEngineOptions,
+    ruleAlias?: string,
   ): Promise<PlaceholdersMap> {
     const actionFunc = ruleConfig.actions && ruleConfig.actions[action.type];
 
     if (actionFunc) {
-      return actionFunc(integrations, productEventPayload, action.value, placeholders, apis, options);
+      const alias = ruleAlias || '';
+      return actionFunc(integrations, productEventPayload, action.value, placeholders, apis, options, alias);
     }
     return Promise.reject('Invalid action type');
   }
@@ -136,6 +138,7 @@ export class ActionExecutor {
     apis: Api[],
     customPlaceholders: CustomPlaceholdersMap,
     options: RuleEngineOptions,
+    ruleAlias?: string,
   ): Promise<void> {
     let placeholders = this.getPlaceholders(productEventPayload.data, integrations);
 
@@ -151,6 +154,7 @@ export class ActionExecutor {
           placeholders,
           apis,
           options,
+          ruleAlias,
         );
 
         placeholders = { ...placeholders, ...placeholdersFromAction };

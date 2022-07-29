@@ -10,10 +10,11 @@ export default (
   productEventPayload: ProductEventPayload,
   integrations: Integrations,
   options: RuleEngineOptions,
+  ruleAlias: string,
 ): Promise<string> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
-  const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
+  const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken, ruleAlias);
   const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
 
   return freshchat

@@ -8,6 +8,7 @@ export default (
   productEventData: ProductEventData,
   integrations: Integrations,
   options: RuleEngineOptions,
+  ruleAlias: string,
 ): Promise<void> => {
   return Utils.evaluateCondition(
     condition.operator,
@@ -15,5 +16,6 @@ export default (
     condition.value as string,
     integrations,
     options,
+    ruleAlias,
   );
 };

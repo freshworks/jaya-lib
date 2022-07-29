@@ -5,6 +5,7 @@ export default (
   productEventPayload: ProductEventPayload,
   integrations: Integrations,
   options: RuleEngineOptions,
+  ruleAlias: string,
 ): Promise<string> => {
   const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
 

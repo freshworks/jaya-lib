@@ -97,12 +97,13 @@ export default async (
   placeholders: PlaceholdersMap,
   apis: Api[],
   options: RuleEngineOptions,
+  ruleAlias: string,
 ): Promise<PlaceholdersMap> => {
   const freshdeskApiUrl = integrations.freshdesk && integrations.freshdesk.url;
   const freshdeskApiToken = integrations.freshdesk && integrations.freshdesk.token;
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
-  const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
+  const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken, ruleAlias);
   const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
   const conversationId = modelProperties.conversation_id;
   let generatedPlaceholders = {} as PlaceholdersMap;
@@ -145,6 +146,7 @@ export default async (
         headers: {
           Accept: 'application/json, text/plain, */*',
           'Content-Type': 'application/json',
+          'x-automation-rule-alias': ruleAlias,
         },
         method: WebhookRequestType.Post,
         url: `${freshdeskApiUrl}/api/channel/v2/tickets`,
@@ -177,6 +179,7 @@ export default async (
         headers: {
           Accept: 'application/json, text/plain, */*',
           'Content-Type': 'application/json',
+          'x-automation-rule-alias': ruleAlias,
         },
         method: WebhookRequestType.Post,
         url: `${freshdeskApiUrl}/api/v2/tickets/${freshdeskTicketId}/notes`,

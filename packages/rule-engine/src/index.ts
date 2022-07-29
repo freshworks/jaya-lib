@@ -69,6 +69,8 @@ export class RuleEngine {
       );
       // Perform all actions sequentially in order.
       if (firstMatchingRule.actions && firstMatchingRule.actions.length) {
+        const ruleAlias = firstMatchingRule.ruleAlias || '';
+
         await ActionExecutor.handleActions(
           integrations,
           firstMatchingRule.actions,
@@ -76,6 +78,7 @@ export class RuleEngine {
           apis,
           customPlaceholders,
           options,
+          ruleAlias,
         );
       }
     } catch (err) {

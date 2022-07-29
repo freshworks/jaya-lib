@@ -7,9 +7,11 @@ export default async (
   op2: string,
   integrations: Integrations,
   options: RuleEngineOptions,
+  ruleAlias: string | undefined,
 ): Promise<void> => {
   try {
-    const businessHour = await Utils.getBusinessHour(op1, integrations);
+    const alias = ruleAlias || '';
+    const businessHour = await Utils.getBusinessHour(op1, integrations, alias);
     const isOutsideBusinessHoursValue = isOutsideBusinessHours(businessHour, new Date().getTime());
     return Utils.promisify(!isOutsideBusinessHoursValue);
   } catch (err) {

@@ -163,6 +163,7 @@ export default async (
   placeholders: PlaceholdersMap,
   apis: Api[],
   options: RuleEngineOptions,
+  ruleAlias: string,
 ): Promise<PlaceholdersMap> => {
   const triggerApiModelName = actionValue as string;
   const triggerApi = apis.find((api) => api.responseModelName === triggerApiModelName);
@@ -181,6 +182,7 @@ export default async (
       integrations,
       placeholders,
       options,
+      ruleAlias,
     );
 
     combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
