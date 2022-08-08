@@ -1,6 +1,7 @@
 import { assert } from 'chai';
 import 'mocha';
 import { isOutsideBusinessHours } from '../src/is-outside-business-hours';
+import moment from 'moment-timezone';
 
 describe('Utils test', () => {
   const businessHour = {
@@ -18,9 +19,10 @@ describe('Utils test', () => {
     },
     defaultBhr: false,
     enabled: true,
+    holidays: [{}],
     name: 'test business hours',
     operatingHoursId: 1234,
-    timezone: 'UTC',
+    timezone: 'Asia/Kolkata',
     working: {
       '0': 'true',
       '1': 'true',
@@ -35,6 +37,38 @@ describe('Utils test', () => {
   describe('isOutsideBusinessHours', () => {
     it('should return false when business hour is not enabled', () => {
       businessHour.enabled = false;
+      assert.equal(false, isOutsideBusinessHours(businessHour, new Date().getTime()));
+    });
+    it('should return false when business hour is enabled and holiday list is not passed', () => {
+      assert.equal(false, isOutsideBusinessHours(businessHour, new Date().getTime()));
+    });
+    it('should return true when business hour is enabled and day is a holiday', () => {
+      businessHour.enabled = true;
+      businessHour.holidays = [
+        {
+          date: moment(new Date()).tz(businessHour.timezone).format('MMM DD'), // current date
+          name: 'Test holiday',
+        },
+      ];
+      assert.equal(true, isOutsideBusinessHours(businessHour, new Date().getTime()));
+    });
+    it('should return true if holiday is in format MMM D', () => {
+      businessHour.enabled = true;
+      businessHour.holidays = [
+        {
+          date: 'Aug 8',
+          name: 'Test holiday',
+        },
+      ];
+      assert.equal(true, isOutsideBusinessHours(businessHour, 1659960366763));
+    });
+    it('should return false when business hour is enabled and day is a not a holiday', () => {
+      businessHour['holidays'] = [
+        {
+          date: 'invalid date', // current date
+          name: 'Test holiday',
+        },
+      ];
       assert.equal(false, isOutsideBusinessHours(businessHour, new Date().getTime()));
     });
     it('should return false when agent is within business hour', () => {
