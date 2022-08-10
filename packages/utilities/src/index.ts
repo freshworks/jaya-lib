@@ -118,6 +118,7 @@ export {
   findMatchingPlaceholders,
   findMatchingKeys,
   BusinessHour,
+  PlaceholdersMap,
   isOutsideBusinessHours,
   isUsernameGenerated,
   capitalize,
