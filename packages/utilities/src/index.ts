@@ -1,9 +1,7 @@
-import { BusinessHour, isOutsideBusinessHours } from './is-outside-business-hours';
+import { isOutsideBusinessHours } from './is-outside-business-hours';
+import { PlaceholdersMap, BusinessHour } from './models/interfaces';
 import usernameVerbs from './constants/username-verbs';
 import usernameNouns from './constants/username-nouns';
-export interface PlaceholdersMap {
-  [key: string]: string | unknown;
-}
 
 const capitalize = (word: string | undefined): string => {
   if (!word || typeof word !== 'string') {

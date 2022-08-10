@@ -1,27 +1,6 @@
 import moment from 'moment-timezone';
+import { DateInput, BusinessHour, Holidays } from './models/interfaces';
 
-type DateInput = Date | number;
-
-type Holidays = {
-  [key: string]: string;
-}[];
-
-interface BusinessHour {
-  appId: number;
-  days: {
-    [key: string]: string;
-  };
-  defaultBhr: boolean;
-  enabled: boolean;
-  holidays?: Holidays;
-  name: string;
-  operatingHoursId: number;
-  timezone: string;
-  working: {
-    [key: string]: string;
-  };
-  workingDaily: boolean;
-}
 /**
  * Returns working hours as an array
  */
@@ -129,4 +108,4 @@ const isOutsideBusinessHours = (businessHour: BusinessHour, currentTimeInMillis:
   return isAway;
 };
 
-export { isOutsideBusinessHours, BusinessHour };
+export { isOutsideBusinessHours };
