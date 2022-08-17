@@ -1,6 +1,8 @@
 import { assert } from 'chai';
 import 'mocha';
 import { isOutsideBusinessHours } from '../src/is-outside-business-hours';
+import moment from 'moment-timezone';
+import { BusinessHour } from '../src/models/interfaces';
 
 describe('Utils test', () => {
   const businessHour = {
@@ -18,9 +20,10 @@ describe('Utils test', () => {
     },
     defaultBhr: false,
     enabled: true,
+    holidays: [{}],
     name: 'test business hours',
     operatingHoursId: 1234,
-    timezone: 'UTC',
+    timezone: 'Asia/Kolkata',
     working: {
       '0': 'true',
       '1': 'true',
@@ -31,14 +34,34 @@ describe('Utils test', () => {
       '6': 'true',
     },
     workingDaily: true,
-  };
+  } as BusinessHour;
   describe('isOutsideBusinessHours', () => {
     it('should return false when business hour is not enabled', () => {
       businessHour.enabled = false;
       assert.equal(false, isOutsideBusinessHours(businessHour, new Date().getTime()));
     });
-    it('should return false when agent is within business hour', () => {
+
+    it('should return true when business hour is enabled and day is a holiday', () => {
       businessHour.enabled = true;
+      businessHour.holidays = [
+        {
+          date: moment(new Date()).tz(businessHour.timezone).format('MMM DD'), // current date
+          name: 'Test holiday',
+        },
+      ];
+      assert.equal(true, isOutsideBusinessHours(businessHour, new Date().getTime()));
+    });
+    it('should return true when business hour is enabled, day is a holiday and is in format MMM D', () => {
+      businessHour.holidays = [
+        {
+          date: moment(new Date()).tz(businessHour.timezone).format('MMM D'),
+          name: 'Test holiday',
+        },
+      ];
+      assert.equal(true, isOutsideBusinessHours(businessHour, new Date().getTime()));
+    });
+    it('should return false when agent is within business hour and holiday is an empty list', () => {
+      businessHour.holidays = [];
       // 11:10 AM in UTC
       const agentTime = 1586430600201;
       businessHour.working = {
@@ -50,6 +73,13 @@ describe('Utils test', () => {
         '5': 'true',
         '6': 'true',
       };
+      assert.equal(false, isOutsideBusinessHours(businessHour, agentTime));
+    });
+    it('should return false when agent is within business hour and holiday is undefined', () => {
+      businessHour.holidays = undefined;
+      // 11:10 AM in UTC
+      const agentTime = 1586430600201;
+
       assert.equal(false, isOutsideBusinessHours(businessHour, agentTime));
     });
     it('should return true when agent is outside business hour but working on that week', () => {

@@ -1,22 +1,6 @@
 import moment from 'moment-timezone';
+import { DateInput, BusinessHour, Holidays } from './models/interfaces';
 
-type DateInput = Date | number;
-
-interface BusinessHour {
-  appId: number;
-  days: {
-    [key: string]: string;
-  };
-  defaultBhr: boolean;
-  enabled: boolean;
-  name: string;
-  operatingHoursId: number;
-  timezone: string;
-  working: {
-    [key: string]: string;
-  };
-  workingDaily: boolean;
-}
 /**
  * Returns working hours as an array
  */
@@ -51,33 +35,72 @@ const toTimeZone = (timeStamp: DateInput, preferredTimeZone: string): string => 
 };
 
 /**
+ * Determine if the current day falls in the holiday list
+ * @param {Holidays} holidays
+ * @param {String} timezone
+ * @returns {String} - true if the day is holiday, else return false
+ */
+const isCurrentDayInHolidays = (holidays: Holidays, timezone: string) => {
+  let isAway = false;
+  const totalHolidays = holidays && holidays.length;
+
+  if (totalHolidays && timezone) {
+    const currentDayDateByBhrsTimezone = moment(new Date()).tz(timezone);
+    for (let i = 0; i < totalHolidays; i++) {
+      const holiday = holidays[i],
+        formattedBhrsHolidayDate = String(holiday.date).toUpperCase();
+      // Checking in two format like "OCT 8" or "OCT 08"
+      if (
+        (currentDayDateByBhrsTimezone &&
+          formattedBhrsHolidayDate === currentDayDateByBhrsTimezone.format('MMM DD').toUpperCase()) ||
+        formattedBhrsHolidayDate === currentDayDateByBhrsTimezone.format('MMM D').toUpperCase()
+      ) {
+        isAway = true;
+        break;
+      }
+    }
+  }
+
+  return isAway;
+};
+
+/**
  * Returns true if outsideBusinessHours else false
  */
+
 const isOutsideBusinessHours = (businessHour: BusinessHour, currentTimeInMillis: number): boolean => {
   let isAway = true,
     agentTime,
     workingHoursArr,
     agentDayOfWeek;
   const operatingHours = businessHour;
+
+  // Check if holiday list is available in the payload
+  const holidaysList = operatingHours.holidays;
+  const timeZone = operatingHours.timezone;
+  const isHoliday = !!holidaysList ? isCurrentDayInHolidays(holidaysList, timeZone) : false;
+
   if (!operatingHours.enabled) {
     isAway = false;
   } else {
-    agentTime = moment(toTimeZone(currentTimeInMillis, operatingHours.timezone.replace(' - ', '/')));
-    agentDayOfWeek = (agentTime.day() + 6) % 7;
-    if (operatingHours.working[agentDayOfWeek] !== 'true') {
-      isAway = true;
-    } else {
-      workingHoursArr = getWorkingHours(operatingHours.days[agentDayOfWeek]);
-      for (let i = 0, iLen = workingHoursArr.length; i < iLen; i++) {
-        const fromToArr = workingHoursArr[i],
-          fromTimeSeconds = parseInt(fromToArr[0], 10),
-          toTimeSeconds = parseInt(fromToArr[1], 10),
-          agentTimeFrom = agentTime.clone().startOf('day').add(fromTimeSeconds, 's'),
-          agentTimeTo = agentTime.clone().startOf('day').add(toTimeSeconds, 's');
+    if (!isHoliday) {
+      agentTime = moment(toTimeZone(currentTimeInMillis, timeZone.replace(' - ', '/')));
+      agentDayOfWeek = (agentTime.day() + 6) % 7;
+      if (operatingHours.working[agentDayOfWeek] !== 'true') {
+        isAway = true;
+      } else {
+        workingHoursArr = getWorkingHours(operatingHours.days[agentDayOfWeek]);
+        for (let i = 0, iLen = workingHoursArr.length; i < iLen; i++) {
+          const fromToArr = workingHoursArr[i],
+            fromTimeSeconds = parseInt(fromToArr[0], 10),
+            toTimeSeconds = parseInt(fromToArr[1], 10),
+            agentTimeFrom = agentTime.clone().startOf('day').add(fromTimeSeconds, 's'),
+            agentTimeTo = agentTime.clone().startOf('day').add(toTimeSeconds, 's');
 
-        if (agentTime.isAfter(agentTimeFrom) && agentTime.isBefore(agentTimeTo)) {
-          isAway = false;
-          break;
+          if (agentTime.isAfter(agentTimeFrom) && agentTime.isBefore(agentTimeTo)) {
+            isAway = false;
+            break;
+          }
         }
       }
     }
@@ -85,4 +108,4 @@ const isOutsideBusinessHours = (businessHour: BusinessHour, currentTimeInMillis:
   return isAway;
 };
 
-export { isOutsideBusinessHours, BusinessHour };
+export { isOutsideBusinessHours };
