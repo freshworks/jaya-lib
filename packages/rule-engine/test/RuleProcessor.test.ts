@@ -401,7 +401,6 @@ describe('RuleProcessor test', () => {
       assert.isFalse(isMatch);
     });
 
-
     it('should match the trigger action for label added', () => {
       const isMatch = RuleProcessor.isTriggerActionMatch(
         {
@@ -709,6 +708,9 @@ describe('RuleProcessor test', () => {
           isUseStaticIP: false,
           maxProductEventDelay: 30000,
         },
+        {
+          ruleAlias: '3he7pb3q-38tb-4793-3w3d-10hb581777g61',
+        } as Rule,
       ).then(() => {
         assert.ok('returns resolved promise if no block is there');
       });
@@ -733,6 +735,9 @@ describe('RuleProcessor test', () => {
           isUseStaticIP: false,
           maxProductEventDelay: 30000,
         },
+        {
+          ruleAlias: '3he7pb3q-38tb-4793-3w3d-10hb581777g61',
+        } as Rule,
       ).then(() => {
         assert.ok('returns resolved promise if all blocks are matching');
       });
@@ -757,6 +762,9 @@ describe('RuleProcessor test', () => {
           isUseStaticIP: false,
           maxProductEventDelay: 30000,
         },
+        {
+          ruleAlias: '3he7pb3q-38tb-4793-3w3d-10hb581777g61',
+        } as Rule,
       ).catch(() => {
         assert.ok('returns rejected promise if no blocks are matching');
       });
@@ -782,6 +790,9 @@ describe('RuleProcessor test', () => {
             isUseStaticIP: false,
             maxProductEventDelay: 30000,
           },
+          {
+            ruleAlias: '3he7pb3q-38tb-4793-3w3d-10hb581777g61',
+          } as Rule,
         );
       } catch (err) {
         assert.ok(err);
@@ -805,6 +816,9 @@ describe('RuleProcessor test', () => {
             isUseStaticIP: false,
             maxProductEventDelay: 30000,
           },
+          {
+            ruleAlias: '3he7pb3q-38tb-4793-3w3d-10hb581777g61',
+          } as Rule,
         );
       } catch (err) {
         assert.ok(err);

@@ -79,29 +79,50 @@ describe('Utils test', () => {
     });
 
     it('should evaluate EQUALS condition', async () => {
-      Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'a', integrations as any as Integrations, {
-        isSchedulerEnabled: false,
-        isUseStaticIP: false,
-        maxProductEventDelay: 30000,
-      }).then(() => {
+      Utils.evaluateCondition(
+        'EQUALS' as ConditionOperator,
+        'a',
+        'a',
+        integrations as any as Integrations,
+        {
+          isSchedulerEnabled: false,
+          isUseStaticIP: false,
+          maxProductEventDelay: 30000,
+        },
+        '3he7pb3q-38tb-4793-3w3d-10hb581777g61',
+      ).then(() => {
         assert.ok('a is equal a');
       });
-      Utils.evaluateCondition('EQUALS' as ConditionOperator, 'a', 'b', integrations as any as Integrations, {
-        isSchedulerEnabled: false,
-        isUseStaticIP: false,
-        maxProductEventDelay: 30000,
-      }).catch(() => {
+      Utils.evaluateCondition(
+        'EQUALS' as ConditionOperator,
+        'a',
+        'b',
+        integrations as any as Integrations,
+        {
+          isSchedulerEnabled: false,
+          isUseStaticIP: false,
+          maxProductEventDelay: 30000,
+        },
+        '3he7pb3q-38tb-4793-3w3d-10hb581777g61',
+      ).catch(() => {
         assert.ok('a is not equal b');
       });
     });
 
     it('should handle the condition when operator is not available', () => {
       try {
-        Utils.evaluateCondition('NOT_EQUALS' as ConditionOperator, 'a', 'b', integrations as any as Integrations, {
-          isSchedulerEnabled: false,
-          isUseStaticIP: false,
-          maxProductEventDelay: 30000,
-        });
+        Utils.evaluateCondition(
+          'NOT_EQUALS' as ConditionOperator,
+          'a',
+          'b',
+          integrations as any as Integrations,
+          {
+            isSchedulerEnabled: false,
+            isUseStaticIP: false,
+            maxProductEventDelay: 30000,
+          },
+          '3he7pb3q-38tb-4793-3w3d-10hb581777g61',
+        );
       } catch (err) {
         assert('threw an exception when operator was not available');
       }
@@ -152,7 +173,9 @@ describe('Utils test', () => {
     });
 
     it('should sent POST reqeust to /operating_hours_v2', () => {
-      expect(Utils.getBusinessHour('1234', integrations)).to.be.eventually.equal(businessHour);
+      expect(
+        Utils.getBusinessHour('1234', integrations, '3he7pb3q-38tb-4793-3w3d-10hb581777g61'),
+      ).to.be.eventually.equal(businessHour);
     });
   });
 });
