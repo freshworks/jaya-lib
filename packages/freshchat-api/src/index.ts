@@ -36,7 +36,7 @@ export default class Freshchat {
     return activeHeaders;
   }
 
-  constructor(private apiUrl: string, private apiToken: string, private ruleAlias: string | undefined | null) {}
+  constructor(private apiUrl: string, private apiToken: string, private ruleAlias?: string) {}
 
   /**
    * Calls Freshchat Dashboard Historical API to fetch average wait time.
