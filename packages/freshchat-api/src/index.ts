@@ -14,6 +14,7 @@ import { Utils } from './Utils';
 import { isUsernameGenerated } from '@freshworks-jaya/utilities';
 import { ReportType } from './interfaces/Report';
 import { MessagePart } from './interfaces/MessagePart';
+import { Headers } from './interfaces/Headers';
 
 export * from './interfaces/Conversation';
 export * from './interfaces/Message';
@@ -22,17 +23,20 @@ export * from './interfaces/User';
 export * from './interfaces/Report';
 
 export default class Freshchat {
-  private get headers(): {
-    Authorization: string;
-    'Content-Type': string;
-  } {
-    return {
+  private get headers(): Headers {
+    const activeHeaders: Headers = {
       Authorization: `Bearer ${this.apiToken}`,
       'Content-Type': 'application/json',
+      'x-service': 'advanced_automation',
     };
+
+    if (this.ruleAlias) {
+      activeHeaders['x-automation-rule-alias'] = this.ruleAlias;
+    }
+    return activeHeaders;
   }
 
-  constructor(private apiUrl: string, private apiToken: string) {}
+  constructor(private apiUrl: string, private apiToken: string, private ruleAlias?: string) {}
 
   /**
    * Calls Freshchat Dashboard Historical API to fetch average wait time.

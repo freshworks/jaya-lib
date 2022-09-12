@@ -8,6 +8,7 @@ export default (
   productEventData: ProductEventData,
   integrations: Integrations,
   options: RuleEngineOptions,
+  ruleAlias: string,
 ): Promise<void> => {
   const userFirstName = productEventData.associations.user.first_name
     ? productEventData.associations.user.first_name
@@ -15,5 +16,12 @@ export default (
   const userLastName = productEventData.associations.user.last_name ? productEventData.associations.user.last_name : '';
   const userName = `${userFirstName} ${userLastName}`.trim();
 
-  return Utils.evaluateCondition(condition.operator, userName, condition.value as string, integrations, options);
+  return Utils.evaluateCondition(
+    condition.operator,
+    userName,
+    condition.value as string,
+    integrations,
+    options,
+    ruleAlias,
+  );
 };

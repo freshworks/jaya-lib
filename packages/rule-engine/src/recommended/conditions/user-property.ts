@@ -12,6 +12,7 @@ const evaluateUserPropertyCondition = (
   conditionValue: UserConditionValue,
   integrations: Integrations,
   options: RuleEngineOptions,
+  ruleAlias: string,
 ): Promise<void> => {
   const matchedProperty =
     userObj.properties && userObj.properties.find((property) => property.name === conditionValue.propertyKey);
@@ -22,6 +23,7 @@ const evaluateUserPropertyCondition = (
     conditionValue.propertyValue,
     integrations,
     options,
+    ruleAlias,
   );
 };
 
@@ -30,6 +32,7 @@ export default (
   productEventData: ProductEventData,
   integrations: Integrations,
   options: RuleEngineOptions,
+  ruleAlias: string,
 ): Promise<void> => {
   return evaluateUserPropertyCondition(
     condition.operator,
@@ -37,5 +40,6 @@ export default (
     condition.value as UserConditionValue,
     integrations,
     options,
+    ruleAlias,
   );
 };

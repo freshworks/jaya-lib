@@ -8,6 +8,7 @@ export default (
   productEventData: ProductEventData,
   integrations: Integrations,
   options: RuleEngineOptions,
+  ruleAlias: string,
 ): Promise<void> => {
   const modelProperties = productEventData.conversation || productEventData.message;
 
@@ -17,5 +18,6 @@ export default (
     condition.value as string,
     integrations,
     options,
+    ruleAlias,
   );
 };

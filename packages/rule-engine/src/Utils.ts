@@ -160,6 +160,7 @@ export class Utils {
     integrations: Integrations,
     givenPlaceholders: PlaceholdersMap,
     options: RuleEngineOptions,
+    ruleAlias: string,
   ): Promise<PlaceholdersMap> {
     // Step 1: Extract dynamic placeholder keys from text
     // Step 2: Fetch data required by all matching keys
@@ -188,6 +189,7 @@ export class Utils {
               productEventPayload,
               integrations,
               options,
+              ruleAlias,
             );
             generatedPlaceholders[dynamicPlaceholderKey] = value;
           } catch (err) {
@@ -224,6 +226,7 @@ export class Utils {
     operand2: string | boolean,
     integrations: Integrations,
     options: RuleEngineOptions,
+    ruleAlias: string,
     conditionDataType?: ConditionDataType,
   ): Promise<void> {
     const sanitizedOperand1 =
@@ -233,7 +236,7 @@ export class Utils {
     const operatorFunc = ruleConfig.operators && ruleConfig.operators[operator];
 
     if (operatorFunc) {
-      return operatorFunc(sanitizedOperand1 as string, sanitizedOperand2, integrations, options);
+      return operatorFunc(sanitizedOperand1 as string, sanitizedOperand2, integrations, options, ruleAlias);
     }
 
     throw new Error('no matching condition');
@@ -249,7 +252,11 @@ export class Utils {
   /**
    * Gets business hour for an account based on businessHourId provided.
    */
-  public static getBusinessHour = (businessHourId: string, integrations: Integrations): Promise<BusinessHour> => {
+  public static getBusinessHour = (
+    businessHourId: string,
+    integrations: Integrations,
+    ruleAlias: string,
+  ): Promise<BusinessHour> => {
     const freshchatApiUrl = integrations.freshchatv1.url;
     const freshchatApiToken = integrations.freshchatv1.token;
     return new Promise((resolve, reject) => {
@@ -258,6 +265,8 @@ export class Utils {
           headers: {
             Authorization: freshchatApiToken,
             'Content-Type': 'application/json',
+            'x-automation-rule-alias': ruleAlias,
+            'x-service': 'advanced_automation',
           },
         })
         .then((response: { data: { operatingHours: BusinessHour[] } }) => {

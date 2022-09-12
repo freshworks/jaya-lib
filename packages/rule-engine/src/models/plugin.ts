@@ -12,11 +12,18 @@ export type PluginActions = {
     placeholders: PlaceholdersMap,
     apis: Api[],
     options: RuleEngineOptions,
+    ruleAlias: string,
   ) => Promise<PlaceholdersMap>;
 };
 
 export type PluginOperators = {
-  [key: string]: (op1: string, op2: string, integrations: Integrations, options: RuleEngineOptions) => Promise<void>;
+  [key: string]: (
+    op1: string,
+    op2: string,
+    integrations: Integrations,
+    options: RuleEngineOptions,
+    ruleAlias?: string,
+  ) => Promise<void>;
 };
 
 export type PluginTriggerActions = {
@@ -33,6 +40,7 @@ export type PluginConditions = {
     productEventData: ProductEventData,
     integrations: Integrations,
     options: RuleEngineOptions,
+    ruleAlias: string,
   ) => Promise<void>;
 };
 
@@ -41,6 +49,7 @@ export type PluginDynamicPlaceholders = {
     productEventPayload: ProductEventPayload,
     integrations: Integrations,
     options: RuleEngineOptions,
+    ruleAlias: string,
   ) => Promise<string>;
 };
 

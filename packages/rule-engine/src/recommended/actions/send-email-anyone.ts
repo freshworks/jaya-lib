@@ -14,6 +14,7 @@ export default async (
   placeholders: PlaceholdersMap,
   apis: Api[],
   options: RuleEngineOptions,
+  ruleAlias: string,
 ): Promise<PlaceholdersMap> => {
   const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
   const appId = modelProperties.app_id;
@@ -33,6 +34,7 @@ export default async (
       integrations,
       placeholders,
       options,
+      ruleAlias,
     );
 
     const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };

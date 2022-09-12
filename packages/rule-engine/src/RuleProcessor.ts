@@ -15,11 +15,13 @@ export class RuleProcessor {
     condition: Condition,
     integrations: Integrations,
     options: RuleEngineOptions,
+    rule: Rule,
   ): Promise<void> {
     const conditionFunc = ruleConfig.conditions && ruleConfig.conditions[condition.key];
 
     if (conditionFunc) {
-      return conditionFunc(condition, productEventData, integrations, options);
+      const ruleAlias = rule.ruleAlias || '';
+      return conditionFunc(condition, productEventData, integrations, options, ruleAlias);
     }
     throw new Error('Invalid condition key');
   }
@@ -32,6 +34,7 @@ export class RuleProcessor {
     block: Block,
     integrations: Integrations,
     options: RuleEngineOptions,
+    rule: Rule,
   ): Promise<void> {
     // Block is matching when there are no block conditions
     if (!block || !block.conditions || !block.conditions.length) {
@@ -42,7 +45,7 @@ export class RuleProcessor {
       case MatchType.All:
         return Promise.all(
           block.conditions.map((condition) => {
-            return this.isConditionMatching(productEventData, condition, integrations, options);
+            return this.isConditionMatching(productEventData, condition, integrations, options, rule);
           }),
         )
           .then(() => {
@@ -54,7 +57,7 @@ export class RuleProcessor {
       case MatchType.Any:
         return Promise.any(
           block.conditions.map((condition) => {
-            return this.isConditionMatching(productEventData, condition, integrations, options);
+            return this.isConditionMatching(productEventData, condition, integrations, options, rule);
           }),
         );
       default:
@@ -128,7 +131,7 @@ export class RuleProcessor {
       case MatchType.All:
         return Promise.all(
           rule.blocks.map((block) => {
-            return this.isBlockMatching(productEventData, block, integrations, options);
+            return this.isBlockMatching(productEventData, block, integrations, options, rule);
           }),
         )
           .then(() => {
@@ -140,7 +143,7 @@ export class RuleProcessor {
       case MatchType.Any:
         return Promise.any(
           rule.blocks.map((block) => {
-            return this.isBlockMatching(productEventData, block, integrations, options);
+            return this.isBlockMatching(productEventData, block, integrations, options, rule);
           }),
         );
       default:

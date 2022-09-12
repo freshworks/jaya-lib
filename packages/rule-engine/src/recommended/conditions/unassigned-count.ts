@@ -9,10 +9,11 @@ export default (
   productEventData: ProductEventData,
   integrations: Integrations,
   options: RuleEngineOptions,
+  ruleAlias: string,
 ): Promise<void> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
-  const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
+  const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken, ruleAlias);
   const modelProperties = productEventData.conversation || productEventData.message;
 
   return freshchat
@@ -24,6 +25,7 @@ export default (
         condition.value as string,
         integrations,
         options,
+        ruleAlias,
       );
     });
 };

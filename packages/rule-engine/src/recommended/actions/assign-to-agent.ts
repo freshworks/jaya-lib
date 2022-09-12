@@ -14,10 +14,11 @@ export default async (
   placeholders: PlaceholdersMap,
   apis: Api[],
   options: RuleEngineOptions,
+  ruleAlias: string,
 ): Promise<PlaceholdersMap> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
-  const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken);
+  const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken, ruleAlias);
   const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
   const conversationId = modelProperties.conversation_id;
 
@@ -43,6 +44,7 @@ export default async (
         integrations,
         placeholders,
         options,
+        ruleAlias,
       );
 
       const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
