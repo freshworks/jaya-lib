@@ -96,6 +96,8 @@ export class Utils {
     let hbsData = '';
     if (options && options.output === 'text') {
       hbsData = fs.readFileSync(path.resolve(__dirname, 'conversation-text.hbs'), 'utf-8');
+    } else if (options && options.output === 'paytm_html') {
+      hbsData = fs.readFileSync(path.resolve(__dirname, 'conversation-html-paytm.hbs'), 'utf-8');
     } else {
       hbsData = fs.readFileSync(path.resolve(__dirname, 'conversation-html.hbs'), 'utf-8');
     }

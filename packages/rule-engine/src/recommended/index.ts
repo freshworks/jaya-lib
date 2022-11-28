@@ -25,6 +25,8 @@ import triggerActionConversationLabelAssign from './trigger-actions/conversation
 import triggerActionConversationStatusUpdate from './trigger-actions/conversation-status-update';
 import triggerActionMessageCreate from './trigger-actions/message-create';
 import triggerActionPrivateNoteCreate from './trigger-actions/private-note-create';
+import triggerActionFirstSLABreach from './trigger-actions/first-sla-breach';
+import triggerActionNextSLABreach from './trigger-actions/next-sla-breach';
 
 // Import all trigger actors
 import triggerActorAgent from './trigger-actors/agent';
@@ -67,11 +69,13 @@ import conditionUserEmail from './conditions/user-email';
 import conditionUserPhone from './conditions/user-phone';
 import conditionLabelCategoryName from './conditions/label-category-name';
 import conditionLabelSubcategoryName from './conditions/label-subcategory-name';
+import conditionSLAName from './conditions/sla-name';
 
 // Import all dynamic placeholders
 import dynamicPlaceholderAverageWaitTime from './dynamic-placeholders/average-wait-time';
 import dynamicPlaceholderConversationUrl from './dynamic-placeholders/conversation-url';
 import dynamicPlaceholderTranscriptConvEntireHtml from './dynamic-placeholders/transcript-conv-entire-html';
+import dynamicPlaceholderTranscriptPaytmConvEntireHtml from './dynamic-placeholders/transcript-paytm-conv-entire-html';
 import dynamicPlaceholderTranscriptConvEntireIncludesPrivateSystemHtml from './dynamic-placeholders/transcript-conv-entire-includes-private-system-html';
 import dynamicPlaceholderTranscriptConvSinceLastResolveHtml from './dynamic-placeholders/transcript-conv-since-last-resolve-html';
 import dynamicPlaceholderTranscriptConvSinceLastResolveIncludesPrivateSystemHtml from './dynamic-placeholders/transcript-conv-since-last-resolve-includes-private-system-html';
@@ -117,6 +121,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionKey.UserPhone]: conditionUserPhone,
       [ConditionKey.LabelCategoryName]: conditionLabelCategoryName,
       [ConditionKey.LabelSubcategoryName]: conditionLabelSubcategoryName,
+      [ConditionKey.SLAName]: conditionSLAName,
     },
     dynamicPlaceholders: {
       'conversation.url': dynamicPlaceholderConversationUrl,
@@ -133,6 +138,7 @@ const recommendedPlugins: RulePlugin[] = [
       'transcript.conv_since_last_resolve.includes_private_system.text':
         dynamicPlaceholderTranscriptConvSinceLastResolveIncludesPrivateSystemText,
       'transcript.conv_since_last_resolve.text': dynamicPlaceholderTranscriptConvSinceLastResolveText,
+      'transcript.paytm_conv_entire.html': dynamicPlaceholderTranscriptPaytmConvEntireHtml,
     },
     operators: {
       [ConditionOperator.StartsWith]: operatorStartsWith,
@@ -158,6 +164,8 @@ const recommendedPlugins: RulePlugin[] = [
       [TriggerActionType.ConversationStatusUpdate]: triggerActionConversationStatusUpdate,
       [TriggerActionType.MessageCreate]: triggerActionMessageCreate,
       [TriggerActionType.PrivateNoteCreate]: triggerActionPrivateNoteCreate,
+      [TriggerActionType.FirstSlaBreach]: triggerActionFirstSLABreach,
+      [TriggerActionType.NextSlaBreach]: triggerActionNextSLABreach,
     },
     triggerActors: {
       [TriggerActorType.Agent]: triggerActorAgent,

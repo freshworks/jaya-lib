@@ -67,7 +67,7 @@ export interface GetConversationMessagesOptions {
   isFetchUntilLastResolve?: boolean;
   isIncludeFreshchatLink?: boolean;
   messagesLimit?: number;
-  output?: 'html' | 'text';
+  output?: 'html' | 'text' | 'paytm_html';
   timezoneOffset?: number;
 }
 
