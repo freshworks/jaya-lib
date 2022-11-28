@@ -1,0 +1,165 @@
+{{#*inline "messageFragment"}}
+  {{#if fragment.text}}
+    {{{nl2br fragment.text.content}}}
+  {{/if}}
+  {{#if fragment.image}}
+    <img src="{{fragment.image.url}}" style="max-height: 300px;max-width: 300px; border-radius: 4px;">
+  {{/if}}
+  {{#if fragment.file}}
+    Attached file: {{fragment.file.name}}
+  {{/if}}
+  {{#if fragment.reference}}
+    {{fragment.reference.label}}
+  {{/if}}
+  {{#if fragment.url_button}}
+    <a 
+      href="{{fragment.url_button.url}}"
+      target="_blank"
+      rel="noopener noreferrer"
+      style="font-weight: 600; border-radius: 3px; color: #333; text-decoration: none; cursor: pointer; text-align: center; display: block; background: linear-gradient(180deg,#fff 2.56%,#f5f7f9 95.75%); border: 1px solid #cfd7df; max-width: 240px; min-width: 75px; overflow-x: hidden; overflow-y: hidden; text-overflow: ellipsis; transition: none; margin-top: 6px; padding: 8px 15px 8px 10px;"
+    >
+      {{#if fragment.url_button.label}}
+        {{fragment.url_button.label}}
+      {{else}}
+        View FAQ
+      {{/if}}
+    </a>
+  {{/if}}
+  {{#if fragment.quick_reply_button}}
+    {{#if fragment.quick_reply_button.custom_reply_text}}
+      {{fragment.quick_reply_button.custom_reply_text}}
+    {{else}}
+      {{fragment.quick_reply_button.label}}
+    {{/if}}
+  {{/if}}
+  {{#if fragment.template_content}}
+    {{#if (eq fragment.template_content.type "carousel_card_default")}}
+      {{#each fragment.template_content.sections as | section |}}
+        {{#each section.parts as | part |}}
+          {{> messageFragment fragment=part}}
+        {{/each}}
+      {{/each}}
+    {{/if}}
+  {{/if}}
+  {{#if fragment.collection}}
+    {{#each fragment.collection.sub_parts as | sub_part |}}
+      {{> messageFragment fragment=sub_part}}
+    {{/each}}
+  {{/if}}
+{{/inline}}
+
+<table style="margin-left: auto;margin-right: auto;">
+  <tr>	
+    <td style="color: #999999;font-size: 11px;float: right;">	
+      * All Timestamps in GMT	{{timezone}}
+    </td>	
+  </tr>
+  <tr>
+    <td>
+      <table style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;margin:0px auto;background: #f4f8fa;overflow: auto;padding: 0 15px; min-width: 200px; margin: 0px;">
+        {{#each (reverse messages) as | message |}}
+        {{!-- System message --}}
+          {{#if (or (isTruthy message.meta_data) (eq message.message_type "system"))}}
+            <tr style="border: none;">
+              <td style="padding: 8px; font-size:12px; color: #6f7071;text-align: center;max-width: 300px; line-height: 1.24;">
+                {{#each message.message_parts as | message_part |}}
+                  {{> messageFragment fragment=message_part}}
+                {{/each}}
+                <span style="color: #999999; font-size: 11px;">
+                  {{date message.created_time format="hh:mm A, Do MMM" offset=../timezoneOffset}}
+                </span>
+              </td>
+            </tr>
+          {{!-- User message --}}
+          {{else if (and (eq message.actor_type "user") (eq message.message_type "normal"))}}
+            <tr style="border: none;">
+              <td style="padding: 10px 20px;color: #333;color: #3f3f46;">
+                <div style="padding:0 5px 0 0;font-size:12px; color: #6f7071;margin-left: 33px;">
+                  {{#if (and ../user ../user.first_name)}}
+                    {{../user.first_name}}
+                  {{else}}
+                    User
+                  {{/if}}
+                </div>
+                {{#if (and ../user ../user.avatar.url)}}
+                  <img src="{{../user.avatar.url}}" style="width: 30px;height: 30px;border-radius: 50% 6px 50% 50%;float:left;margin-right: 3px;">
+                {{else}}
+                  <img src="https://images.freshchat.com/30x30/fresh-chat-names/anonymous.png" style="width: 30px;height: 30px;border-radius: 50% 6px 50% 50%;float:left;margin-right: 3px;">
+                {{/if}}
+                <div style="border-radius: 4px 20px 20px;line-height: 21px;background: #a8ddfd;max-width: 300px;padding: 12px;float: left;">
+                  {{#each message.message_parts as | message_part index|}}
+                    <div style="word-break: break-all;">
+                      {{#if (eq index 0)}}
+                          User:
+                      {{/if}}
+                      {{> messageFragment fragment=message_part}}
+                    </div>
+                  {{/each}}
+                </div>
+                <div style="color: #999999; font-size: 11px; clear: left;margin-left: 33px;">
+                  {{date message.created_time format="hh:mm A, Do MMM" offset=../timezoneOffset}}
+                </div>
+              </td>
+            <tr>
+          {{!-- Agent message --}}
+          {{else}}
+            <tr style="border: none;">
+              <td style="padding: 10px 20px;color: #3f3f46;">
+                <div style="float:right">
+                  <div style="font-size: 12px;font-weight: 500;float: right; color: #6f7071; margin-right: 33px;">
+                    {{#if (and message.actor_id (lookup ../agents message.actor_id))}}
+                      {{#with (lookup ../agents message.actor_id) as | agent |}}
+                        {{agent.first_name}}
+                      {{/with}}
+                    {{else}}
+                      Bot
+                    {{/if}}
+                  </div>
+
+                  {{#if (and message.actor_id (lookup ../agents message.actor_id))}}
+                    {{#with (lookup ../agents message.actor_id) as | agent |}}
+                      {{#if agent.avatar.url}}
+                        <img src="{{agent.avatar.url}}" style="width: 30px;height: 30px;border-radius: 6px 50% 50% 50%;margin-left:5px;float:right;clear:right">
+                      {{else}}
+                        <img src="https://images.freshchat.com/30x30/fresh-chat-names/Alphabets/{{truncate agent.first_name 1}}.png" style="width: 30px;height: 30px;border-radius: 6px 50% 50% 50%;margin-left:5px;float:right;clear:right">
+                      {{/if}}
+                    {{/with}}
+                  {{else}}
+                    <img src="https://images.freshchat.com/30x30/fresh-chat-names/anonymous.png" style="width: 30px;height: 30px;border-radius: 6px 50% 50% 50%;margin-left:5px;float:right;clear:right">
+                  {{/if}}
+
+                  <div style="float: right;line-height: 20.4px;border-radius: 20px 4px 20px 20px;background-color: #ffffff;max-width: 300px;padding: 12px;{{#if (eq message.message_type "private")}}background-color: #fff0b2!important;border: 1px solid #d8cb5f;border-radius: 3px!important;box-shadow: none;padding: 10px 15px;{{/if}}">
+                    {{#each message.message_parts as | message_part index|}}
+                      <div style="font-size: 13.6px; word-break: break-all; line-height: 1.24;">
+                        {{#if (eq index 0)}}
+                          Agent:
+                        {{/if}}
+                        {{> messageFragment fragment=message_part}}
+                      </div>
+                    {{/each}}
+                  </div>
+                  <div style="color: #999999;font-size: 11px;clear: right;">
+                    {{date message.created_time format="hh:mm A, Do MMM" offset=../timezoneOffset}}
+                  </div>
+                </div>
+              </td>
+            <tr>
+          {{/if}}
+        {{/each}}
+      </table>
+    </td>
+  </tr>
+  {{#if isIncludeFreshchatLink}}
+    <tr>
+      <td>
+        <table style="margin:10px auto;padding:0 20px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#333;line-height:1.4;margin: 0px;min-width: 100%;">
+          <tr>
+            <td style="text-align: center;">
+              <span style="font-size: 13px; color: #999"><a href="{{conversationUrl}}" target="_blank" style="font-weight: 500; color: #999; text-decoration: none">View conversation in Freshchat</a></span>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  {{/if}}
+</table>

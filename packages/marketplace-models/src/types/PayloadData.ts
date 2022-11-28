@@ -192,6 +192,7 @@ export interface ModelProperties {
   reopened_time: string | null;
   resolved_time: string | null;
   response_due_type: ResponseDueType;
+  sla_policy_name?: string | null;
   source?: ConversationSource;
   statistics: {
     agent_reassignment_time_bhrs: number;
@@ -255,6 +256,7 @@ export interface ProductEventData {
       do_not_auto_resolve: [boolean, boolean];
       label_category_id: [string, string];
       label_subcategory_id: [string, string];
+      sla_breach: [boolean, boolean];
       status: [ChangedStatus, ChangedStatus];
     };
   };

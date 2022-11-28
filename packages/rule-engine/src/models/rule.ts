@@ -28,7 +28,9 @@ export enum TriggerActionType {
   ConversationGroupAssign = 'CONVERSATION_GROUP_ASSIGN',
   ConversationLabelAssign = 'CONVERSATION_LABEL_ASSIGN',
   ConversationStatusUpdate = 'CONVERSATION_STATUS_UPDATE',
+  FirstSlaBreach = 'FIRST_SLA_BREACH',
   MessageCreate = 'MESSAGE_CREATE',
+  NextSlaBreach = 'NEXT_SLA_BREACH',
   PrivateNoteCreate = 'PRIVATE_NOTE_CREATE',
 }
 
@@ -61,6 +63,7 @@ export enum ConditionKey {
   LabelSubcategoryName = 'LABEL_SUBCATEGORY_NAME',
   MessageText = 'MESSAGE_TEXT',
   ResponseDueType = 'RESPONSE_DUE_TYPE',
+  SLAName = 'SLA_NAME',
   Status = 'STATUS',
   UnassignedCount = 'UNASSIGNED_COUNT',
   UserEmail = 'USER_EMAIL',
