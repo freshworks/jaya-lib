@@ -22,6 +22,7 @@ export enum TriggerActorCause {
 }
 
 export enum TriggerActionType {
+  CallEnded = 'CALL_ENDED', //--update after BE
   ConversationAgentAssign = 'CONVERSATION_AGENT_ASSIGN',
   ConversationCreate = 'CONVERSATION_CREATE',
   ConversationDoNotAutoResolve = 'CONVERSATION_DO_NOT_AUTO_RESOLVE',

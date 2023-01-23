@@ -197,6 +197,7 @@ export interface ModelProperties {
   statistics: {
     agent_reassignment_time_bhrs: number;
     agent_reassignment_time_chrs: number;
+    call_ended: [boolean, boolean]; //--update
     first_agent_assignment_time_bhrs: number;
     first_agent_assignment_time_chrs: number;
     first_group_assignment_time_bhrs: number;
@@ -207,6 +208,7 @@ export interface ModelProperties {
     group_reassignment_time_chrs: number;
     resolution_time_bhrs: number;
     resolution_time_chrs: number;
+    sla_breach: [boolean, boolean];
     wait_time_bhrs: number;
     wait_time_chrs: number;
   };
