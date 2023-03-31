@@ -257,7 +257,7 @@ export default class Freshchat {
    */
   conversationStatusUpdate(
     conversationId: string,
-    status: 'assigned' | 'new' | 'resolved',
+    status: 'assigned' | 'new' | 'resolved' | 'waiting on customer' | 'waiting on internal team',
   ): AxiosPromise<Conversation> {
     const conversationStatusUpdateApiUrl = `${this.apiUrl}/conversations/${conversationId}`;
 
