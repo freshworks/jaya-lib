@@ -50,6 +50,9 @@ const findMatchingKeys = (message: string, placeholdersMap: { [key: string]: unk
     .map((placeholder) => {
       return placeholder.replace('.', '\\.');
     })
+    .filter((placeholder) => {
+      return !placeholder.includes('?');
+    })
     .join('|');
 
   // Regex to find all placeholder keys in a given string with the format:
@@ -67,6 +70,9 @@ const findMatchingPlaceholders = (message: string, placeholdersMap: { [key: stri
   const placeholdersRegExpString = Object.keys(placeholdersMap)
     .map((placeholder) => {
       return placeholder.replace('.', '\\.');
+    })
+    .filter((placeholder) => {
+      return !placeholder.includes('?');
     })
     .join('|');
 
