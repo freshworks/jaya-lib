@@ -69,6 +69,9 @@ export class RuleProcessor {
    * Checks if the given actor matches for the actor received from payload.
    */
   public static isTriggerActorMatch(actor: TriggerActor, productEventData: ProductEventData): boolean {
+    if (productEventData.actor === null && actor.type === 'SYSTEM') {
+      return true;
+    }
     const triggerActorFunc = ruleConfig.triggerActors && ruleConfig.triggerActors[actor.type];
 
     if (triggerActorFunc) {

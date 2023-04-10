@@ -4,7 +4,8 @@ import { TriggerAction } from '../../models/rule';
 export default (productEvent: Event, productEventData: ProductEventData, triggerAction: TriggerAction): boolean => {
   return (
     productEvent === Event.ConversationUpdate &&
-    !!productEventData.changes.model_changes &&
-    productEventData.changes.model_changes.call_ended[1] //--update
+    !!productEventData.conversation.ext_entity_meta &&
+    productEventData.conversation.ext_entity_meta.meta &&
+    productEventData.conversation.ext_entity_meta.meta.call_life_cycle_event_type === 'CALL_ENDS'
   );
 };

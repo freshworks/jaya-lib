@@ -181,6 +181,11 @@ export interface ModelProperties {
   conversation_id: string;
   created_time: string;
   do_not_auto_resolve: boolean;
+  ext_entity_meta: {
+    meta: {
+      call_life_cycle_event_type: string;
+    };
+  };
   first_agent_assigned_time: string | null;
   first_group_assigned_time: string | null;
   group_assigned_time: string | null;
@@ -197,7 +202,6 @@ export interface ModelProperties {
   statistics: {
     agent_reassignment_time_bhrs: number;
     agent_reassignment_time_chrs: number;
-    call_ended: [boolean, boolean]; //--update
     first_agent_assignment_time_bhrs: number;
     first_agent_assignment_time_chrs: number;
     first_group_assignment_time_bhrs: number;
