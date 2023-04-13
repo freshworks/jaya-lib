@@ -22,7 +22,7 @@ export default async (
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken, ruleAlias);
   const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
   const conversationId = modelProperties.conversation_id;
-  const appId = modelProperties.app_id;
+  const appId = productEventPayload.account_id;
   const userEmail =
     productEventPayload.data.associations &&
     productEventPayload.data.associations.user &&
