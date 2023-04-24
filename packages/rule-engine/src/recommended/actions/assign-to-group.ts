@@ -47,7 +47,7 @@ export default async (
   }
 
   try {
-    await freshchat.conversationAssign(conversationId, assignedGroupId, 'group', ConversationStatus.New);
+    await freshchat.conversationAssign(conversationId, assignedGroupId, 'group', modelProperties.status);
   } catch (err) {
     Utils.log(
       productEventPayload,
