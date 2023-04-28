@@ -2,12 +2,16 @@ export enum ConversationStatus {
   Assigned = 'assigned',
   New = 'new',
   Resolved = 'resolved',
+  WaitingOnCustomer = 'waiting on customer',
+  WaitingOnInternalTeam = 'waiting on internal team',
 }
 
 export enum ChangedStatus {
   Assigned = 'assigned',
   New = 'new',
   Resolved = 'resolved',
+  WaitingOnCustomer = 'waiting on customer',
+  WaitingOnInternalTeam = 'waiting on internal team',
 }
 
 export enum MessageType {
