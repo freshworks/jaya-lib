@@ -53,6 +53,7 @@ import actionUpdateUserLastName from './actions/update-user-last-name';
 import actionCreateFreshdeskTicket from './actions/create-freshdesk-ticket';
 import actionSendEmailUser from './actions/send-email-user';
 import actionSendEmailAnyone from './actions/send-email-anyone';
+import actionUpdateStatus from './actions/update-status';
 
 // Import all conditions
 import conditionMessageText from './conditions/message-text';
@@ -105,6 +106,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ActionType.UpdateUserName]: actionUpdateUserFirstName,
       [ActionType.UpdateUserLastName]: actionUpdateUserLastName,
       [ActionType.UpdateUserPhone]: actionUpdateUserPhone,
+      [ActionType.UpdateStatus]: actionUpdateStatus,
     },
     conditions: {
       [ConditionKey.AutoResolve]: conditionAutoResolve,
