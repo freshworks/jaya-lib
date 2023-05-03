@@ -2,9 +2,9 @@ import { ConversationStatus, ProductEventPayload } from '@freshworks-jaya/market
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
-import { Utils } from '../../Utils';
 import { Api } from '../../models/rule';
-import { ErrorCodes, ErrorTypes, getErrorPayload } from '../../models/error-codes';
+import { Utils } from '../../Utils';
+import { ErrorCodes, ErrorTypes } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
 
 export default async (
@@ -21,41 +21,34 @@ export default async (
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken, ruleAlias);
   const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
   const conversationId = modelProperties.conversation_id;
+  let conversationStatus = actionValue as ConversationStatus;
+  let assignedAgentId = '';
 
-  let assignedGroupId = actionValue as string;
-
-  if (actionValue === '-1') {
-    assignedGroupId = '';
-  } else {
-    try {
-      let generatedPlaceholders: PlaceholdersMap = {};
-      generatedPlaceholders = await Utils.getDynamicPlaceholders(
-        assignedGroupId,
-        productEventPayload,
-        integrations,
-        placeholders,
-        options,
-        ruleAlias,
-      );
-
-      const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
-
-      assignedGroupId = Utils.processHandlebarsAndReplacePlaceholders(assignedGroupId, combinedPlaceholders);
-    } catch (err) {
-      return Promise.reject();
+  if (conversationStatus === ConversationStatus.Assigned) {
+    if (productEventPayload.data.associations.agent) {
+      assignedAgentId = productEventPayload.data.associations.agent.id;
+    } else {
+      conversationStatus = ConversationStatus.New;
     }
   }
 
   try {
-    await freshchat.conversationAssign(conversationId, assignedGroupId, 'group', modelProperties.status);
+    if (assignedAgentId !== '') {
+      await freshchat.conversationAssign(conversationId, assignedAgentId, 'agent', conversationStatus);
+    } else {
+      await freshchat.conversationStatusUpdate(conversationId, conversationStatus);
+    }
   } catch (err) {
     Utils.log(
       productEventPayload,
       integrations,
       ErrorCodes.FreshchatAction,
       {
-        error: getErrorPayload(err),
-        errorType: ErrorTypes.FreshchatAssignGroup,
+        error: {
+          data: err?.response?.data,
+          headers: err?.response?.headers,
+        },
+        errorType: ErrorTypes.FreshchatReopenConversation,
       },
       LogSeverity.ERROR,
     );

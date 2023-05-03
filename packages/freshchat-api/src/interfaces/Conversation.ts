@@ -2,6 +2,8 @@ export enum ConversationStatus {
   Assigned = 'assigned',
   New = 'new',
   Resolved = 'resolved',
+  WaitingOnCustomer = 'waiting on customer',
+  WaitingOnInternalTeam = 'waiting on internal team',
 }
 
 export interface Conversation {
