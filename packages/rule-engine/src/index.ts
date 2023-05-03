@@ -1,4 +1,4 @@
-import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
+import {  ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import {
   RuleEngineOptions,
   Integrations,
@@ -6,13 +6,16 @@ import {
   KairosCredentials,
 } from './models/rule-engine';
 
-import { Api, CustomPlaceholdersMap, Rule } from './models/rule';
+import { Api, CustomPlaceholdersMap, JsonMap, Rule } from './models/rule';
 import { RulePlugin } from './models/plugin';
 import { RuleProcessor } from './RuleProcessor';
 import { ActionExecutor } from './ActionExecutor';
 import { TimerRuleEngine } from './TimerRuleEngine';
 import ruleConfig from './RuleConfig';
 import recommendedPlugins from './recommended/index';
+import { Utils } from './Utils';
+import { ErrorCodes } from './models/error-codes';
+import { LogSeverity } from './services/GoogleCloudLogging';
 
 export * from './models/rule';
 export * from './models/rule-engine';
@@ -54,6 +57,16 @@ export class RuleEngine {
         // Process all timer rules.
         await TimerRuleEngine.triggerTimers(payload, rules, externalEventUrl, kairosCredentials, integrations, options);
       } catch (err) {
+        Utils.log(
+          payload,
+          integrations,
+          ErrorCodes.INVALIDATE_TIMER_ERROR,
+          {
+            err: err as JsonMap,
+          },
+          LogSeverity.ALERT,
+        );
+
         return Promise.reject(err);
       }
     }
@@ -71,7 +84,7 @@ export class RuleEngine {
       if (firstMatchingRule.actions && firstMatchingRule.actions.length) {
         const ruleAlias = firstMatchingRule.ruleAlias || '';
 
-        await ActionExecutor.handleActions(
+        const resp = await ActionExecutor.handleActions(
           integrations,
           firstMatchingRule.actions,
           payload,
@@ -80,8 +93,28 @@ export class RuleEngine {
           options,
           ruleAlias,
         );
+
+        Utils.infolog(
+          payload,
+          integrations,
+          ErrorCodes.INVALIDATE_TIMER_ERROR,
+          {
+            resp: resp as unknown as JsonMap,
+          },
+          LogSeverity.ALERT,
+        );
       }
     } catch (err) {
+      Utils.infolog(
+        payload,
+        integrations,
+        ErrorCodes.INVALIDATE_TIMER_ERROR,
+        {
+          err: err as JsonMap,
+        },
+        LogSeverity.ALERT,
+      );
+
       return Promise.reject(err);
     }
 
@@ -110,6 +143,20 @@ export class RuleEngine {
         );
         return Promise.resolve();
       } catch (err) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { data, ...rest } = payload;
+        const resp = rest as ProductEventPayload;
+
+        Utils.infolog(
+          resp,
+          integrations,
+          ErrorCodes.PROCESS_EXTERNAL_EVENT_ERROR,
+          {
+            err: err as JsonMap,
+          },
+          LogSeverity.ALERT,
+        );
+
         return Promise.reject(err);
       }
     }

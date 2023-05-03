@@ -4,7 +4,7 @@ import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import { Utils } from '../../Utils';
 import { Api } from '../../models/rule';
-import { ErrorCodes, ErrorTypes } from '../../models/error-codes';
+import { ErrorCodes, ErrorTypes, getErrorPayload } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
 
 export default async (
@@ -44,10 +44,7 @@ export default async (
       integrations,
       ErrorCodes.FreshchatAction,
       {
-        error: {
-          data: err?.response?.data,
-          headers: err?.response?.headers,
-        },
+        error: getErrorPayload(err),
         errorType: ErrorTypes.FreshchatUpdateFirstName,
       },
       LogSeverity.ERROR,

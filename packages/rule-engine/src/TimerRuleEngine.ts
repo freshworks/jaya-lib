@@ -17,7 +17,7 @@ import {
   RuleEngineOptions,
 } from './models/rule-engine';
 import { Utils } from './Utils';
-import { ErrorCodes, ErrorTypes } from './models/error-codes';
+import { APITraceCodes, ErrorCodes, ErrorTypes, getErrorPayload } from './models/error-codes';
 import { LogSeverity } from './services/GoogleCloudLogging';
 export class TimerRuleEngine {
   /**
@@ -76,6 +76,7 @@ export class TimerRuleEngine {
         await this.isMatchingTimerRule(payload.event, payload.data, rule, integrations, options);
         isMatchingTimerRule = true;
       } catch (err) {}
+
       if (isMatchingTimerRule) {
         const ruleIdentifier = rule.ruleAlias ? rule.ruleAlias : ruleIndex;
         const jobId = `${modelProperties.app_id}_${modelProperties.conversation_id}_${ruleIdentifier}`;
@@ -91,6 +92,13 @@ export class TimerRuleEngine {
         if (!existingSchedule) {
           const scheduledTime = this.addSeconds(new Date(), rule.timerValue).toISOString();
 
+          const data = {
+            actor: payload.data.actor,
+            associations: payload.data.associations,
+            conversation: payload.data.conversation,
+            message: payload.data.message,
+          };
+
           schedulesToCreate = [
             ...schedulesToCreate,
             {
@@ -99,12 +107,7 @@ export class TimerRuleEngine {
                 jobId,
                 originalPayload: {
                   account_id: payload.account_id,
-                  data: {
-                    actor: payload.data.actor,
-                    associations: payload.data.associations,
-                    conversation: payload.data.conversation,
-                    message: payload.data.message,
-                  },
+                  data: data,
                   domain: payload.domain,
                   event: payload.event,
                   region: payload.region,
@@ -124,17 +127,27 @@ export class TimerRuleEngine {
     }
     if (schedulesToCreate.length) {
       try {
-        await scheduler.bulkCreateSchedules(schedulesToCreate);
+        const resp = await scheduler.bulkCreateSchedules(schedulesToCreate);
+
+        // logging successful creation of rule schedule
+        Utils.log(
+          payload,
+          integrations,
+          APITraceCodes.CREATE_SCHEDULE_SUCCESS,
+          {
+            jobIds: schedulesToCreate.map((schedule) => schedule.jobId),
+            resp: resp as never,
+          },
+          LogSeverity.DEBUG,
+        );
       } catch (err) {
+        // logging failed schedule creation
         Utils.log(
           payload,
           integrations,
           ErrorCodes.KairosError,
           {
-            error: {
-              data: err?.response?.data,
-              responseHeaders: err?.response?.headers,
-            },
+            error: getErrorPayload(err),
             errorType: ErrorTypes.KairosBulkCreateSchedules,
             jobIds: schedulesToCreate.map((schedule) => schedule.jobId),
           },
@@ -164,17 +177,25 @@ export class TimerRuleEngine {
 
     // Delete schedule for given jobId
     try {
-      await scheduler.deleteSchedule(externalEventPayload.data.jobId);
+      const resp = await scheduler.deleteSchedule(externalEventPayload.data.jobId);
+
+      Utils.log(
+        externalEventPayload as unknown as ProductEventPayload,
+        integrations,
+        APITraceCodes.EXECUTE_SCHEDULE_SUCCESS,
+        {
+          jobId: externalEventPayload.data?.jobId,
+          resp: resp as never,
+        },
+        LogSeverity.DEBUG,
+      );
     } catch (err) {
       Utils.log(
         externalEventPayload as unknown as ProductEventPayload,
         integrations,
         ErrorCodes.KairosError,
         {
-          error: {
-            data: err?.response?.data,
-            responseHeaders: err?.response?.headers,
-          },
+          error: getErrorPayload(err),
           errorType: ErrorTypes.KairosDeleteCompletedSchedule,
           jobId: externalEventPayload.data?.jobId,
         },
@@ -292,17 +313,26 @@ export class TimerRuleEngine {
             webhookUrl: externalEventUrl,
           })
           .then(
-            () => Promise.resolve(),
+            (resp) => {
+              Utils.log(
+                resp as unknown as ProductEventPayload,
+                integrations,
+                APITraceCodes.DELAY_SCHEDULE_CREATION,
+                {
+                  jobId: createScheduleJobId,
+                  resp: resp as never,
+                },
+                LogSeverity.DEBUG,
+              );
+              return Promise.resolve();
+            },
             (err) => {
               Utils.log(
                 payload,
                 integrations,
                 ErrorCodes.KairosError,
                 {
-                  error: {
-                    data: err?.response?.data,
-                    responseHeaders: err?.response?.headers,
-                  },
+                  error: getErrorPayload(err),
                   errorType: ErrorTypes.KairosCreteScheduleToDelayInvalidation,
                   jobId: createScheduleJobId,
                 },
@@ -315,17 +345,26 @@ export class TimerRuleEngine {
       } else {
         // Bulk delete the jobs
         return scheduler.bulkDeleteSchedules(jobsToDelete).then(
-          () => Promise.resolve(),
+          (resp) => {
+            Utils.log(
+              resp as unknown as ProductEventPayload,
+              integrations,
+              APITraceCodes.INVALIDATE_SCHEDULE_SUCCESS,
+              {
+                jobId: jobsToDelete,
+                resp: resp as never,
+              },
+              LogSeverity.DEBUG,
+            );
+            return Promise.resolve();
+          },
           (err) => {
             Utils.log(
               payload,
               integrations,
               ErrorCodes.KairosError,
               {
-                error: {
-                  data: err?.response?.data,
-                  responseHeaders: err?.response?.headers,
-                },
+                error: getErrorPayload(err),
                 errorType: ErrorTypes.KairosDeleteInvalidatedSchedules,
                 jobIds: jobsToDelete,
               },

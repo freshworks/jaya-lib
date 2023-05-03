@@ -1,13 +1,24 @@
+import { JsonMap } from './rule';
+
 export enum ErrorCodes {
   DynamicPlaceholder = 'DYNAMIC_PLACEHOLDER_ERROR',
   EmailTrace = 'EMAIL_TRACE',
   FreshchatAction = 'FRESHCHAT_ACTION_ERROR',
   FreshchatPlaceholder = 'FRESHCHAT_PLACEHOLDER_ERROR',
   FreshdeskTicket = 'FRESHDESK_TICKET_CREATE_ERROR',
+  INVALIDATE_TIMER_ERROR = 'INVALIDATE_TIMER_ERROR',
   KairosError = 'KAIROS_ERROR',
+  PROCESS_EXTERNAL_EVENT_ERROR = 'PROCESS_EXTERNAL_EVENT_ERROR',
   SendEmail = 'SEND_EMAIL_ERROR',
   TriggerAPIError = 'TRIGGER_API_ERROR',
   TriggerAPITrace = 'TRIGGER_API_TRACE',
+}
+
+export enum APITraceCodes {
+  CREATE_SCHEDULE_SUCCESS = 'CREATE_SCHEDULE_SUCCESS',
+  DELAY_SCHEDULE_CREATION = 'DELAY_SCHEDULE_CREATION',
+  EXECUTE_SCHEDULE_SUCCESS = 'EXECUTE_SCHEDULE_SUCCESS',
+  INVALIDATE_SCHEDULE_SUCCESS = 'INVALIDATE_SCHEDULE_SUCCESS',
 }
 
 export enum ErrorTypes {
@@ -37,4 +48,18 @@ export enum ErrorTypes {
   TranscriptLastResolvePrivateSystemHtml = 'TRANSCRIPT_LAST_RESOLVE_PRIVATE_SYSTEM_HTML',
   TranscriptLastResolvePrivateSystemText = 'TRANSCRIPT_LAST_RESOLVE_PRIVATE_SYSTEM_TEXT',
   TranscriptLastResolveText = 'TRANSCRIPT_LAST_RESOLVE_TEXT_ERROR',
+}
+export interface ErrorObj {
+  response: {
+    data?: JsonMap;
+    headers?: JsonMap;
+  };
+}
+
+export function getErrorPayload(err: unknown): JsonMap {
+  const { response } = err as ErrorObj;
+  return {
+    data: response?.data,
+    responseHeaders: response?.headers,
+  } as JsonMap;
 }

@@ -87,7 +87,7 @@ export class Utils {
   public static async log(
     productEventPayload: ProductEventPayload,
     integrations: Integrations,
-    errorCode: ErrorCodes,
+    errorCode: string,
     info: JsonMap,
     severity?: LogSeverity,
   ): Promise<void> {
@@ -110,6 +110,34 @@ export class Utils {
           event_name: productEventPayload.event,
           info,
           message_id: messageId || 0,
+          region: productEventPayload.region,
+        },
+        severity || LogSeverity.ERROR,
+      );
+    } catch (err) {}
+  }
+
+  public static async infolog(
+    productEventPayload: ProductEventPayload,
+    integrations: Integrations,
+    errorCode: ErrorCodes,
+    info: JsonMap,
+    severity?: LogSeverity,
+  ): Promise<void> {
+    try {
+      const conversation = productEventPayload.data?.conversation || productEventPayload.data?.message;
+      const conversationId = conversation?.conversation_id;
+      const googleCloudLogging = new GoogleCloudLogging(integrations.googleCloudLoggingConfig);
+
+      googleCloudLogging.log(
+        {
+          account_id: productEventPayload?.account_id,
+          conversation_id: conversationId,
+          domain: productEventPayload?.domain,
+          error_code: errorCode,
+          event_epoch: new Date(productEventPayload?.timestamp * 1000).toISOString(),
+          event_name: productEventPayload.event,
+          info,
           region: productEventPayload.region,
         },
         severity || LogSeverity.ERROR,
@@ -195,7 +223,7 @@ export class Utils {
           } catch (err) {
             this.log(productEventPayload, integrations, ErrorCodes.DynamicPlaceholder, {
               dynamicPlaceholderKey,
-              error: err,
+              error: err as JsonMap,
             });
           }
         }
