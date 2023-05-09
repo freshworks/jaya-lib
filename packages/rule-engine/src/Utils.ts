@@ -117,21 +117,17 @@ export class Utils {
         severity || LogSeverity.ERROR,
       );
     } catch (err) {
-
       const googleCloudLogging = new GoogleCloudLogging(integrations.googleCloudLoggingConfig);
 
       googleCloudLogging.log(
         {
           cause: 'new_log_test',
-          domain: productEventPayload.domain,
           err: err as AnyJson,
-          error_code: errorCode,
-          event_epoch: new Date(productEventPayload.timestamp * 1000).toISOString(),
-          event_name: productEventPayload.event,
+          error_code: 'LOGGING_ERROR',
           info,
           type: 'base_log',
         },
-        severity || LogSeverity.ERROR,
+        severity || LogSeverity.NOTICE,
       );
     }
   }
@@ -163,7 +159,20 @@ export class Utils {
         },
         severity || LogSeverity.ERROR,
       );
-    } catch (err) {}
+    } catch (err) {
+      const googleCloudLogging = new GoogleCloudLogging(integrations.googleCloudLoggingConfig);
+
+      googleCloudLogging.log(
+        {
+          cause: 'new_log_test',
+          err: err as AnyJson,
+          error_code: 'LOGGING_ERROR',
+          info,
+          type: 'info_log',
+        },
+        severity || LogSeverity.NOTICE,
+      );
+    }
   }
 
   /**
