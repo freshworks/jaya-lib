@@ -1,4 +1,4 @@
-import {  ProductEventPayload } from '@freshworks-jaya/marketplace-models';
+import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import {
   RuleEngineOptions,
   Integrations,
@@ -64,7 +64,7 @@ export class RuleEngine {
           {
             err: err as JsonMap,
           },
-          LogSeverity.ALERT,
+          LogSeverity.WARNING,
         );
 
         return Promise.reject(err);
@@ -101,7 +101,7 @@ export class RuleEngine {
           {
             resp: resp as unknown as JsonMap,
           },
-          LogSeverity.ALERT,
+          LogSeverity.INFO,
         );
       }
     } catch (err) {

@@ -2,6 +2,7 @@ import Kairos, { KairosSchedule, KairosScheduleOptions } from '@freshworks-jaya/
 import { Event, ProductEventPayload, ProductEventData, ModelProperties } from '@freshworks-jaya/marketplace-models';
 import { ActionExecutor } from './ActionExecutor';
 import {
+  AnyJson,
   Api,
   CustomPlaceholdersMap,
   Rule,
@@ -135,8 +136,8 @@ export class TimerRuleEngine {
           integrations,
           APITraceCodes.CREATE_SCHEDULE_SUCCESS,
           {
-            jobIds: schedulesToCreate.map((schedule) => schedule.jobId),
-            resp: resp as never,
+            jobIds: schedulesToCreate as unknown as AnyJson,
+            resp: resp as unknown as AnyJson,
           },
           LogSeverity.DEBUG,
         );
@@ -347,7 +348,7 @@ export class TimerRuleEngine {
         return scheduler.bulkDeleteSchedules(jobsToDelete).then(
           (resp) => {
             Utils.log(
-              resp as unknown as ProductEventPayload,
+              (resp.data as unknown as ProductEventPayload) ?? {},
               integrations,
               APITraceCodes.INVALIDATE_SCHEDULE_SUCCESS,
               {
