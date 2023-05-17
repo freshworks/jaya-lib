@@ -15,7 +15,7 @@ import { htmlToText } from 'html-to-text';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { ErrorCodes } from './models/error-codes';
-import { ConditionDataType, JsonMap } from './models/rule';
+import { AnyJson, ConditionDataType, JsonMap } from './models/rule';
 import { GoogleCloudLogging, LogSeverity } from './services/GoogleCloudLogging';
 
 dayjs.extend(utc);
@@ -87,8 +87,8 @@ export class Utils {
   public static async log(
     productEventPayload: ProductEventPayload,
     integrations: Integrations,
-    errorCode: ErrorCodes,
-    info: JsonMap,
+    errorCode: string,
+    info: AnyJson,
     severity?: LogSeverity,
   ): Promise<void> {
     try {
@@ -103,6 +103,7 @@ export class Utils {
           account_id: productEventPayload.account_id,
           actor_subentity: productEventPayload.data.actor.sub_entity || null,
           actor_type: productEventPayload.data.actor.type,
+          cause: 'new_log_test',
           conversation_id: conversationId,
           domain: productEventPayload.domain,
           error_code: errorCode,
@@ -111,10 +112,67 @@ export class Utils {
           info,
           message_id: messageId || 0,
           region: productEventPayload.region,
+          type: 'base_log',
         },
         severity || LogSeverity.ERROR,
       );
-    } catch (err) {}
+    } catch (err) {
+      const googleCloudLogging = new GoogleCloudLogging(integrations.googleCloudLoggingConfig);
+
+      googleCloudLogging.log(
+        {
+          cause: 'new_log_test',
+          err: err as AnyJson,
+          error_code: 'LOGGING_ERROR',
+          info,
+          type: 'base_log',
+        },
+        severity || LogSeverity.NOTICE,
+      );
+    }
+  }
+
+  public static async infolog(
+    productEventPayload: ProductEventPayload,
+    integrations: Integrations,
+    errorCode: ErrorCodes,
+    info: JsonMap,
+    severity?: LogSeverity,
+  ): Promise<void> {
+    try {
+      const conversation = productEventPayload.data?.conversation || productEventPayload.data?.message;
+      const conversationId = conversation?.conversation_id;
+      const googleCloudLogging = new GoogleCloudLogging(integrations.googleCloudLoggingConfig);
+
+      googleCloudLogging.log(
+        {
+          account_id: productEventPayload?.account_id,
+          cause: 'new_log_test',
+          conversation_id: conversationId,
+          domain: productEventPayload?.domain,
+          error_code: errorCode,
+          event_epoch: new Date(productEventPayload?.timestamp * 1000).toISOString(),
+          event_name: productEventPayload.event,
+          info,
+          region: productEventPayload.region,
+          type: 'info_log',
+        },
+        severity || LogSeverity.ERROR,
+      );
+    } catch (err) {
+      const googleCloudLogging = new GoogleCloudLogging(integrations.googleCloudLoggingConfig);
+
+      googleCloudLogging.log(
+        {
+          cause: 'new_log_test',
+          err: err as AnyJson,
+          error_code: 'LOGGING_ERROR',
+          info,
+          type: 'info_log',
+        },
+        severity || LogSeverity.NOTICE,
+      );
+    }
   }
 
   /**
@@ -195,7 +253,7 @@ export class Utils {
           } catch (err) {
             this.log(productEventPayload, integrations, ErrorCodes.DynamicPlaceholder, {
               dynamicPlaceholderKey,
-              error: err,
+              error: err as JsonMap,
             });
           }
         }

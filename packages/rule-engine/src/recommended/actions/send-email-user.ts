@@ -5,7 +5,7 @@ import axios from 'axios';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Api } from '../../models/rule';
 import { Utils } from '../../Utils';
-import { ErrorCodes } from '../../models/error-codes';
+import { ErrorCodes, getErrorPayload } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
 
 export default async (
@@ -88,10 +88,7 @@ export default async (
     );
   } catch (err) {
     Utils.log(productEventPayload, integrations, ErrorCodes.SendEmail, {
-      error: {
-        data: err?.response?.data,
-        headers: err?.response?.headers,
-      },
+      error: getErrorPayload(err),
     });
     return Promise.reject('Error sending conversation as html via email');
   }

@@ -217,11 +217,13 @@ export default async (
       LogSeverity.INFO,
     );
   } catch (err) {
+    const error = err as JsonMap;
+
     Utils.log(productEventPayload, integrations, ErrorCodes.TriggerAPIError, {
       apiName: triggerApi.name,
       error: {
-        code: err.code,
-        message: err.message,
+        code: error.code,
+        message: error.message,
       },
     });
     return Promise.reject('Trigger webhook failure');
