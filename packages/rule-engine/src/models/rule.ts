@@ -22,6 +22,7 @@ export enum TriggerActorCause {
 }
 
 export enum TriggerActionType {
+  CallEnded = 'CALL_ENDED',
   ConversationAgentAssign = 'CONVERSATION_AGENT_ASSIGN',
   ConversationCreate = 'CONVERSATION_CREATE',
   ConversationDoNotAutoResolve = 'CONVERSATION_DO_NOT_AUTO_RESOLVE',
@@ -47,6 +48,7 @@ export enum ActionType {
   SendQuickreply = 'SEND_QUICKREPLY',
   TriggerApi = 'TRIGGER_API',
   UnassignThenReassignGroup = 'UNASSIGN_THEN_REASSIGN_GROUP',
+  UpdateStatus = 'UPDATE_STATUS',
   UpdateUserEmail = 'UPDATE_USER_EMAIL',
   UpdateUserLastName = 'UPDATE_USER_LAST_NAME',
   UpdateUserName = 'UPDATE_USER_NAME',
@@ -97,6 +99,8 @@ export enum ConversationStatusChangeValue {
   Assigned = 'ASSIGNED',
   New = 'NEW',
   Resolved = 'RESOLVED',
+  WaitingOnCustomer = 'waiting on customer',
+  WaitingOnInternalTeam = 'waiting on internal team',
 }
 
 export enum WebhookRequestType {

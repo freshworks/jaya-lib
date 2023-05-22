@@ -27,6 +27,7 @@ import triggerActionMessageCreate from './trigger-actions/message-create';
 import triggerActionPrivateNoteCreate from './trigger-actions/private-note-create';
 import triggerActionFirstSLABreach from './trigger-actions/first-sla-breach';
 import triggerActionNextSLABreach from './trigger-actions/next-sla-breach';
+import triggerActionCallEnded from './trigger-actions/call-ended';
 
 // Import all trigger actors
 import triggerActorAgent from './trigger-actors/agent';
@@ -52,6 +53,7 @@ import actionUpdateUserLastName from './actions/update-user-last-name';
 import actionCreateFreshdeskTicket from './actions/create-freshdesk-ticket';
 import actionSendEmailUser from './actions/send-email-user';
 import actionSendEmailAnyone from './actions/send-email-anyone';
+import actionUpdateStatus from './actions/update-status';
 
 // Import all conditions
 import conditionMessageText from './conditions/message-text';
@@ -104,6 +106,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ActionType.UpdateUserName]: actionUpdateUserFirstName,
       [ActionType.UpdateUserLastName]: actionUpdateUserLastName,
       [ActionType.UpdateUserPhone]: actionUpdateUserPhone,
+      [ActionType.UpdateStatus]: actionUpdateStatus,
     },
     conditions: {
       [ConditionKey.AutoResolve]: conditionAutoResolve,
@@ -166,6 +169,7 @@ const recommendedPlugins: RulePlugin[] = [
       [TriggerActionType.PrivateNoteCreate]: triggerActionPrivateNoteCreate,
       [TriggerActionType.FirstSlaBreach]: triggerActionFirstSLABreach,
       [TriggerActionType.NextSlaBreach]: triggerActionNextSLABreach,
+      [TriggerActionType.CallEnded]: triggerActionCallEnded,
     },
     triggerActors: {
       [TriggerActorType.Agent]: triggerActorAgent,

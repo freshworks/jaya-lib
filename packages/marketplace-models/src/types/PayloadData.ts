@@ -2,12 +2,16 @@ export enum ConversationStatus {
   Assigned = 'assigned',
   New = 'new',
   Resolved = 'resolved',
+  WaitingOnCustomer = 'waiting on customer',
+  WaitingOnInternalTeam = 'waiting on internal team',
 }
 
 export enum ChangedStatus {
   Assigned = 'assigned',
   New = 'new',
   Resolved = 'resolved',
+  WaitingOnCustomer = 'waiting on customer',
+  WaitingOnInternalTeam = 'waiting on internal team',
 }
 
 export enum MessageType {
@@ -181,6 +185,11 @@ export interface ModelProperties {
   conversation_id: string;
   created_time: string;
   do_not_auto_resolve: boolean;
+  ext_entity_meta: {
+    meta: {
+      call_life_cycle_event_type: string;
+    };
+  };
   first_agent_assigned_time: string | null;
   first_group_assigned_time: string | null;
   group_assigned_time: string | null;
@@ -207,6 +216,7 @@ export interface ModelProperties {
     group_reassignment_time_chrs: number;
     resolution_time_bhrs: number;
     resolution_time_chrs: number;
+    sla_breach: [boolean, boolean];
     wait_time_bhrs: number;
     wait_time_chrs: number;
   };
