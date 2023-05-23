@@ -17,7 +17,7 @@ import {
   RuleEngineOptions,
 } from './models/rule-engine';
 import { Utils } from './Utils';
-import { ErrorCodes, ErrorTypes } from './models/error-codes';
+import { ErrorCodes, ErrorTypes, APITraceCodes } from './models/error-codes';
 import { LogSeverity } from './services/GoogleCloudLogging';
 export class TimerRuleEngine {
   /**
@@ -91,6 +91,24 @@ export class TimerRuleEngine {
         if (!existingSchedule) {
           const scheduledTime = this.addSeconds(new Date(), rule.timerValue).toISOString();
 
+          const originalPayload = {
+            account_id: payload.account_id,
+            data: {
+              actor: payload.data.actor,
+              associations: payload.data.associations,
+              conversation: payload.data.conversation,
+              message: payload.data.message,
+            },
+            domain: payload.domain,
+            event: payload.event,
+            region: payload.region,
+            timestamp: payload.timestamp,
+            version: payload.timestamp,
+          };
+
+          // encoded data is sent to make sure that translatetions are not corrupted by Kairos API
+          const encodedPayload = Buffer.from(JSON.stringify(originalPayload)).toString('base64');
+
           schedulesToCreate = [
             ...schedulesToCreate,
             {
@@ -98,18 +116,8 @@ export class TimerRuleEngine {
               payload: {
                 jobId,
                 originalPayload: {
-                  account_id: payload.account_id,
-                  data: {
-                    actor: payload.data.actor,
-                    associations: payload.data.associations,
-                    conversation: payload.data.conversation,
-                    message: payload.data.message,
-                  },
-                  domain: payload.domain,
-                  event: payload.event,
-                  region: payload.region,
-                  timestamp: payload.timestamp,
-                  version: payload.timestamp,
+                  ...originalPayload,
+                  encodedData: encodedPayload,
                 },
                 ruleAlias: rule.ruleAlias,
                 ruleIndex,
@@ -125,6 +133,17 @@ export class TimerRuleEngine {
     if (schedulesToCreate.length) {
       try {
         await scheduler.bulkCreateSchedules(schedulesToCreate);
+
+        // logging successful creation of rule schedule
+        await Utils.log(
+          payload,
+          integrations,
+          APITraceCodes.CREATE_SCHEDULE_SUCCESS,
+          {
+            jobIds: schedulesToCreate.map((schedule) => schedule?.jobId),
+          },
+          LogSeverity.NOTICE,
+        );
       } catch (err) {
         Utils.log(
           payload,
@@ -165,6 +184,16 @@ export class TimerRuleEngine {
     // Delete schedule for given jobId
     try {
       await scheduler.deleteSchedule(externalEventPayload.data.jobId);
+
+      await Utils.log(
+        externalEventPayload as unknown as ProductEventPayload,
+        integrations,
+        APITraceCodes.EXECUTE_SCHEDULE_SUCCESS,
+        {
+          jobId: externalEventPayload.data?.jobId,
+        },
+        LogSeverity.DEBUG,
+      );
     } catch (err) {
       Utils.log(
         externalEventPayload as unknown as ProductEventPayload,
@@ -189,6 +218,11 @@ export class TimerRuleEngine {
       timerRule = rules.find((rule) => rule.ruleAlias === externalEventPayload.data.ruleAlias);
     } else {
       timerRule = rules[externalEventPayload.data.ruleIndex];
+    }
+
+    if (externalEventPayload.data.originalPayload?.encodedData) {
+      const data = Buffer.from(externalEventPayload.data.originalPayload.encodedData as string, 'base64').toString();
+      externalEventPayload.data.originalPayload = JSON.parse(data) as ProductEventPayload;
     }
 
     // Execute actions
@@ -292,7 +326,18 @@ export class TimerRuleEngine {
             webhookUrl: externalEventUrl,
           })
           .then(
-            () => Promise.resolve(),
+            async () => {
+              await Utils.log(
+                payload,
+                integrations,
+                APITraceCodes.DELAY_SCHEDULE_CREATION,
+                {
+                  jobId: createScheduleJobId,
+                },
+                LogSeverity.NOTICE,
+              );
+              return Promise.resolve();
+            },
             (err) => {
               Utils.log(
                 payload,
@@ -315,7 +360,18 @@ export class TimerRuleEngine {
       } else {
         // Bulk delete the jobs
         return scheduler.bulkDeleteSchedules(jobsToDelete).then(
-          () => Promise.resolve(),
+          async () => {
+            await Utils.log(
+              payload,
+              integrations,
+              APITraceCodes.INVALIDATE_SCHEDULE_SUCCESS,
+              {
+                jobId: jobsToDelete,
+              },
+              LogSeverity.NOTICE,
+            );
+            return Promise.resolve();
+          },
           (err) => {
             Utils.log(
               payload,
