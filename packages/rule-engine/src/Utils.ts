@@ -14,8 +14,8 @@ import Handlebars from 'handlebars';
 import { htmlToText } from 'html-to-text';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import { ErrorCodes } from './models/error-codes';
-import { ConditionDataType, JsonMap } from './models/rule';
+import { APITraceCodes, ErrorCodes } from './models/error-codes';
+import { AnyJson, ConditionDataType, JsonMap } from './models/rule';
 import { GoogleCloudLogging, LogSeverity } from './services/GoogleCloudLogging';
 
 dayjs.extend(utc);
@@ -87,8 +87,8 @@ export class Utils {
   public static async log(
     productEventPayload: ProductEventPayload,
     integrations: Integrations,
-    errorCode: ErrorCodes,
-    info: JsonMap,
+    errorCode: ErrorCodes | APITraceCodes,
+    info: JsonMap | AnyJson,
     severity?: LogSeverity,
   ): Promise<void> {
     try {
