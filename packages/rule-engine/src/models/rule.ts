@@ -48,6 +48,7 @@ export enum ActionType {
   SendQuickreply = 'SEND_QUICKREPLY',
   TriggerApi = 'TRIGGER_API',
   UnassignThenReassignGroup = 'UNASSIGN_THEN_REASSIGN_GROUP',
+  UpdateConversationProperty = 'UPDATE_CONVERSATION_PROPERTY',
   UpdateStatus = 'UPDATE_STATUS',
   UpdateUserEmail = 'UPDATE_USER_EMAIL',
   UpdateUserLastName = 'UPDATE_USER_LAST_NAME',
