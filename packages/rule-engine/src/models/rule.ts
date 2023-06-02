@@ -181,6 +181,11 @@ export interface UserConditionValue {
   propertyValue: string;
 }
 
+export interface ConversationPropsConditionValue {
+  propertyKey: string;
+  propertyValue: string;
+}
+
 export interface QuickReplyValue {
   question: string;
   responses: string;

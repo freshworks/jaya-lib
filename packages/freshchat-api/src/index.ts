@@ -433,4 +433,24 @@ export default class Freshchat {
 
     return axios.get(rawReportsApiUrl, { headers: this.headers }).then((response) => response.data);
   }
+
+  /**
+   * Calls Freshchat Conversation API to update Conversation Properties.
+   */
+  conversationPropertiesUpdate(
+    conversationId: string,
+    status: 'assigned',
+    properties: {},
+  ): AxiosPromise<Conversation> {
+    const conversationPropsUpdateApiUrl = `${this.apiUrl}/conversations/${conversationId}`;
+
+    return axios.put(
+      conversationPropsUpdateApiUrl,
+      JSON.stringify({
+        properties,
+        status,
+      }),
+      { headers: this.headers },
+    );
+  }
 }
