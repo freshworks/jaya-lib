@@ -73,6 +73,13 @@ export class Utils {
     return Array.from(new Set(actorIds));
   };
 
+  public static extractSystemUserIds = (messages: Message[]): string[] => {
+    const actorIds = messages
+      .filter((message) => message.actor_id && message.actor_type === undefined)
+      .map((message) => message.actor_id);
+    return Array.from(new Set(actorIds));
+  };
+
   public static extractUserId = (messages: Message[]): string | undefined => {
     const userMessage = messages.find((message) => message.actor_type === ActorType.User);
 
@@ -85,12 +92,18 @@ export class Utils {
     conversationId: string,
     messages: Message[],
     agents: Agent[],
+    systemUsers: Agent[],
     user: User,
     options?: GetConversationMessagesOptions,
   ): string => {
     const agentsMap: { [key: string]: Agent } = {};
     agents.forEach((agent) => {
       agentsMap[agent.id] = agent;
+    });
+
+    // Mapping system user as agents
+    systemUsers.forEach((user) => {
+      agentsMap[user.id] = user;
     });
 
     let hbsData = '';

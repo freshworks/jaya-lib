@@ -41,10 +41,13 @@ const getTicketConversationContent = async (
     // Step 3: Get agents by id
     const agents = await freshchat.getAgentsById(agentIds);
 
-    // Step 4: Extract userId
+    // Step 4: Get system users
+    const systemUsers = await freshchat.getSystemUsersById(agentIds);
+
+    // Step 5: Extract userId
     const userId = FreshchatUtils.extractUserId(allMessages);
 
-    // Step 5: Get user by id
+    // Step 6: Get user by id
     let user: FreshchatUser | null = null;
     if (userId) {
       user = await freshchat.getUserById(userId);
@@ -62,6 +65,7 @@ const getTicketConversationContent = async (
       conversationId,
       descriptionMessages,
       agents,
+      systemUsers,
       user as FreshchatUser,
       {
         isIncludeFreshchatLink: false,
@@ -74,6 +78,7 @@ const getTicketConversationContent = async (
       conversationId,
       allMessages,
       agents,
+      systemUsers,
       user as FreshchatUser,
       {
         isIncludeFreshchatLink: true,
