@@ -1,9 +1,9 @@
 import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
-import { Integrations } from '../../models/rule-engine';
+import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import { Utils } from '../../Utils';
-import { ConversationPropsConditionValue, JsonMap } from '../../models/rule';
+import { Api, ConversationPropsConditionValue, JsonMap } from '../../models/rule';
 import { ErrorCodes, ErrorTypes } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
 
@@ -11,6 +11,9 @@ export default async (
   integrations: Integrations,
   productEventPayload: ProductEventPayload,
   actionValue: unknown,
+  placeholders: PlaceholdersMap,
+  apis: Api[],
+  options: RuleEngineOptions,
   ruleAlias: string,
 ): Promise<PlaceholdersMap> => {
   const freshchatApiUrl = integrations.freshchatv2.url;
