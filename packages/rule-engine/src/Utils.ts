@@ -222,8 +222,8 @@ export class Utils {
    */
   public static evaluateCondition(
     operator: ConditionOperator,
-    operand1: string | boolean,
-    operand2: string | boolean,
+    operand1: string | boolean | Array<string>,
+    operand2: string | boolean | Array<string>,
     integrations: Integrations,
     options: RuleEngineOptions,
     ruleAlias: string,

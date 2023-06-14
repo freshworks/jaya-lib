@@ -198,6 +198,7 @@ export interface ModelProperties {
   label_subcategory_id: string | null;
   messages?: Message[];
   org_contact_id: string | null;
+  properties: any;
   reopened_time: string | null;
   resolved_time: string | null;
   response_due_type: ResponseDueType;

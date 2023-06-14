@@ -15,6 +15,14 @@ import operatorOutsideBusinessHrs from './operators/outside-business-hours';
 import operatorLessThan from './operators/less-than';
 import operatorGreaterThan from './operators/greater-than';
 import operatorMatchRegex from './operators/match-regex';
+import operatorAfter from './operators/after';
+import operatorBefore from './operators/before';
+import operatorContainsAllOf from './operators/contains-all-of';
+import operatorContainsNoneOf from './operators/contains-none-of';
+import operatorIs from './operators/is';
+import operatorIsFalse from './operators/is-false';
+import operatorIsNot from './operators/is-not';
+import operatorIsTrue from './operators/is-true';
 
 // Import all trigger actions
 import triggerActionConversationAgentAssign from './trigger-actions/conversation-agent-assign';
@@ -72,6 +80,7 @@ import conditionUserPhone from './conditions/user-phone';
 import conditionLabelCategoryName from './conditions/label-category-name';
 import conditionLabelSubcategoryName from './conditions/label-subcategory-name';
 import conditionSLAName from './conditions/sla-name';
+import conditionConversationProperty from './conditions/conversation-property';
 
 // Import all dynamic placeholders
 import dynamicPlaceholderAverageWaitTime from './dynamic-placeholders/average-wait-time';
@@ -125,6 +134,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionKey.LabelCategoryName]: conditionLabelCategoryName,
       [ConditionKey.LabelSubcategoryName]: conditionLabelSubcategoryName,
       [ConditionKey.SLAName]: conditionSLAName,
+      [ConditionKey.ConversationProperty]: conditionConversationProperty,
     },
     dynamicPlaceholders: {
       'conversation.url': dynamicPlaceholderConversationUrl,
@@ -157,6 +167,14 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionOperator.WithinBusinessHours]: operatorWithinBusinessHrs,
       [ConditionOperator.OutsideBusinessHours]: operatorOutsideBusinessHrs,
       [ConditionOperator.MatchRegex]: operatorMatchRegex,
+      [ConditionOperator.After]: operatorAfter,
+      [ConditionOperator.Before]: operatorBefore,
+      [ConditionOperator.ContainsAllOf]: operatorContainsAllOf,
+      [ConditionOperator.ContainsNoneOf]: operatorContainsNoneOf,
+      [ConditionOperator.Is]: operatorIs,
+      [ConditionOperator.IsFalse]: operatorIsFalse,
+      [ConditionOperator.IsNot]: operatorIsNot,
+      [ConditionOperator.IsTrue]: operatorIsTrue,
     },
     triggerActions: {
       [TriggerActionType.ConversationAgentAssign]: triggerActionConversationAgentAssign,
