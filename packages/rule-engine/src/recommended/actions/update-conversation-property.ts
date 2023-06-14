@@ -40,9 +40,9 @@ export default async (
           data: err as JsonMap,
         },
         errorType: ErrorTypes.FreshchatUpdateProperty,
-        lala: convPropertiesActionValue.propertyKey,
-        lsss: convPropertiesActionValue.propertyValue,
         properties: err as JsonMap,
+        propertyKey: convPropertiesActionValue.propertyKey,
+        propertyValue: convPropertiesActionValue.propertyValue,
       },
       LogSeverity.ERROR,
     );
