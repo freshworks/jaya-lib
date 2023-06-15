@@ -62,6 +62,7 @@ const getTicketConversationContent = async (
       conversationId,
       descriptionMessages,
       agents,
+      [],
       user as FreshchatUser,
       {
         isIncludeFreshchatLink: false,
@@ -74,6 +75,7 @@ const getTicketConversationContent = async (
       conversationId,
       allMessages,
       agents,
+      [],
       user as FreshchatUser,
       {
         isIncludeFreshchatLink: true,
@@ -189,7 +191,7 @@ export default async (
         requestProxy: integrations.marketplaceServices.requestProxy,
       },
     );
-  } catch (err) {
+  } catch (err: any) {
     Utils.log(productEventPayload, integrations, ErrorCodes.FreshdeskTicket, {
       error: {
         data: err?.response?.data,
