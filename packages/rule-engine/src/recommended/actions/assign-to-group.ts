@@ -47,7 +47,9 @@ export default async (
   }
 
   try {
-    await freshchat.conversationAssign(conversationId, assignedGroupId, 'group', modelProperties.status);
+    const convoStatus =
+      modelProperties.status === ConversationStatus.Resolved ? ConversationStatus.Resolved : ConversationStatus.New;
+    await freshchat.conversationAssign(conversationId, assignedGroupId, 'group', convoStatus);
   } catch (err) {
     Utils.log(
       productEventPayload,
