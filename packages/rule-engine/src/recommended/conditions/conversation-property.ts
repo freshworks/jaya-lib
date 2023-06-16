@@ -1,10 +1,10 @@
 import { ModelProperties, ProductEventData } from '@freshworks-jaya/marketplace-models';
-import { Condition, ConditionOperator, ConversationPropsConditionValue } from '../../models/rule';
+import { Condition, ConditionOperator, ConversationPropsConditionValue, JsonMap } from '../../models/rule';
 import { Utils } from '../../Utils';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 
 /**
- * Check if the given userProperty condition is satisfied by the userObj.
+ * Check if the given conversationProperty condition is satisfied by the convObj.
  */
 const evaluateConversationPropertyCondition = (
   operator: ConditionOperator,
@@ -15,11 +15,15 @@ const evaluateConversationPropertyCondition = (
   ruleAlias: string,
 ): Promise<void> => {
   const propertyKey = conditionValue.propertyKey;
-  const matchedProperty = convObj.properties[propertyKey];
+  let matchedProperty = convObj.properties[propertyKey];
+  if (Array.isArray(conditionValue.propertyValue)) {
+    conditionValue.propertyValue = conditionValue.propertyValue.toString();
+    matchedProperty = matchedProperty.toString();
+  }
 
   return Utils.evaluateCondition(
     operator,
-    (matchedProperty && matchedProperty.value) || '',
+    matchedProperty || '',
     conditionValue.propertyValue,
     integrations,
     options,
