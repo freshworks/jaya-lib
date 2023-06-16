@@ -227,7 +227,7 @@ export default class Freshchat {
       } else {
         return Promise.resolve(result);
       }
-    } catch (err: any) {
+    } catch (err) {
       if (err.response && err.response.data) {
         return Promise.reject(err.response.data);
       } else {
@@ -326,7 +326,7 @@ export default class Freshchat {
   async getSystemUserById(userId: string): Promise<Agent> {
     const getUserApiUrl = `${this.apiUrl}/users/${userId}?system_user=true`;
 
-    return axios.get(getUserApiUrl, { headers: this.headers }).then((response: any) => response.data);
+    return axios.get(getUserApiUrl, { headers: this.headers }).then((response) => response.data);
   }
 
   getAgentById(agentId: string): Promise<Agent> {
