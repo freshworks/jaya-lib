@@ -191,7 +191,7 @@ export default async (
         requestProxy: integrations.marketplaceServices.requestProxy,
       },
     );
-  } catch (err: any) {
+  } catch (err) {
     Utils.log(productEventPayload, integrations, ErrorCodes.FreshdeskTicket, {
       error: {
         data: err?.response?.data,
