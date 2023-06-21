@@ -1,5 +1,5 @@
 import { ModelProperties, ProductEventData } from '@freshworks-jaya/marketplace-models';
-import { Condition, ConditionOperator, ConversationPropsConditionValue, JsonMap } from '../../models/rule';
+import { Condition, ConditionOperator, PropertiesConditionValue, JsonMap } from '../../models/rule';
 import { Utils } from '../../Utils';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 
@@ -9,7 +9,7 @@ import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 const evaluateConversationPropertyCondition = (
   operator: ConditionOperator,
   convObj: ModelProperties,
-  conditionValue: ConversationPropsConditionValue,
+  conditionValue: PropertiesConditionValue,
   integrations: Integrations,
   options: RuleEngineOptions,
   ruleAlias: string,
@@ -41,7 +41,7 @@ export default (
   return evaluateConversationPropertyCondition(
     condition.operator,
     productEventData.conversation || productEventData.message,
-    condition.value as ConversationPropsConditionValue,
+    condition.value as PropertiesConditionValue,
     integrations,
     options,
     ruleAlias,
