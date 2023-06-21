@@ -1,5 +1,5 @@
 import { ProductEventData, User } from '@freshworks-jaya/marketplace-models';
-import { Condition, UserConditionValue, ConditionOperator } from '../../models/rule';
+import { Condition, KeyValueConditionValue, ConditionOperator } from '../../models/rule';
 import { Utils } from '../../Utils';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 
@@ -9,7 +9,7 @@ import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 const evaluateUserPropertyCondition = (
   operator: ConditionOperator,
   userObj: User,
-  conditionValue: UserConditionValue,
+  conditionValue: KeyValueConditionValue,
   integrations: Integrations,
   options: RuleEngineOptions,
   ruleAlias: string,
@@ -37,7 +37,7 @@ export default (
   return evaluateUserPropertyCondition(
     condition.operator,
     productEventData.associations.user,
-    condition.value as UserConditionValue,
+    condition.value as KeyValueConditionValue,
     integrations,
     options,
     ruleAlias,

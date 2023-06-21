@@ -3,7 +3,7 @@ import Freshchat from '@freshworks-jaya/freshchat-api';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import { Utils } from '../../Utils';
-import { Api, ConversationPropsConditionValue, JsonMap } from '../../models/rule';
+import { Api, KeyValueConditionValue, JsonMap } from '../../models/rule';
 import { ErrorCodes, ErrorTypes } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
 
@@ -24,7 +24,7 @@ export default async (
   const assigned_agent_id = modelProperties.assigned_agent_id ? modelProperties.assigned_agent_id : '';
   const status = modelProperties.status;
 
-  const convPropertiesActionValue = actionValue as ConversationPropsConditionValue;
+  const convPropertiesActionValue = actionValue as KeyValueConditionValue;
   try {
     const properties = {
       [convPropertiesActionValue.propertyKey]: convPropertiesActionValue.propertyValue,

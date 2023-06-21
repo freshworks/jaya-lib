@@ -177,12 +177,7 @@ export interface SendEmailAnyoneValue {
   to: string[];
 }
 
-export interface UserConditionValue {
-  propertyKey: string;
-  propertyValue: string;
-}
-
-export interface ConversationPropsConditionValue {
+export interface KeyValueConditionValue {
   propertyKey: string;
   propertyValue: string;
 }
@@ -195,7 +190,7 @@ export interface QuickReplyValue {
 export interface Condition {
   key: ConditionKey;
   operator: ConditionOperator;
-  value: string | UserConditionValue | ResponseDueTypeValue | QuickReplyValue;
+  value: string | KeyValueConditionValue | ResponseDueTypeValue | QuickReplyValue;
 }
 
 export interface Block {

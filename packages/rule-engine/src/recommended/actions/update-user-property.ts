@@ -3,7 +3,7 @@ import Freshchat from '@freshworks-jaya/freshchat-api';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import { Utils } from '../../Utils';
-import { Api, UserConditionValue } from '../../models/rule';
+import { Api, KeyValueConditionValue } from '../../models/rule';
 import { ErrorCodes, ErrorTypes } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
 
@@ -20,7 +20,7 @@ export default async (
   const freshchatApiToken = integrations.freshchatv2.token;
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken, ruleAlias);
 
-  const userPropertiesActionValue = actionValue as UserConditionValue;
+  const userPropertiesActionValue = actionValue as KeyValueConditionValue;
   let generatedPlaceholders: PlaceholdersMap = {};
 
   try {

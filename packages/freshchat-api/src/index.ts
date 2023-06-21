@@ -444,25 +444,20 @@ export default class Freshchat {
     assigned_agent_id: string,
   ): AxiosPromise<Conversation> {
     const conversationPropsUpdateApiUrl = `${this.apiUrl}/conversations/${conversationId}`;
+    let requiredProperties;
     if (assigned_agent_id !== '' && status === ConversationStatus.Assigned) {
-      return axios.put(
-        conversationPropsUpdateApiUrl,
-        JSON.stringify({
-          assigned_agent_id,
-          properties,
-          status,
-        }),
-        { headers: this.headers },
-      );
-    }
-
-    return axios.put(
-      conversationPropsUpdateApiUrl,
-      JSON.stringify({
+      requiredProperties = JSON.stringify({
+        assigned_agent_id,
         properties,
         status,
-      }),
-      { headers: this.headers },
-    );
+      });
+    } else {
+      requiredProperties = JSON.stringify({
+        properties,
+        status,
+      });
+    }
+
+    return axios.put(conversationPropsUpdateApiUrl, requiredProperties, { headers: this.headers });
   }
 }
