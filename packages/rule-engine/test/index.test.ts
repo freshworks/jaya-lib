@@ -27,6 +27,11 @@ describe('RuleEngine test', () => {
         reopened_time: '2020-04-05T16:58:52.806Z',
         app_id: 'some-app-id',
         status: 'new',
+        ext_entity_meta: {
+          meta: {
+            call_status: 'COMPLETED',
+          },
+        },
         messages: [
           {
             created_time: '2020-04-06T05:01:40.601Z',
@@ -139,6 +144,45 @@ describe('RuleEngine test', () => {
     },
   ];
 
+  const rules2 = [
+    {
+      blocks: [
+        {
+          conditions: [
+            {
+              operator: 'EQUALS',
+              value: 'COMPLETED',
+              key: 'CALL_STATUS',
+            },
+          ],
+          matchType: 'ANY',
+        },
+      ],
+      name: 'When agent says hi',
+      isTimer: false,
+      actions: [
+        {
+          type: 'SEND_MESSAGE',
+          value: 'hello',
+        },
+      ],
+      timerValue: 5,
+      triggers: [
+        {
+          actor: {
+            type: 'AGENT',
+          },
+          action: {
+            type: 'MESSAGE_CREATE',
+          },
+        },
+      ],
+      matchType: 'ANY',
+      invalidators: null,
+      isEnabled: true,
+    },
+  ];
+
   describe('invokes RuleEngine constructor with plugins', () => {
     const ruleEngine = new RuleEngine([]);
 
@@ -175,6 +219,27 @@ describe('RuleEngine test', () => {
         .processProductEvent(
           productEventPayload as any as ProductEventPayload,
           rules as any as Rule[],
+          [],
+          {},
+          {
+            isSchedulerEnabled: false,
+            isUseStaticIP: false,
+            maxProductEventDelay: 30000,
+          },
+          'some-external-event-url',
+          integrations as any as Integrations,
+        )
+        .then(() => {
+          assert.ok('triggers processProductEvent function with params and matching rule');
+        });
+    });
+
+    it('triggers processProductEvent function with params and matching rule 2', () => {
+      const ruleEngine = new RuleEngine();
+      ruleEngine
+        .processProductEvent(
+          productEventPayload as any as ProductEventPayload,
+          rules2 as any as Rule[],
           [],
           {},
           {
