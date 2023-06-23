@@ -267,6 +267,7 @@ export interface ProductEventData {
       do_not_auto_resolve: [boolean, boolean];
       label_category_id: [string, string];
       label_subcategory_id: [string, string];
+      priority: [string, string];
       sla_breach: [boolean, boolean];
       status: [ChangedStatus, ChangedStatus];
     };

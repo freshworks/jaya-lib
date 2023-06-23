@@ -36,6 +36,7 @@ import triggerActionPrivateNoteCreate from './trigger-actions/private-note-creat
 import triggerActionFirstSLABreach from './trigger-actions/first-sla-breach';
 import triggerActionNextSLABreach from './trigger-actions/next-sla-breach';
 import triggerActionCallEnded from './trigger-actions/call-ended';
+import triggerActionUpdateConversationProperty from './trigger-actions/update-conversation-property';
 
 // Import all trigger actors
 import triggerActorAgent from './trigger-actors/agent';
@@ -188,6 +189,7 @@ const recommendedPlugins: RulePlugin[] = [
       [TriggerActionType.FirstSlaBreach]: triggerActionFirstSLABreach,
       [TriggerActionType.NextSlaBreach]: triggerActionNextSLABreach,
       [TriggerActionType.CallEnded]: triggerActionCallEnded,
+      [TriggerActionType.UpdateConversationProperty]: triggerActionUpdateConversationProperty,
     },
     triggerActors: {
       [TriggerActorType.Agent]: triggerActorAgent,
