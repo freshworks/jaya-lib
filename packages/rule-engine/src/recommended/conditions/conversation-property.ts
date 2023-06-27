@@ -18,7 +18,7 @@ const evaluateConversationPropertyCondition = (
   let matchedProperty = convObj.properties[propertyKey];
   if (Array.isArray(conditionValue.propertyValue)) {
     conditionValue.propertyValue = conditionValue.propertyValue.toString();
-    matchedProperty = matchedProperty.toString();
+    matchedProperty = JSON.stringify(matchedProperty);
   }
 
   return Utils.evaluateCondition(
