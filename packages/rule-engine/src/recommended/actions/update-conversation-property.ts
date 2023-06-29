@@ -3,7 +3,7 @@ import Freshchat from '@freshworks-jaya/freshchat-api';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import { Utils } from '../../Utils';
-import { Api, PropertiesConditionValue } from '../../models/rule';
+import { Api, PropertiesConditionValue, JsonMap } from '../../models/rule';
 import { ErrorCodes, ErrorTypes } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
 
@@ -19,33 +19,17 @@ export default async (
   const freshchatApiUrl = integrations.freshchatv2.url;
   const freshchatApiToken = integrations.freshchatv2.token;
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken, ruleAlias);
+  const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
+  const conversationId = modelProperties.conversation_id;
+  const assigned_agent_id = modelProperties.assigned_agent_id ? modelProperties.assigned_agent_id : '';
+  const status = modelProperties.status;
 
-  const userPropertiesActionValue = actionValue as PropertiesConditionValue;
-  let generatedPlaceholders: PlaceholdersMap = {};
-
+  const convPropertiesActionValue = actionValue as PropertiesConditionValue;
   try {
-    generatedPlaceholders = await Utils.getDynamicPlaceholders(
-      userPropertiesActionValue.propertyValue,
-      productEventPayload,
-      integrations,
-      placeholders,
-      options,
-      ruleAlias,
-    );
-
-    const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
-
-    await freshchat.updateUser(productEventPayload.data.associations.user.id, {
-      properties: [
-        {
-          name: userPropertiesActionValue.propertyKey,
-          value: Utils.processHandlebarsAndReplacePlaceholders(
-            userPropertiesActionValue.propertyValue,
-            combinedPlaceholders,
-          ),
-        },
-      ],
-    });
+    const properties = {
+      [convPropertiesActionValue.propertyKey]: convPropertiesActionValue.propertyValue,
+    };
+    await freshchat.conversationPropertiesUpdate(conversationId, status, properties, assigned_agent_id);
   } catch (err) {
     Utils.log(
       productEventPayload,
@@ -53,15 +37,17 @@ export default async (
       ErrorCodes.FreshchatAction,
       {
         error: {
-          data: err?.response?.data,
-          headers: err?.response?.headers,
+          data: err as JsonMap,
         },
         errorType: ErrorTypes.FreshchatUpdateProperty,
+        properties: err as JsonMap,
+        propertyKey: convPropertiesActionValue.propertyKey,
+        propertyValue: convPropertiesActionValue.propertyValue,
       },
       LogSeverity.ERROR,
     );
     return Promise.reject();
   }
 
-  return Promise.resolve(generatedPlaceholders);
+  return Promise.resolve({});
 };

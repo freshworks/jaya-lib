@@ -48,6 +48,7 @@ export enum ActionType {
   SendQuickreply = 'SEND_QUICKREPLY',
   TriggerApi = 'TRIGGER_API',
   UnassignThenReassignGroup = 'UNASSIGN_THEN_REASSIGN_GROUP',
+  UpdateConversationProperty = 'UPDATE_CONVERSATION_PROPERTY',
   UpdateStatus = 'UPDATE_STATUS',
   UpdateUserEmail = 'UPDATE_USER_EMAIL',
   UpdateUserLastName = 'UPDATE_USER_LAST_NAME',
@@ -176,7 +177,7 @@ export interface SendEmailAnyoneValue {
   to: string[];
 }
 
-export interface UserConditionValue {
+export interface PropertiesConditionValue {
   propertyKey: string;
   propertyValue: string;
 }
@@ -189,7 +190,7 @@ export interface QuickReplyValue {
 export interface Condition {
   key: ConditionKey;
   operator: ConditionOperator;
-  value: string | UserConditionValue | ResponseDueTypeValue | QuickReplyValue;
+  value: string | PropertiesConditionValue | ResponseDueTypeValue | QuickReplyValue;
 }
 
 export interface Block {
