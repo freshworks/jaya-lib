@@ -62,6 +62,7 @@ const getTicketConversationContent = async (
       conversationId,
       descriptionMessages,
       agents,
+      [],
       user as FreshchatUser,
       {
         isIncludeFreshchatLink: false,
@@ -74,6 +75,7 @@ const getTicketConversationContent = async (
       conversationId,
       allMessages,
       agents,
+      [],
       user as FreshchatUser,
       {
         isIncludeFreshchatLink: true,
