@@ -135,26 +135,41 @@ const getRequestConfig = (
 
   // Step 4: Handle contentType
   if (triggerWebhookValue.contentType) {
-    if (!axiosRequestConfig.headers) {
-      axiosRequestConfig.headers = {};
-    }
+    const headersUpdate = handleContentTypeHeader(axiosRequestConfig, triggerWebhookValue, combinedPlaceholders);
 
-    axiosRequestConfig.headers['Content-Type'] = contentTypeMap[triggerWebhookValue.contentType];
+    axiosRequestConfig.headers = headersUpdate.headers;
 
-    if (triggerWebhookValue.content && isRequestTypeContentMap[triggerWebhookValue.requestType]) {
-      // Step 5: Handle content based on content-type
-      const replacedContent = getReplacedContent(
-        triggerWebhookValue.content,
-        combinedPlaceholders,
-        triggerWebhookValue.contentType,
-      );
-
-      axiosRequestConfig.data = contentMap[triggerWebhookValue.contentType](replacedContent);
+    if (headersUpdate.data) {
+      axiosRequestConfig.data = headersUpdate.data;
     }
   }
 
   return axiosRequestConfig;
 };
+
+const handleContentTypeHeader = (
+  axiosRequestConfig: AxiosRequestConfig,
+  triggerWebhookValue: TriggerWebhookValue,
+  combinedPlaceholders: PlaceholdersMap,
+): AxiosRequestConfig => {
+  const headers: JsonMap = axiosRequestConfig.headers ?? {},
+    contentType: WebhookContentType = triggerWebhookValue.contentType as WebhookContentType;
+  let data = {};
+
+  if (!headers['Content-Type']) {
+    headers['Content-Type'] = contentTypeMap[contentType];
+  }
+
+  if (triggerWebhookValue.content && isRequestTypeContentMap[triggerWebhookValue.requestType]) {
+    // Step 5: Handle content based on content-type
+    const replacedContent = getReplacedContent(triggerWebhookValue.content, combinedPlaceholders, contentType);
+
+    data = contentMap[contentType](replacedContent);
+  }
+
+  return { data, headers };
+
+}
 
 export default async (
   integrations: Integrations,
