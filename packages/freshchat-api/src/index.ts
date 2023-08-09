@@ -460,4 +460,12 @@ export default class Freshchat {
 
     return axios.put(conversationPropsUpdateApiUrl, requiredProperties, { headers: this.headers });
   }
+
+  /**
+   * Calls Freshchat Conversation API to get Conversation Properties Fields.
+   */
+  getConversationPropertyFields(): AxiosPromise<Conversation> {
+    const conversationPropsUpdateApiUrl = `${this.apiUrl}/conversations/fields`;
+    return axios.get(conversationPropsUpdateApiUrl, { headers: this.headers });
+  }
 }
