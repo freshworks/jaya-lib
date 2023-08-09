@@ -42,20 +42,6 @@ export default async (
         combinedPlaceholders,
       ),
     };
-    Utils.log(
-      productEventPayload,
-      integrations,
-      ErrorCodes.FreshchatAction,
-      {
-        errorType: ErrorTypes.FreshchatUpdateProperty,
-        generatedPlaceholders: generatedPlaceholders as JsonMap,
-        heneratedPlaceholders: combinedPlaceholders as JsonMap,
-        ieneratedPlaceholders: properties as JsonMap,
-        propertyKey: convPropertiesActionValue.propertyKey,
-        propertyValue: convPropertiesActionValue.propertyValue,
-      },
-      LogSeverity.ERROR,
-    );
     await freshchat.conversationPropertiesUpdate(conversationId, status, properties, assigned_agent_id);
   } catch (err) {
     Utils.log(
