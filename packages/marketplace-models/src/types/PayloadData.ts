@@ -188,6 +188,8 @@ export interface ModelProperties {
   ext_entity_meta: {
     meta: {
       call_life_cycle_event_type: string;
+      call_status: string;
+      call_type: string;
     };
   };
   first_agent_assigned_time: string | null;

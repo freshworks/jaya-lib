@@ -81,6 +81,8 @@ import conditionUserPhone from './conditions/user-phone';
 import conditionLabelCategoryName from './conditions/label-category-name';
 import conditionLabelSubcategoryName from './conditions/label-subcategory-name';
 import conditionSLAName from './conditions/sla-name';
+import conditionCallStatus from './conditions/call-status';
+import conditionCallType from './conditions/call-type';
 import conditionConversationProperty from './conditions/conversation-property';
 
 // Import all dynamic placeholders
@@ -136,6 +138,8 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionKey.LabelSubcategoryName]: conditionLabelSubcategoryName,
       [ConditionKey.SLAName]: conditionSLAName,
       [ConditionKey.ConversationProperty]: conditionConversationProperty,
+      [ConditionKey.CallStatus]: conditionCallStatus,
+      [ConditionKey.CallType]: conditionCallType,
     },
     dynamicPlaceholders: {
       'conversation.url': dynamicPlaceholderConversationUrl,
