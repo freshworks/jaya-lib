@@ -21,6 +21,7 @@ export interface EventPayload {
 
 export interface ProductEventPayload extends EventPayload {
   data: ProductEventData;
+  encodedData?: string;
 }
 
 export interface ExternalEventPayload extends EventPayload {

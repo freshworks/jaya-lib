@@ -17,7 +17,7 @@ export default async (
   ruleAlias: string,
 ): Promise<PlaceholdersMap> => {
   const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
-  const appId = modelProperties.app_id;
+  const appId = productEventPayload.account_id;
 
   if (!integrations.emailService) {
     return Promise.reject('No email service integration');

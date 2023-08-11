@@ -61,6 +61,8 @@ export enum ConditionKey {
   AssignedGroup = 'ASSIGNED_GROUP',
   AutoResolve = 'AUTO_RESOLVE',
   BusinessHours = 'BUSINESS_HOURS',
+  CallStatus = 'CALL_STATUS',
+  CallType = 'CALL_TYPE',
   Channel = 'CHANNEL',
   LabelCategoryName = 'LABEL_CATEGORY_NAME',
   LabelSubcategoryName = 'LABEL_SUBCATEGORY_NAME',

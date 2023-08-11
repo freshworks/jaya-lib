@@ -323,6 +323,12 @@ export default class Freshchat {
     return axios.get(getUserApiUrl, { headers: this.headers }).then((response) => response.data);
   }
 
+  async getSystemUserById(userId: string): Promise<Agent> {
+    const getUserApiUrl = `${this.apiUrl}/users/${userId}?system_user=true`;
+
+    return axios.get(getUserApiUrl, { headers: this.headers }).then((response) => response.data);
+  }
+
   getAgentById(agentId: string): Promise<Agent> {
     const getAgentApiUrl = `${this.apiUrl}/agents/${agentId}`;
 
@@ -331,6 +337,10 @@ export default class Freshchat {
 
   getAgentsById(agentIds: string[]): Promise<Agent[]> {
     return Promise.all(agentIds.map((agentId) => this.getAgentById(agentId)));
+  }
+
+  getSystemUsersById(userIds: string[]): Promise<Agent[]> {
+    return Promise.all(userIds.map((userId) => this.getSystemUserById(userId)));
   }
 
   async getConversationTranscript(
@@ -369,6 +379,9 @@ export default class Freshchat {
         }
       }
 
+      const systemUserIds = Utils.extractSystemUserIds(filteredMessages);
+      const systemUsers = await this.getSystemUsersById(systemUserIds);
+
       // Step 6: Generate conversation html
       return Promise.resolve(
         Utils.generateConversationTranscript(
@@ -377,6 +390,7 @@ export default class Freshchat {
           conversationId,
           filteredMessages,
           agents,
+          systemUsers as Agent[],
           user as User,
           options,
         ),
