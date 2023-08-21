@@ -25,23 +25,31 @@ export default async (
   const status = modelProperties.status;
 
   const convPropertiesActionValue = actionValue as PropertiesConditionValue;
-  let generatedPlaceholders: PlaceholdersMap = {};
   try {
-    generatedPlaceholders = await Utils.getDynamicPlaceholders(
-      convPropertiesActionValue.propertyValue,
-      productEventPayload,
-      integrations,
-      placeholders,
-      options,
-      ruleAlias,
-    );
-    const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
-    const properties = {
-      [convPropertiesActionValue.propertyKey]: Utils.processHandlebarsAndReplacePlaceholders(
+    let properties;
+    if (Array.isArray(convPropertiesActionValue.propertyValue)) {
+      properties = {
+        [convPropertiesActionValue.propertyKey]: convPropertiesActionValue.propertyValue,
+      };
+    } else {
+      let generatedPlaceholders: PlaceholdersMap = {};
+      generatedPlaceholders = await Utils.getDynamicPlaceholders(
         convPropertiesActionValue.propertyValue,
-        combinedPlaceholders,
-      ),
-    };
+        productEventPayload,
+        integrations,
+        placeholders,
+        options,
+        ruleAlias,
+      );
+      const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
+
+      properties = {
+        [convPropertiesActionValue.propertyKey]: Utils.processHandlebarsAndReplacePlaceholders(
+          convPropertiesActionValue.propertyValue,
+          combinedPlaceholders,
+        ),
+      };
+    }
     await freshchat.conversationPropertiesUpdate(conversationId, status, properties, assigned_agent_id);
   } catch (err) {
     Utils.log(
