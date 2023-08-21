@@ -36,12 +36,17 @@ export default async (
       ruleAlias,
     );
     const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
-    const properties = {
-      [convPropertiesActionValue.propertyKey]: Utils.processHandlebarsAndReplacePlaceholders(
-        convPropertiesActionValue.propertyValue,
-        combinedPlaceholders,
-      ),
-    };
+    let properties;
+    if (Array.isArray(convPropertiesActionValue.propertyValue)) {
+      properties = convPropertiesActionValue.propertyValue;
+    } else {
+      properties = {
+        [convPropertiesActionValue.propertyKey]: Utils.processHandlebarsAndReplacePlaceholders(
+          convPropertiesActionValue.propertyValue,
+          combinedPlaceholders,
+        ),
+      };
+    }
     await freshchat.conversationPropertiesUpdate(conversationId, status, properties, assigned_agent_id);
   } catch (err) {
     Utils.log(
