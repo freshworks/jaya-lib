@@ -117,6 +117,25 @@ export class Utils {
     } catch (err) {}
   }
 
+  public static async customlog(
+    integrations: Integrations,
+    errorCode: ErrorCodes | APITraceCodes,
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
+    info: any,
+  ): Promise<void> {
+    try {
+      const googleCloudLogging = new GoogleCloudLogging(integrations.googleCloudLoggingConfig);
+
+      googleCloudLogging.log(
+        {
+          error_code: errorCode,
+          info,
+        },
+        LogSeverity.DEBUG,
+      );
+    } catch (err) {}
+  }
+
   /**
    * Gets a concatenated string of messageParts with type 'text'.
    */
