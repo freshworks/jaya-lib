@@ -49,6 +49,7 @@ export class ActionExecutor {
     productEventData: ProductEventData,
     integrations: Integrations,
     convFieldsMap: Map<string, string>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     choicesMap: Map<string, any>,
   ): PlaceholdersMap {
     const user = productEventData.associations.user || ({} as User);
@@ -179,8 +180,10 @@ export class ActionExecutor {
     const freshchatApiToken = integrations.freshchatv2.token;
     const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken, ruleAlias);
     const convFieldsMap = new Map<string, string>();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const choicesMap = new Map<string, any>();
     const conversationFieldsResponse: AxiosResponse = await freshchat.getConversationPropertyFields();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     conversationFieldsResponse.data.forEach((field: any) => {
       if (field.type === 'DROPDOWN' || field.type === 'MULTI_SELECT_DROPDOWN') {
         choicesMap.set(field.column_name, field.choices);
