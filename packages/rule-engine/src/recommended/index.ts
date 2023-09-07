@@ -15,6 +15,14 @@ import operatorOutsideBusinessHrs from './operators/outside-business-hours';
 import operatorLessThan from './operators/less-than';
 import operatorGreaterThan from './operators/greater-than';
 import operatorMatchRegex from './operators/match-regex';
+import operatorAfter from './operators/after';
+import operatorBefore from './operators/before';
+import operatorContainsAllOf from './operators/contains-all-of';
+import operatorContainsNoneOf from './operators/contains-none-of';
+import operatorIs from './operators/is';
+import operatorIsFalse from './operators/is-false';
+import operatorIsNot from './operators/is-not';
+import operatorIsTrue from './operators/is-true';
 
 // Import all trigger actions
 import triggerActionConversationAgentAssign from './trigger-actions/conversation-agent-assign';
@@ -28,6 +36,7 @@ import triggerActionPrivateNoteCreate from './trigger-actions/private-note-creat
 import triggerActionFirstSLABreach from './trigger-actions/first-sla-breach';
 import triggerActionNextSLABreach from './trigger-actions/next-sla-breach';
 import triggerActionCallEnded from './trigger-actions/call-ended';
+import triggerActionUpdateConversationProperty from './trigger-actions/update-conversation-property';
 
 // Import all trigger actors
 import triggerActorAgent from './trigger-actors/agent';
@@ -75,6 +84,7 @@ import conditionLabelSubcategoryName from './conditions/label-subcategory-name';
 import conditionSLAName from './conditions/sla-name';
 import conditionCallStatus from './conditions/call-status';
 import conditionCallType from './conditions/call-type';
+import conditionConversationProperty from './conditions/conversation-property';
 
 // Import all dynamic placeholders
 import dynamicPlaceholderAverageWaitTime from './dynamic-placeholders/average-wait-time';
@@ -129,6 +139,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionKey.LabelCategoryName]: conditionLabelCategoryName,
       [ConditionKey.LabelSubcategoryName]: conditionLabelSubcategoryName,
       [ConditionKey.SLAName]: conditionSLAName,
+      [ConditionKey.ConversationProperty]: conditionConversationProperty,
       [ConditionKey.CallStatus]: conditionCallStatus,
       [ConditionKey.CallType]: conditionCallType,
     },
@@ -163,6 +174,14 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionOperator.WithinBusinessHours]: operatorWithinBusinessHrs,
       [ConditionOperator.OutsideBusinessHours]: operatorOutsideBusinessHrs,
       [ConditionOperator.MatchRegex]: operatorMatchRegex,
+      [ConditionOperator.After]: operatorAfter,
+      [ConditionOperator.Before]: operatorBefore,
+      [ConditionOperator.ContainsAllOf]: operatorContainsAllOf,
+      [ConditionOperator.ContainsNoneOf]: operatorContainsNoneOf,
+      [ConditionOperator.Is]: operatorIs,
+      [ConditionOperator.IsFalse]: operatorIsFalse,
+      [ConditionOperator.IsNot]: operatorIsNot,
+      [ConditionOperator.IsTrue]: operatorIsTrue,
     },
     triggerActions: {
       [TriggerActionType.ConversationAgentAssign]: triggerActionConversationAgentAssign,
@@ -176,6 +195,7 @@ const recommendedPlugins: RulePlugin[] = [
       [TriggerActionType.FirstSlaBreach]: triggerActionFirstSLABreach,
       [TriggerActionType.NextSlaBreach]: triggerActionNextSLABreach,
       [TriggerActionType.CallEnded]: triggerActionCallEnded,
+      [TriggerActionType.UpdateConversationProperty]: triggerActionUpdateConversationProperty,
     },
     triggerActors: {
       [TriggerActorType.Agent]: triggerActorAgent,

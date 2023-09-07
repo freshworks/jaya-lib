@@ -33,6 +33,7 @@ export enum TriggerActionType {
   MessageCreate = 'MESSAGE_CREATE',
   NextSlaBreach = 'NEXT_SLA_BREACH',
   PrivateNoteCreate = 'PRIVATE_NOTE_CREATE',
+  UpdateConversationProperty = 'UPDATE_CONVERSATION_PROPERTY',
 }
 
 export enum ActionType {
@@ -64,6 +65,7 @@ export enum ConditionKey {
   CallStatus = 'CALL_STATUS',
   CallType = 'CALL_TYPE',
   Channel = 'CHANNEL',
+  ConversationProperty = 'CONVERSATION_PROPERTY',
   LabelCategoryName = 'LABEL_CATEGORY_NAME',
   LabelSubcategoryName = 'LABEL_SUBCATEGORY_NAME',
   MessageText = 'MESSAGE_TEXT',
@@ -77,11 +79,19 @@ export enum ConditionKey {
   UserProperty = 'USER_PROPERTY',
 }
 export enum ConditionOperator {
+  After = 'AFTER',
+  Before = 'BEFORE',
   Contains = 'CONTAINS',
+  ContainsAllOf = 'CONTAINS_ALL_OF',
+  ContainsNoneOf = 'CONTAINS_NONE_OF',
   DoesNotContain = 'DOES_NOT_CONTAIN',
   EndsWith = 'ENDS_WITH',
   Equals = 'EQUALS',
   GreaterThan = 'GREATER_THAN',
+  Is = 'IS',
+  IsFalse = 'IS_FALSE',
+  IsNot = 'IS_NOT',
+  IsTrue = 'IS_TRUE',
   LessThan = 'LESS_THAN',
   MatchRegex = 'MATCH_REGEX',
   NotEquals = 'NOT_EQUALS',
