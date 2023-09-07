@@ -200,6 +200,7 @@ export interface ModelProperties {
   label_subcategory_id: string | null;
   messages?: Message[];
   org_contact_id: string | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   properties: any;
   reopened_time: string | null;
   resolved_time: string | null;
