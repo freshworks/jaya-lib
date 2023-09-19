@@ -71,9 +71,14 @@ export class RuleProcessor {
   public static isTriggerActorMatch(actor: TriggerActor, productEventData: ProductEventData): boolean {
     const triggerActorFunc = ruleConfig.triggerActors && ruleConfig.triggerActors[actor.type];
 
-    if (triggerActorFunc) {
-      return triggerActorFunc(productEventData, actor);
+    try {
+      if (triggerActorFunc) {
+        return triggerActorFunc(productEventData, actor);
+      }
+    } catch (error) {
+      throw new Error('Invalid trigger actor : ' + JSON.stringify(actor));
     }
+
     throw new Error('Invalid trigger actor');
   }
 
@@ -83,9 +88,14 @@ export class RuleProcessor {
   public static isTriggerActionMatch(action: TriggerAction, event: Event, productEventData: ProductEventData): boolean {
     const triggerActionFunc = ruleConfig.triggerActions && ruleConfig.triggerActions[action.type];
 
-    if (triggerActionFunc) {
-      return triggerActionFunc(event, productEventData, action);
+    try {
+      if (triggerActionFunc) {
+        return triggerActionFunc(event, productEventData, action);
+      }
+    } catch (error) {
+      throw new Error('Invalid trigger action : ' + action.type);
     }
+
     throw new Error('Invalid trigger action');
   }
 

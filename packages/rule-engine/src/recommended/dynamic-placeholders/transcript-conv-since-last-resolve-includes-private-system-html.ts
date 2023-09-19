@@ -40,7 +40,20 @@ export default (
         {
           error: {
             data: err?.response?.data,
+            err,
             headers: err?.response?.headers,
+            payload: {
+              appConvoId: modelProperties.conversation_id,
+              appDomain: `https://${productEventPayload.domain}`,
+              appId: modelProperties.app_id,
+              options: {
+                isIncludeFreshchatLink: false,
+                messagesLimit: options.isUseStaticIP
+                  ? Constants.MAX_MESSAGES_TRANSCRIPT_STATIC_IP
+                  : Constants.MAX_MESSAGES_TRANSCRIPT,
+                timezoneOffset: integrations.timezoneOffset,
+              },
+            },
           },
           errorType: ErrorTypes.TranscriptLastResolvePrivateSystemHtml,
         },
