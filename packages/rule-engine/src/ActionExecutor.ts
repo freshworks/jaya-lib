@@ -133,12 +133,7 @@ export class ActionExecutor {
         dynamicPlaceholders[placeholderKey] = userProperty.value;
       });
     // Register empty placeholder for conversation properties which are not filled
-    convFieldsMap.forEach((value: string, key: string) => {
-      if (conversation.properties[key] === undefined) {
-        const placeholderKey = `conversation.properties.${value}`;
-        dynamicPlaceholders[placeholderKey] = '';
-      }
-    });
+    Utils.registerEmptyPlaceholder(convFieldsMap, conversation, dynamicPlaceholders);
     // For conversation properties with a value
     conversation.properties &&
       Object.keys(conversation.properties).forEach(function (key) {
@@ -183,13 +178,7 @@ export class ActionExecutor {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const choicesMap = new Map<string, any>();
     const conversationFieldsResponse: AxiosResponse = await freshchat.getConversationPropertyFields();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    conversationFieldsResponse.data.forEach((field: any) => {
-      if (field.type === 'DROPDOWN' || field.type === 'MULTI_SELECT_DROPDOWN') {
-        choicesMap.set(field.column_name, field.choices);
-      }
-      convFieldsMap.set(field.column_name, field.name);
-    });
+    Utils.setConversationFields(conversationFieldsResponse, choicesMap, convFieldsMap);
     let placeholders = this.getPlaceholders(productEventPayload.data, integrations, convFieldsMap, choicesMap);
 
     placeholders = { ...placeholders, ...customPlaceholders };

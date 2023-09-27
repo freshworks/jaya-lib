@@ -20,6 +20,10 @@ const evaluateConversationPropertyCondition = (
     conditionValue.propertyValue = conditionValue.propertyValue.toString();
     matchedProperty = JSON.stringify(matchedProperty);
   }
+  //Handle for falsey conditions
+  if (matchedProperty != null && matchedProperty.toString() === 'false') {
+    return Utils.evaluateCondition(operator, 'false', conditionValue.propertyValue, integrations, options, ruleAlias);
+  }
 
   return Utils.evaluateCondition(
     operator,
