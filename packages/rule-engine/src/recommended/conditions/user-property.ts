@@ -15,7 +15,10 @@ const evaluateUserPropertyCondition = (
   ruleAlias: string,
 ): Promise<void> => {
   const matchedProperty =
-    userObj.properties && userObj.properties.find((property) => property.name === conditionValue.propertyKey);
+    userObj.properties &&
+    userObj.properties.find(
+      (property) => property.name === conditionValue.propertyKey || property.oldName === conditionValue.propertyKey,
+    );
 
   return Utils.evaluateCondition(
     operator,

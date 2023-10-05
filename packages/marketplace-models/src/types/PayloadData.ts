@@ -94,6 +94,7 @@ export interface Channel {
 
 export interface UserProperty {
   name: string;
+  oldName?: string;
   value: string;
 }
 

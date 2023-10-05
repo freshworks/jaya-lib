@@ -123,6 +123,11 @@ export class ActionExecutor {
       user.properties.forEach((userProperty) => {
         const placeholderKey = `user.properties.${userProperty.name}`;
         dynamicPlaceholders[placeholderKey] = userProperty.value;
+        // For backward compatibility with migrated accounts
+        if (userProperty.oldName) {
+          const oldPlaceholderKey = `user.properties.${userProperty.oldName}`;
+          dynamicPlaceholders[oldPlaceholderKey] = userProperty.value;
+        }
       });
 
     return { ...placeholders, ...dynamicPlaceholders };
