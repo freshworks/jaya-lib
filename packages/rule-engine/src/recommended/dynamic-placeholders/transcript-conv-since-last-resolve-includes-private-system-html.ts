@@ -46,6 +46,7 @@ export default (
               appConvoId: modelProperties.conversation_id,
               appDomain: `https://${productEventPayload.domain}`,
               appId: modelProperties.app_id,
+              freshchatApiToken,
               options: {
                 isIncludeFreshchatLink: false,
                 messagesLimit: options.isUseStaticIP

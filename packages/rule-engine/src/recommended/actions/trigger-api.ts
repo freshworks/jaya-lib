@@ -1,6 +1,7 @@
 import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import { requestAxiosWrapper } from '@freshworks-jaya/marketplace-models/lib/services/request';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
+import { set, get } from 'lodash';
 import {
   Api,
   JsonArray,
@@ -56,6 +57,8 @@ const replacePlaceholdersInObject = (jsonMap: JsonMap | JsonArray, combinedPlace
         (json as JsonMap)[key] = Utils.processHandlebarsAndReplacePlaceholders(value as string, combinedPlaceholders);
       } else if (_.isObject(value) || _.isArray(value)) {
         traverseObject(value as JsonArray | JsonMap);
+      } else if (_.isInteger(value)) {
+        (json as JsonMap)[key] = Number(value);
       }
     });
   })(jsonMap);
@@ -168,8 +171,34 @@ const handleContentTypeHeader = (
   }
 
   return { data, headers };
+};
 
-}
+const handleFieldTypeCast = (config: TriggerWebhookValue, replacedData: string) => {
+  const data = replacedData ? JSON.parse(replacedData) : {};
+
+  if (config?.castArray?.length) {
+    const castArray = config?.castArray;
+
+    for (let i = 0; i < castArray.length; ++i) {
+      const { key, type } = castArray[i];
+
+      switch (type) {
+        case 'boolean':
+          set(data, key, Boolean(get(data, key)));
+          break;
+        case 'number':
+          set(data, key, Number(get(data, key)));
+          break;
+        case 'string':
+        default:
+          set(data, key, String(data[key]));
+          break;
+      }
+    }
+  }
+
+  return JSON.stringify(data);
+};
 
 export default async (
   integrations: Integrations,
@@ -208,6 +237,13 @@ export default async (
   const axiosRequestConfig = getRequestConfig(triggerApi.config, combinedPlaceholders);
   const dateBeforeTrigger = new Date();
   let webhookResponse;
+
+  // Cast API content to specific type
+  try {
+    axiosRequestConfig.data = handleFieldTypeCast(triggerApi.config, axiosRequestConfig.data);
+  } catch (err) {
+    return Promise.reject('Failed to type cast dynamic placeholders map');
+  }
 
   try {
     // Step 6: Make the API call
