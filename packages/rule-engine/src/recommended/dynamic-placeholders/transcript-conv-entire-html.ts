@@ -42,16 +42,10 @@ export default (
         ErrorCodes.FreshchatPlaceholder,
         {
           error: {
-            data: err?.response?.data,
             err,
-            headers: err?.response?.headers,
             payload: {
-              appConvoId: modelProperties.conversation_id,
-              appDomain: `https://${productEventPayload.domain}`,
-              appId: modelProperties.app_id,
               freshchatApiToken,
               options: {
-                isIncludeFreshchatLink: false,
                 messagesLimit: options.isUseStaticIP
                   ? Constants.MAX_MESSAGES_TRANSCRIPT_STATIC_IP
                   : Constants.MAX_MESSAGES_TRANSCRIPT,

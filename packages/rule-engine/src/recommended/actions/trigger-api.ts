@@ -3,6 +3,7 @@ import { requestAxiosWrapper } from '@freshworks-jaya/marketplace-models/lib/ser
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import { set, get } from 'lodash';
 import {
+  AnyJson,
   Api,
   JsonArray,
   JsonMap,
@@ -270,10 +271,7 @@ export default async (
   } catch (err) {
     Utils.log(productEventPayload, integrations, ErrorCodes.TriggerAPIError, {
       apiName: triggerApi.name,
-      error: {
-        code: err.code,
-        message: err.message,
-      },
+      error: err as AnyJson,
     });
     return Promise.reject('Trigger webhook failure');
   }

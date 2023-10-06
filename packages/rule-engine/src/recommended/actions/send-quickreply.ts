@@ -1,7 +1,7 @@
 import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
-import { Api, QuickReplyValue } from '../../models/rule';
+import { AnyJson, Api, QuickReplyValue } from '../../models/rule';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Utils } from '../../Utils';
 import { ErrorCodes, ErrorTypes } from '../../models/error-codes';
@@ -63,10 +63,7 @@ export default async (
       integrations,
       ErrorCodes.FreshchatAction,
       {
-        error: {
-          data: err?.response?.data,
-          headers: err?.response?.headers,
-        },
+        error: err as AnyJson,
         errorType: ErrorTypes.FreshchatSendQuickReply,
       },
       LogSeverity.ERROR,

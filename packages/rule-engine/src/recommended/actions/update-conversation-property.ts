@@ -3,7 +3,7 @@ import Freshchat from '@freshworks-jaya/freshchat-api';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import { Utils } from '../../Utils';
-import { Api, PropertiesConditionValue, JsonMap } from '../../models/rule';
+import { Api, PropertiesConditionValue, JsonMap, AnyJson } from '../../models/rule';
 import { ErrorCodes, ErrorTypes } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
 
@@ -57,9 +57,7 @@ export default async (
       integrations,
       ErrorCodes.FreshchatAction,
       {
-        error: {
-          data: err as JsonMap,
-        },
+        error: err as AnyJson,
         errorType: ErrorTypes.FreshchatUpdateProperty,
         properties: err as JsonMap,
         propertyKey: convPropertiesActionValue.propertyKey,
