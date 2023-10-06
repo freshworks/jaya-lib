@@ -131,6 +131,11 @@ export class ActionExecutor {
       user.properties.forEach((userProperty) => {
         const placeholderKey = `user.properties.${userProperty.name}`;
         dynamicPlaceholders[placeholderKey] = userProperty.value;
+        // For backward compatibility with migrated accounts
+        if (userProperty.oldName) {
+          const oldPlaceholderKey = `user.properties.${userProperty.oldName}`;
+          dynamicPlaceholders[oldPlaceholderKey] = userProperty.value;
+        }
       });
     // Register empty placeholder for conversation properties which are not filled
     Utils.registerEmptyPlaceholder(convFieldsMap, conversation, dynamicPlaceholders);
