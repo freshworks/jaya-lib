@@ -200,6 +200,8 @@ export interface ModelProperties {
   label_subcategory_id: string | null;
   messages?: Message[];
   org_contact_id: string | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  properties: any;
   reopened_time: string | null;
   resolved_time: string | null;
   response_due_type: ResponseDueType;
@@ -268,6 +270,7 @@ export interface ProductEventData {
       do_not_auto_resolve: [boolean, boolean];
       label_category_id: [string, string];
       label_subcategory_id: [string, string];
+      priority: [string, string];
       sla_breach: [boolean, boolean];
       status: [ChangedStatus, ChangedStatus];
     };

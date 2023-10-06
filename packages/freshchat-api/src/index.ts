@@ -447,4 +447,39 @@ export default class Freshchat {
 
     return axios.get(rawReportsApiUrl, { headers: this.headers }).then((response) => response.data);
   }
+
+  /**
+   * Calls Freshchat Conversation API to update Conversation Properties.
+   */
+  conversationPropertiesUpdate(
+    conversationId: string,
+    status: string,
+    properties: unknown,
+    assigned_agent_id: string,
+  ): AxiosPromise<Conversation> {
+    const conversationPropsUpdateApiUrl = `${this.apiUrl}/conversations/${conversationId}`;
+    let requiredProperties;
+    if (assigned_agent_id !== '' && status === ConversationStatus.Assigned) {
+      requiredProperties = JSON.stringify({
+        assigned_agent_id,
+        properties,
+        status,
+      });
+    } else {
+      requiredProperties = JSON.stringify({
+        properties,
+        status,
+      });
+    }
+
+    return axios.put(conversationPropsUpdateApiUrl, requiredProperties, { headers: this.headers });
+  }
+
+  /**
+   * Calls Freshchat Conversation API to get Conversation Properties Fields.
+   */
+  getConversationPropertyFields(): AxiosPromise<Conversation> {
+    const conversationPropsUpdateApiUrl = `${this.apiUrl}/conversations/fields`;
+    return axios.get(conversationPropsUpdateApiUrl, { headers: this.headers });
+  }
 }
