@@ -16,6 +16,8 @@ import { Integrations, RuleEngineOptions } from './models/rule-engine';
 import ruleConfig from './RuleConfig';
 import { isUsernameGenerated, PlaceholdersMap, capitalizeAll } from '@freshworks-jaya/utilities';
 import { Utils } from './Utils';
+import Freshchat from '@freshworks-jaya/freshchat-api';
+import { AxiosResponse } from 'axios';
 
 export class ActionExecutor {
   /**
@@ -43,7 +45,13 @@ export class ActionExecutor {
    *
    * Sets up placeholders for productEventData
    */
-  public static getPlaceholders(productEventData: ProductEventData, integrations: Integrations): PlaceholdersMap {
+  public static getPlaceholders(
+    productEventData: ProductEventData,
+    integrations: Integrations,
+    convFieldsMap: Map<string, string>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    choicesMap: Map<string, any>,
+  ): PlaceholdersMap {
     const user = productEventData.associations.user || ({} as User);
     const actor = productEventData.actor || ({} as Actor);
     const agent =
@@ -129,6 +137,29 @@ export class ActionExecutor {
           dynamicPlaceholders[oldPlaceholderKey] = userProperty.value;
         }
       });
+    // Register empty placeholder for conversation properties which are not filled
+    Utils.registerEmptyPlaceholder(convFieldsMap, conversation, dynamicPlaceholders);
+    // For conversation properties with a value
+    conversation.properties &&
+      Object.keys(conversation.properties).forEach(function (key) {
+        const placeholderKey = `conversation.properties.${convFieldsMap.get(key)}`;
+        const choices = choicesMap.get(key);
+        if (choices) {
+          if (Array.isArray(conversation.properties[key])) {
+            const dropdownOptions: Array<string> = [];
+            conversation.properties[key].filter((choice: string) => {
+              dropdownOptions.push(choices.find((option: { id: string }) => choice === option.id).value);
+            });
+            dynamicPlaceholders[placeholderKey] = dropdownOptions.toString();
+          } else {
+            dynamicPlaceholders[placeholderKey] = choices.find(
+              (option: { id: string }) => option.id === conversation.properties[key],
+            ).value;
+          }
+        } else {
+          dynamicPlaceholders[placeholderKey] = conversation.properties[key].toString();
+        }
+      });
 
     return { ...placeholders, ...dynamicPlaceholders };
   }
@@ -145,7 +176,15 @@ export class ActionExecutor {
     options: RuleEngineOptions,
     ruleAlias?: string,
   ): Promise<void> {
-    let placeholders = this.getPlaceholders(productEventPayload.data, integrations);
+    const freshchatApiUrl = integrations.freshchatv2.url;
+    const freshchatApiToken = integrations.freshchatv2.token;
+    const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken, ruleAlias);
+    const convFieldsMap = new Map<string, string>();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const choicesMap = new Map<string, any>();
+    const conversationFieldsResponse: AxiosResponse = await freshchat.getConversationPropertyFields();
+    Utils.setConversationFields(conversationFieldsResponse, choicesMap, convFieldsMap);
+    let placeholders = this.getPlaceholders(productEventPayload.data, integrations, convFieldsMap, choicesMap);
 
     placeholders = { ...placeholders, ...customPlaceholders };
 
