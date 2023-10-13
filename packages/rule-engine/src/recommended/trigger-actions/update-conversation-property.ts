@@ -7,6 +7,7 @@ export default (productEvent: Event, productEventData: ProductEventData, trigger
 
   return (
     productEvent === Event.ConversationUpdate &&
+    productEventData.actor.actor_source != null &&
     productEventData.actor.actor_source != 'API' &&
     !!productEventData.changes.model_changes &&
     (!!productEventData.changes.model_changes.assigned_agent_id ||
