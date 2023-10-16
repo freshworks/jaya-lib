@@ -66,6 +66,7 @@ export enum ConditionKey {
   CallType = 'CALL_TYPE',
   Channel = 'CHANNEL',
   ConversationProperty = 'CONVERSATION_PROPERTY',
+  EmailBody = 'EMAIL_BODY',
   LabelCategoryName = 'LABEL_CATEGORY_NAME',
   LabelSubcategoryName = 'LABEL_SUBCATEGORY_NAME',
   MessageText = 'MESSAGE_TEXT',
@@ -176,6 +177,12 @@ export interface TriggerWebhookValue {
     password: string;
     username: string;
   };
+  castArray?: [
+    {
+      key: string;
+      type: string;
+    },
+  ];
   content?: string;
   contentType?: WebhookContentType;
   customHeaders?: string;

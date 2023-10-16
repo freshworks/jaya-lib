@@ -2,6 +2,7 @@ import Kairos, { KairosSchedule, KairosScheduleOptions } from '@freshworks-jaya/
 import { Event, ProductEventPayload, ProductEventData, ModelProperties } from '@freshworks-jaya/marketplace-models';
 import { ActionExecutor } from './ActionExecutor';
 import {
+  AnyJson,
   Api,
   CustomPlaceholdersMap,
   Rule,
@@ -150,10 +151,7 @@ export class TimerRuleEngine {
           integrations,
           ErrorCodes.KairosError,
           {
-            error: {
-              data: err?.response?.data,
-              responseHeaders: err?.response?.headers,
-            },
+            error: err as AnyJson,
             errorType: ErrorTypes.KairosBulkCreateSchedules,
             jobIds: schedulesToCreate.map((schedule) => schedule.jobId),
           },
@@ -200,10 +198,7 @@ export class TimerRuleEngine {
         integrations,
         ErrorCodes.KairosError,
         {
-          error: {
-            data: err?.response?.data,
-            responseHeaders: err?.response?.headers,
-          },
+          error: err as AnyJson,
           errorType: ErrorTypes.KairosDeleteCompletedSchedule,
           jobId: externalEventPayload.data?.jobId,
         },
@@ -338,16 +333,13 @@ export class TimerRuleEngine {
               );
               return Promise.resolve();
             },
-            (err) => {
+            (err: AnyJson) => {
               Utils.log(
                 payload,
                 integrations,
                 ErrorCodes.KairosError,
                 {
-                  error: {
-                    data: err?.response?.data,
-                    responseHeaders: err?.response?.headers,
-                  },
+                  error: err as AnyJson,
                   errorType: ErrorTypes.KairosCreteScheduleToDelayInvalidation,
                   jobId: createScheduleJobId,
                 },
@@ -372,16 +364,13 @@ export class TimerRuleEngine {
             );
             return Promise.resolve();
           },
-          (err) => {
+          (err: AnyJson) => {
             Utils.log(
               payload,
               integrations,
               ErrorCodes.KairosError,
               {
-                error: {
-                  data: err?.response?.data,
-                  responseHeaders: err?.response?.headers,
-                },
+                error: err as AnyJson,
                 errorType: ErrorTypes.KairosDeleteInvalidatedSchedules,
                 jobIds: jobsToDelete,
               },

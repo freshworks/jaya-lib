@@ -6,7 +6,7 @@ import Freshchat, { User as FreshchatUser } from '@freshworks-jaya/freshchat-api
 import { Utils as FreshchatUtils } from '@freshworks-jaya/freshchat-api/lib/Utils';
 import { isUsernameGenerated } from '@freshworks-jaya/utilities';
 import { Utils } from '../../Utils';
-import { Api, WebhookRequestType } from '../../models/rule';
+import { AnyJson, Api, WebhookRequestType } from '../../models/rule';
 import { ErrorCodes } from '../../models/error-codes';
 import Constants from '../Constants';
 
@@ -193,10 +193,7 @@ export default async (
     );
   } catch (err) {
     Utils.log(productEventPayload, integrations, ErrorCodes.FreshdeskTicket, {
-      error: {
-        data: err?.response?.data,
-        headers: err?.response?.headers,
-      },
+      error: err as AnyJson,
     });
     return Promise.reject('Error creating freshdesk ticket');
   }
