@@ -146,6 +146,7 @@ export interface ReplyPart {
 }
 
 export interface Actor {
+  actor_source?: string;
   avatar: {
     url: string;
   };
