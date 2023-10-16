@@ -11,13 +11,15 @@ import {
   LabelCategory,
   LabelSubcategory,
 } from '@freshworks-jaya/marketplace-models';
-import { Action, Api, CustomPlaceholdersMap } from './models/rule';
+import { Action, AnyJson, Api, CustomPlaceholdersMap } from './models/rule';
 import { Integrations, RuleEngineOptions } from './models/rule-engine';
 import ruleConfig from './RuleConfig';
 import { isUsernameGenerated, PlaceholdersMap, capitalizeAll } from '@freshworks-jaya/utilities';
 import { Utils } from './Utils';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import { AxiosResponse } from 'axios';
+import { APITraceCodes } from './models/error-codes';
+import { LogSeverity } from './services/GoogleCloudLogging';
 
 export class ActionExecutor {
   /**
@@ -131,6 +133,11 @@ export class ActionExecutor {
       user.properties.forEach((userProperty) => {
         const placeholderKey = `user.properties.${userProperty.name}`;
         dynamicPlaceholders[placeholderKey] = userProperty.value;
+        // For backward compatibility with migrated accounts
+        if (userProperty.oldName) {
+          const oldPlaceholderKey = `user.properties.${userProperty.oldName}`;
+          dynamicPlaceholders[oldPlaceholderKey] = userProperty.value;
+        }
       });
     // Register empty placeholder for conversation properties which are not filled
     Utils.registerEmptyPlaceholder(convFieldsMap, conversation, dynamicPlaceholders);
@@ -201,6 +208,15 @@ export class ActionExecutor {
         // Error while executing an action
         // Queietly suppressing it so that next action can be executed
         // So, doing nothing here
+        if (options.enableLogger) {
+          Utils.log(
+            productEventPayload,
+            integrations,
+            APITraceCodes.ACTION_HANDLER_ERROR,
+            err as AnyJson,
+            LogSeverity.NOTICE,
+          );
+        }
       }
     }
 

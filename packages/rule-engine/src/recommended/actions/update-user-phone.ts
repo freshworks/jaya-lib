@@ -3,7 +3,7 @@ import Freshchat from '@freshworks-jaya/freshchat-api';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import { Utils } from '../../Utils';
-import { Api } from '../../models/rule';
+import { AnyJson, Api } from '../../models/rule';
 import { ErrorCodes, ErrorTypes } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
 
@@ -44,10 +44,7 @@ export default async (
       integrations,
       ErrorCodes.FreshchatAction,
       {
-        error: {
-          data: err?.response?.data,
-          headers: err?.response?.headers,
-        },
+        error: err as AnyJson,
         errorType: ErrorTypes.FreshchatUpdatePhone,
       },
       LogSeverity.ERROR,

@@ -199,6 +199,7 @@ describe('RuleEngine test', () => {
           [],
           {},
           {
+            enableLogger: false,
             isSchedulerEnabled: false,
             isUseStaticIP: false,
             maxProductEventDelay: 30000,
@@ -222,6 +223,7 @@ describe('RuleEngine test', () => {
           [],
           {},
           {
+            enableLogger: false,
             isSchedulerEnabled: false,
             isUseStaticIP: false,
             maxProductEventDelay: 30000,
@@ -243,6 +245,7 @@ describe('RuleEngine test', () => {
           [],
           {},
           {
+            enableLogger: false,
             isSchedulerEnabled: false,
             isUseStaticIP: false,
             maxProductEventDelay: 30000,

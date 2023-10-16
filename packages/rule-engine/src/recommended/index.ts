@@ -85,6 +85,7 @@ import conditionSLAName from './conditions/sla-name';
 import conditionCallStatus from './conditions/call-status';
 import conditionCallType from './conditions/call-type';
 import conditionConversationProperty from './conditions/conversation-property';
+import conditionEmailBody from './conditions/email-body';
 
 // Import all dynamic placeholders
 import dynamicPlaceholderAverageWaitTime from './dynamic-placeholders/average-wait-time';
@@ -142,6 +143,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionKey.ConversationProperty]: conditionConversationProperty,
       [ConditionKey.CallStatus]: conditionCallStatus,
       [ConditionKey.CallType]: conditionCallType,
+      [ConditionKey.EmailBody]: conditionEmailBody,
     },
     dynamicPlaceholders: {
       'conversation.url': dynamicPlaceholderConversationUrl,
