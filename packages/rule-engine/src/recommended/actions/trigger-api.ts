@@ -192,7 +192,7 @@ const handleFieldTypeCast = (config: TriggerWebhookValue, replacedData: string) 
           break;
         case 'string':
         default:
-          set(data, key, String(data[key]));
+          set(data, key, String(get(data, key)));
           break;
       }
     }

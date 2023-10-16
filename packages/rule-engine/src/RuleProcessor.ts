@@ -1,10 +1,13 @@
 // Simple library to process the rules
-import { Event } from '@freshworks-jaya/marketplace-models';
+import { Event, ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import { ProductEventData } from '@freshworks-jaya/marketplace-models';
-import { Block, Condition, MatchType, Rule, Trigger, TriggerAction, TriggerActor } from './models/rule';
+import { AnyJson, Block, Condition, MatchType, Rule, Trigger, TriggerAction, TriggerActor } from './models/rule';
 import { Integrations, RuleEngineOptions } from './models/rule-engine';
 import { Promise } from 'bluebird';
 import ruleConfig from './RuleConfig';
+import { Utils } from './Utils';
+import { APITraceCodes } from './models/error-codes';
+import { LogSeverity } from './services/GoogleCloudLogging';
 
 export class RuleProcessor {
   /**
@@ -206,7 +209,17 @@ export class RuleProcessor {
           await this.isRuleMatching(event, productEventData, currentRule, integrations, options);
           firstMatchingRule = currentRule;
           break;
-        } catch (err) {}
+        } catch (err) {
+          if (options.enableLogger) {
+            Utils.log(
+              productEventData as unknown as ProductEventPayload,
+              integrations,
+              APITraceCodes.FIRST_MATCHING_RULE,
+              err as AnyJson,
+              LogSeverity.NOTICE,
+            );
+          }
+        }
       }
     }
     return firstMatchingRule ? Promise.resolve(firstMatchingRule) : Promise.reject('no matching rule');
