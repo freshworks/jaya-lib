@@ -316,7 +316,7 @@ export class Utils {
   }
   public static setConversationFields(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    conversationFieldsResponse: AxiosResponse<any>,
+    conversationFieldsResponse: any,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     choicesMap: Map<string, any>,
     convFieldsMap: Map<string, string>,

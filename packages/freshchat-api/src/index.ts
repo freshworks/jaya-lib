@@ -478,8 +478,14 @@ export default class Freshchat {
   /**
    * Calls Freshchat Conversation API to get Conversation Properties Fields.
    */
-  getConversationPropertyFields(): AxiosPromise<Conversation> {
-    const conversationPropsUpdateApiUrl = `${this.apiUrl}/conversations/fields`;
-    return axios.get(conversationPropsUpdateApiUrl, { headers: this.headers });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async getConversationPropertyFields(): Promise<{ data?: any; error?: any }> {
+    try {
+      const conversationPropsUpdateApiUrl = `${this.apiUrl}/conversations/fields`;
+      const response = await axios.get(conversationPropsUpdateApiUrl, { headers: this.headers });
+      return Promise.resolve({ data: response });
+    } catch (error) {
+      return Promise.resolve({ error });
+    }
   }
 }

@@ -184,8 +184,18 @@ export class ActionExecutor {
     const convFieldsMap = new Map<string, string>();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const choicesMap = new Map<string, any>();
-    const conversationFieldsResponse: AxiosResponse = await freshchat.getConversationPropertyFields();
-    Utils.setConversationFields(conversationFieldsResponse, choicesMap, convFieldsMap);
+    const { data: conversationFieldsResponse, error } = await freshchat.getConversationPropertyFields();
+    if (error) {
+      Utils.log(
+        productEventPayload,
+        integrations,
+        APITraceCodes.CONVERSATION_PROPERTIES_FEATURE_ACCESS,
+        error as AnyJson,
+        LogSeverity.ALERT,
+      );
+    } else {
+      Utils.setConversationFields(conversationFieldsResponse, choicesMap, convFieldsMap);
+    }
     let placeholders = this.getPlaceholders(productEventPayload.data, integrations, convFieldsMap, choicesMap);
 
     placeholders = { ...placeholders, ...customPlaceholders };
