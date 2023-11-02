@@ -2,7 +2,7 @@ import { ConditionOperator } from './index';
 import ruleConfig from './RuleConfig';
 import { Integrations, RuleEngineOptions } from './models/rule-engine';
 import Helpers from 'handlebars-helpers';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import {
   BusinessHour,
   findMatchingKeys,
