@@ -17,7 +17,6 @@ import ruleConfig from './RuleConfig';
 import { isUsernameGenerated, PlaceholdersMap, capitalizeAll } from '@freshworks-jaya/utilities';
 import { Utils } from './Utils';
 import Freshchat from '@freshworks-jaya/freshchat-api';
-import { AxiosResponse } from 'axios';
 import { APITraceCodes } from './models/error-codes';
 import { LogSeverity } from './services/GoogleCloudLogging';
 
