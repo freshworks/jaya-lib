@@ -135,6 +135,24 @@ export class Utils {
     return messageContent;
   }
 
+  /**
+   * Gets a concatenated string of messageParts with type 'email'.
+   */
+  public static getMessagePartsEmailContent(messageParts: MessagePart[]): string {
+    let messageContent = '';
+
+    if (messageParts && messageParts.length) {
+      messageContent = messageParts
+        .filter((messagePart) => messagePart.email)
+        .map((messagePart) => {
+          return messagePart.email && messagePart.email.content;
+        })
+        .join(' ');
+    }
+
+    return messageContent;
+  }
+
   public static processHanldebars(value: string, placeholders: PlaceholdersMap): string {
     let processedString = '';
     let isError = false;
@@ -195,7 +213,7 @@ export class Utils {
           } catch (err) {
             this.log(productEventPayload, integrations, ErrorCodes.DynamicPlaceholder, {
               dynamicPlaceholderKey,
-              error: err,
+              error: err as AnyJson,
             });
           }
         }

@@ -2,6 +2,7 @@ import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import { requestAxiosWrapper } from '@freshworks-jaya/marketplace-models/lib/services/request';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import {
+  AnyJson,
   Api,
   JsonArray,
   JsonMap,
@@ -16,6 +17,7 @@ import { Utils } from '../../Utils';
 import * as _ from 'lodash';
 import { ErrorCodes } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
+import { set, get } from 'lodash';
 
 const contentTypeMap: {
   [key in WebhookContentType]: string;
@@ -168,8 +170,34 @@ const handleContentTypeHeader = (
   }
 
   return { data, headers };
+};
 
-}
+const handleFieldTypeCast = (config: TriggerWebhookValue, replacedData: string) => {
+  const data = replacedData ? JSON.parse(replacedData) : {};
+
+  if (config?.castArray?.length) {
+    const castArray = config?.castArray;
+
+    for (let i = 0; i < castArray.length; ++i) {
+      const { key, type } = castArray[i];
+
+      switch (type) {
+        case 'boolean':
+          set(data, key, Boolean(get(data, key)));
+          break;
+        case 'number':
+          set(data, key, Number(get(data, key)));
+          break;
+        case 'string':
+        default:
+          set(data, key, String(get(data, key)));
+          break;
+      }
+    }
+  }
+
+  return JSON.stringify(data);
+};
 
 export default async (
   integrations: Integrations,
@@ -209,6 +237,13 @@ export default async (
   const dateBeforeTrigger = new Date();
   let webhookResponse;
 
+  // Cast API content to specific type
+  try {
+    axiosRequestConfig.data = handleFieldTypeCast(triggerApi.config, axiosRequestConfig.data);
+  } catch (err) {
+    return Promise.reject('Failed to type cast dynamic placeholders map');
+  }
+
   try {
     // Step 6: Make the API call
     webhookResponse = await requestAxiosWrapper<JsonMap>(axiosRequestConfig, {
@@ -234,10 +269,7 @@ export default async (
   } catch (err) {
     Utils.log(productEventPayload, integrations, ErrorCodes.TriggerAPIError, {
       apiName: triggerApi.name,
-      error: {
-        code: err.code,
-        message: err.message,
-      },
+      error: err as AnyJson,
     });
     return Promise.reject('Trigger webhook failure');
   }

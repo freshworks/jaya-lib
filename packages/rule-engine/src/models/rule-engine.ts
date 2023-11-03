@@ -3,6 +3,7 @@ import { RequestProxy } from '@freshworks-jaya/marketplace-models/lib/services/r
 import { GoogleCloudLoggingConfig } from '../services/GoogleCloudLogging';
 
 export interface RuleEngineOptions {
+  enableLogger?: boolean; // this is to be enabled only for debugging, should be disabled afterwards
   isSchedulerEnabled: boolean;
   isUseStaticIP: boolean;
   maxProductEventDelay: number;

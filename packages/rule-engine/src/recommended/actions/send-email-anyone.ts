@@ -1,7 +1,7 @@
 import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
 import axios from 'axios';
-import { Api, SendEmailAnyoneValue } from '../../models/rule';
+import { AnyJson, Api, SendEmailAnyoneValue } from '../../models/rule';
 import { Utils } from '../../Utils';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { ErrorCodes } from '../../models/error-codes';
@@ -87,10 +87,7 @@ export default async (
     );
   } catch (err) {
     Utils.log(productEventPayload, integrations, ErrorCodes.SendEmail, {
-      error: {
-        data: err?.response?.data,
-        headers: err?.response?.headers,
-      },
+      error: err as AnyJson,
     });
     return Promise.reject('Failed to setup dynamic placeholders');
   }

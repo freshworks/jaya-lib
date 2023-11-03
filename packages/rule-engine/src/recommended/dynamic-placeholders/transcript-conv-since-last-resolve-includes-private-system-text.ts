@@ -40,8 +40,16 @@ export default (
         ErrorCodes.FreshchatPlaceholder,
         {
           error: {
-            data: err?.response?.data,
-            headers: err?.response?.headers,
+            err,
+            payload: {
+              freshchatApiToken,
+              options: {
+                messagesLimit: options.isUseStaticIP
+                  ? Constants.MAX_MESSAGES_TRANSCRIPT_STATIC_IP
+                  : Constants.MAX_MESSAGES_TRANSCRIPT,
+                timezoneOffset: integrations.timezoneOffset,
+              },
+            },
           },
           errorType: ErrorTypes.TranscriptLastResolvePrivateSystemText,
         },

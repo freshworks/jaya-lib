@@ -5,6 +5,10 @@ import {
   RuleEngineExternalEventPayload,
   KairosCredentials,
 } from './models/rule-engine';
+import { AnyJson } from './models/rule';
+import { Utils } from './Utils';
+import { ErrorCodes } from './models/error-codes';
+import { LogSeverity } from './services/GoogleCloudLogging';
 
 import { Api, CustomPlaceholdersMap, Rule } from './models/rule';
 import { RulePlugin } from './models/plugin';
@@ -82,6 +86,15 @@ export class RuleEngine {
         );
       }
     } catch (err) {
+      Utils.log(
+        payload,
+        integrations,
+        ErrorCodes.FreshchatAction,
+        {
+          error: err as AnyJson,
+        },
+        LogSeverity.ALERT,
+      );
       return Promise.reject(err);
     }
 
