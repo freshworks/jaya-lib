@@ -125,9 +125,9 @@ export class Utils {
 
     if (messageParts && messageParts.length) {
       messageContent = messageParts
-        .filter((messagePart) => messagePart.text)
+        .filter((messagePart) => messagePart.text || messagePart.email)
         .map((messagePart) => {
-          return messagePart.text && messagePart.text.content;
+          return (messagePart.text && messagePart.text.content) || (messagePart.email && messagePart.email.subject);
         })
         .join(' ');
     }
