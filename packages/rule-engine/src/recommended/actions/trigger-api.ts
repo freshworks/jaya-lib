@@ -18,7 +18,6 @@ import { Utils } from '../../Utils';
 import * as _ from 'lodash';
 import { ErrorCodes } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
-import { set, get } from 'lodash';
 
 const contentTypeMap: {
   [key in WebhookContentType]: string;

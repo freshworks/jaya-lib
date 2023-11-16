@@ -5,10 +5,6 @@ import {
   RuleEngineExternalEventPayload,
   KairosCredentials,
 } from './models/rule-engine';
-import { AnyJson } from './models/rule';
-import { Utils } from './Utils';
-import { ErrorCodes } from './models/error-codes';
-import { LogSeverity } from './services/GoogleCloudLogging';
 
 import { AnyJson, Api, CustomPlaceholdersMap, Rule } from './models/rule';
 import { RulePlugin } from './models/plugin';
