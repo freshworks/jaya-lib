@@ -16,6 +16,7 @@ import { Integrations, RuleEngineOptions } from './models/rule-engine';
 import ruleConfig from './RuleConfig';
 import { isUsernameGenerated, PlaceholdersMap, capitalizeAll } from '@freshworks-jaya/utilities';
 import { Utils } from './Utils';
+import Freshchat from '@freshworks-jaya/freshchat-api';
 import { APITraceCodes } from './models/error-codes';
 import { LogSeverity } from './services/GoogleCloudLogging';
 
@@ -45,7 +46,13 @@ export class ActionExecutor {
    *
    * Sets up placeholders for productEventData
    */
-  public static getPlaceholders(productEventData: ProductEventData, integrations: Integrations): PlaceholdersMap {
+  public static getPlaceholders(
+    productEventData: ProductEventData,
+    integrations: Integrations,
+    convFieldsMap: Map<string, string>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    choicesMap: Map<string, any>,
+  ): PlaceholdersMap {
     const user = productEventData.associations.user || ({} as User);
     const actor = productEventData.actor || ({} as Actor);
     const agent =
@@ -125,6 +132,34 @@ export class ActionExecutor {
       user.properties.forEach((userProperty) => {
         const placeholderKey = `user.properties.${userProperty.name}`;
         dynamicPlaceholders[placeholderKey] = userProperty.value;
+        // For backward compatibility with migrated accounts
+        if (userProperty.oldName) {
+          const oldPlaceholderKey = `user.properties.${userProperty.oldName}`;
+          dynamicPlaceholders[oldPlaceholderKey] = userProperty.value;
+        }
+      });
+    // Register empty placeholder for conversation properties which are not filled
+    Utils.registerEmptyPlaceholder(convFieldsMap, conversation, dynamicPlaceholders);
+    // For conversation properties with a value
+    conversation.properties &&
+      Object.keys(conversation.properties).forEach(function (key) {
+        const placeholderKey = `conversation.properties.${convFieldsMap.get(key)}`;
+        const choices = choicesMap.get(key);
+        if (choices) {
+          if (Array.isArray(conversation.properties[key])) {
+            const dropdownOptions: Array<string> = [];
+            conversation.properties[key].filter((choice: string) => {
+              dropdownOptions.push(choices.find((option: { id: string }) => choice === option.id).value);
+            });
+            dynamicPlaceholders[placeholderKey] = dropdownOptions.toString();
+          } else {
+            dynamicPlaceholders[placeholderKey] = choices.find(
+              (option: { id: string }) => option.id === conversation.properties[key],
+            ).value;
+          }
+        } else {
+          dynamicPlaceholders[placeholderKey] = conversation.properties[key].toString();
+        }
       });
 
     return { ...placeholders, ...dynamicPlaceholders };
@@ -142,7 +177,25 @@ export class ActionExecutor {
     options: RuleEngineOptions,
     ruleAlias?: string,
   ): Promise<void> {
-    let placeholders = this.getPlaceholders(productEventPayload.data, integrations);
+    const freshchatApiUrl = integrations.freshchatv2.url;
+    const freshchatApiToken = integrations.freshchatv2.token;
+    const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken, ruleAlias);
+    const convFieldsMap = new Map<string, string>();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const choicesMap = new Map<string, any>();
+    const { data: conversationFieldsResponse, error } = await freshchat.getConversationPropertyFields();
+    if (error) {
+      Utils.log(
+        productEventPayload,
+        integrations,
+        APITraceCodes.CONVERSATION_PROPERTIES_FEATURE_ACCESS,
+        error as AnyJson,
+        LogSeverity.ALERT,
+      );
+    } else {
+      Utils.setConversationFields(conversationFieldsResponse, choicesMap, convFieldsMap);
+    }
+    let placeholders = this.getPlaceholders(productEventPayload.data, integrations, convFieldsMap, choicesMap);
 
     placeholders = { ...placeholders, ...customPlaceholders };
 
@@ -164,7 +217,6 @@ export class ActionExecutor {
         // Error while executing an action
         // Queietly suppressing it so that next action can be executed
         // So, doing nothing here
-
         if (options.enableLogger) {
           Utils.log(
             productEventPayload,

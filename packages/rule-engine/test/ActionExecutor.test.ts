@@ -31,6 +31,8 @@ describe('ActionExecutor test', () => {
       sandbox.restore();
       ruleConfig.reset();
     });
+    const convFieldsMap = new Map();
+    const choicesMap = new Map();
 
     it('check for generated username', () => {
       const placeholders = ActionExecutor.getPlaceholders(
@@ -55,6 +57,8 @@ describe('ActionExecutor test', () => {
           },
           timezoneOffset: -330,
         },
+        convFieldsMap,
+        choicesMap,
       );
 
       if (placeholders) {

@@ -1,6 +1,7 @@
 import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import { requestAxiosWrapper } from '@freshworks-jaya/marketplace-models/lib/services/request';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
+import { set, get } from 'lodash';
 import {
   AnyJson,
   Api,
@@ -58,6 +59,8 @@ const replacePlaceholdersInObject = (jsonMap: JsonMap | JsonArray, combinedPlace
         (json as JsonMap)[key] = Utils.processHandlebarsAndReplacePlaceholders(value as string, combinedPlaceholders);
       } else if (_.isObject(value) || _.isArray(value)) {
         traverseObject(value as JsonArray | JsonMap);
+      } else if (_.isInteger(value)) {
+        (json as JsonMap)[key] = Number(value);
       }
     });
   })(jsonMap);

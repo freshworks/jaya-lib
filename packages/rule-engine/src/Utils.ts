@@ -9,7 +9,7 @@ import {
   PlaceholdersMap,
   findAndReplacePlaceholders,
 } from '@freshworks-jaya/utilities';
-import { MessagePart, ProductEventPayload } from '@freshworks-jaya/marketplace-models';
+import { MessagePart, ModelProperties, ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import Handlebars from 'handlebars';
 import { htmlToText } from 'html-to-text';
 import dayjs from 'dayjs';
@@ -137,6 +137,24 @@ export class Utils {
 
   /**
    * Gets a concatenated string of messageParts with type 'email'.
+   */
+  public static getMessagePartsEmailContent(messageParts: MessagePart[]): string {
+    let messageContent = '';
+
+    if (messageParts && messageParts.length) {
+      messageContent = messageParts
+        .filter((messagePart) => messagePart.email)
+        .map((messagePart) => {
+          return messagePart.email && messagePart.email.content;
+        })
+        .join(' ');
+    }
+
+    return messageContent;
+  }
+
+  /**
+   * Gets a concatenated string of messageParts with type 'text'.
    */
   public static getMessagePartsEmailContent(messageParts: MessagePart[]): string {
     let messageContent = '';
@@ -302,4 +320,31 @@ export class Utils {
         });
     });
   };
+  public static registerEmptyPlaceholder(
+    convFieldsMap: Map<string, string>,
+    conversation: ModelProperties,
+    dynamicPlaceholders: PlaceholdersMap,
+  ): void {
+    convFieldsMap.forEach((value: string, key: string) => {
+      if (conversation.properties[key] === undefined) {
+        const placeholderKey = `conversation.properties.${value}`;
+        dynamicPlaceholders[placeholderKey] = '';
+      }
+    });
+  }
+  public static setConversationFields(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    conversationFieldsResponse: any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    choicesMap: Map<string, any>,
+    convFieldsMap: Map<string, string>,
+  ) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    conversationFieldsResponse.data.forEach((field: any) => {
+      if (field.type === 'DROPDOWN' || field.type === 'MULTI_SELECT_DROPDOWN') {
+        choicesMap.set(field.column_name, field.choices);
+      }
+      convFieldsMap.set(field.column_name, field.name);
+    });
+  }
 }

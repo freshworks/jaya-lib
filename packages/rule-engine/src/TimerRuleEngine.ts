@@ -333,7 +333,7 @@ export class TimerRuleEngine {
               );
               return Promise.resolve();
             },
-            (err) => {
+            (err: AnyJson) => {
               Utils.log(
                 payload,
                 integrations,
@@ -364,7 +364,7 @@ export class TimerRuleEngine {
             );
             return Promise.resolve();
           },
-          (err) => {
+          (err: AnyJson) => {
             Utils.log(
               payload,
               integrations,

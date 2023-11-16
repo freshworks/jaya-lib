@@ -33,6 +33,7 @@ export enum TriggerActionType {
   MessageCreate = 'MESSAGE_CREATE',
   NextSlaBreach = 'NEXT_SLA_BREACH',
   PrivateNoteCreate = 'PRIVATE_NOTE_CREATE',
+  UpdateConversationProperty = 'UPDATE_CONVERSATION_PROPERTY',
 }
 
 export enum ActionType {
@@ -48,6 +49,7 @@ export enum ActionType {
   SendQuickreply = 'SEND_QUICKREPLY',
   TriggerApi = 'TRIGGER_API',
   UnassignThenReassignGroup = 'UNASSIGN_THEN_REASSIGN_GROUP',
+  UpdateConversationProperty = 'UPDATE_CONVERSATION_PROPERTY',
   UpdateStatus = 'UPDATE_STATUS',
   UpdateUserEmail = 'UPDATE_USER_EMAIL',
   UpdateUserLastName = 'UPDATE_USER_LAST_NAME',
@@ -63,6 +65,7 @@ export enum ConditionKey {
   CallStatus = 'CALL_STATUS',
   CallType = 'CALL_TYPE',
   Channel = 'CHANNEL',
+  ConversationProperty = 'CONVERSATION_PROPERTY',
   EmailBody = 'EMAIL_BODY',
   LabelCategoryName = 'LABEL_CATEGORY_NAME',
   LabelSubcategoryName = 'LABEL_SUBCATEGORY_NAME',
@@ -77,11 +80,19 @@ export enum ConditionKey {
   UserProperty = 'USER_PROPERTY',
 }
 export enum ConditionOperator {
+  After = 'AFTER',
+  Before = 'BEFORE',
   Contains = 'CONTAINS',
+  ContainsAllOf = 'CONTAINS_ALL_OF',
+  ContainsNoneOf = 'CONTAINS_NONE_OF',
   DoesNotContain = 'DOES_NOT_CONTAIN',
   EndsWith = 'ENDS_WITH',
   Equals = 'EQUALS',
   GreaterThan = 'GREATER_THAN',
+  Is = 'IS',
+  IsFalse = 'IS_FALSE',
+  IsNot = 'IS_NOT',
+  IsTrue = 'IS_TRUE',
   LessThan = 'LESS_THAN',
   MatchRegex = 'MATCH_REGEX',
   NotEquals = 'NOT_EQUALS',
@@ -185,7 +196,7 @@ export interface SendEmailAnyoneValue {
   to: string[];
 }
 
-export interface UserConditionValue {
+export interface PropertiesConditionValue {
   propertyKey: string;
   propertyValue: string;
 }
@@ -198,7 +209,7 @@ export interface QuickReplyValue {
 export interface Condition {
   key: ConditionKey;
   operator: ConditionOperator;
-  value: string | UserConditionValue | ResponseDueTypeValue | QuickReplyValue;
+  value: string | PropertiesConditionValue | ResponseDueTypeValue | QuickReplyValue;
 }
 
 export interface Block {
