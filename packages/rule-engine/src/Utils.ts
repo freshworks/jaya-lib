@@ -2,7 +2,7 @@ import { ConditionOperator } from './index';
 import ruleConfig from './RuleConfig';
 import { Integrations, RuleEngineOptions } from './models/rule-engine';
 import Helpers from 'handlebars-helpers';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import {
   BusinessHour,
   findMatchingKeys,
@@ -316,7 +316,7 @@ export class Utils {
   }
   public static setConversationFields(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    conversationFieldsResponse: AxiosResponse<any>,
+    conversationFieldsResponse: any,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     choicesMap: Map<string, any>,
     convFieldsMap: Map<string, string>,
