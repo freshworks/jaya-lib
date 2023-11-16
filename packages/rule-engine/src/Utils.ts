@@ -153,24 +153,6 @@ export class Utils {
     return messageContent;
   }
 
-  /**
-   * Gets a concatenated string of messageParts with type 'text'.
-   */
-  public static getMessagePartsEmailContent(messageParts: MessagePart[]): string {
-    let messageContent = '';
-
-    if (messageParts && messageParts.length) {
-      messageContent = messageParts
-        .filter((messagePart) => messagePart.email)
-        .map((messagePart) => {
-          return messagePart.email && messagePart.email.content;
-        })
-        .join(' ');
-    }
-
-    return messageContent;
-  }
-
   public static processHanldebars(value: string, placeholders: PlaceholdersMap): string {
     let processedString = '';
     let isError = false;
