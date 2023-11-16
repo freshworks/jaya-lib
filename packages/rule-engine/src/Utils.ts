@@ -125,9 +125,9 @@ export class Utils {
 
     if (messageParts && messageParts.length) {
       messageContent = messageParts
-        .filter((messagePart) => messagePart.text)
+        .filter((messagePart) => messagePart.text || messagePart.email)
         .map((messagePart) => {
-          return messagePart.text && messagePart.text.content;
+          return (messagePart.text && messagePart.text.content) || (messagePart.email && messagePart.email.subject);
         })
         .join(' ');
     }
@@ -136,7 +136,7 @@ export class Utils {
   }
 
   /**
-   * Gets a concatenated string of messageParts with type 'text'.
+   * Gets a concatenated string of messageParts with type 'email'.
    */
   public static getMessagePartsEmailContent(messageParts: MessagePart[]): string {
     let messageContent = '';
@@ -213,7 +213,7 @@ export class Utils {
           } catch (err) {
             this.log(productEventPayload, integrations, ErrorCodes.DynamicPlaceholder, {
               dynamicPlaceholderKey,
-              error: err,
+              error: err as AnyJson,
             });
           }
         }

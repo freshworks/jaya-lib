@@ -99,6 +99,7 @@ import dynamicPlaceholderTranscriptConvEntireText from './dynamic-placeholders/t
 import dynamicPlaceholderTranscriptConvEntireIncludesPrivateSystemText from './dynamic-placeholders/transcript-conv-entire-includes-private-system-text';
 import dynamicPlaceholderTranscriptConvSinceLastResolveText from './dynamic-placeholders/transcript-conv-since-last-resolve-text';
 import dynamicPlaceholderTranscriptConvSinceLastResolveIncludesPrivateSystemText from './dynamic-placeholders/transcript-conv-since-last-resolve-includes-private-system-text';
+import dynamicPlaceholderTranscriptPaytmConvSinceLastResolveHtml from './dynamic-placeholders/transcript-paytm-conv-since-last-resolve-html';
 
 const recommendedPlugins: RulePlugin[] = [
   {
@@ -161,6 +162,7 @@ const recommendedPlugins: RulePlugin[] = [
         dynamicPlaceholderTranscriptConvSinceLastResolveIncludesPrivateSystemText,
       'transcript.conv_since_last_resolve.text': dynamicPlaceholderTranscriptConvSinceLastResolveText,
       'transcript.paytm_conv_entire.html': dynamicPlaceholderTranscriptPaytmConvEntireHtml,
+      'transcript.paytm_conv_since_last_resolve.html': dynamicPlaceholderTranscriptPaytmConvSinceLastResolveHtml,
     },
     operators: {
       [ConditionOperator.StartsWith]: operatorStartsWith,

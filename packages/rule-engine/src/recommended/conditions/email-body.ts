@@ -14,7 +14,7 @@ export default (
 
   return Utils.evaluateCondition(
     condition.operator,
-    Utils.getMessagePartsEmailContent((modelProperties.messages && modelProperties.messages[0].message_parts) || []),
+    Utils.getMessagePartsEmailContent((modelProperties.messages && modelProperties.messages[0]?.message_parts) || []),
     condition.value as string,
     integrations,
     options,
