@@ -62,7 +62,7 @@ export default async (
         accountId: appId,
         from: {
           email: 'no-reply@freshchat.com',
-          name: 'Freshchat Automations',
+          name: 'Automated response',
         },
         html: emailParams.body,
         subject: emailParams.subject,
