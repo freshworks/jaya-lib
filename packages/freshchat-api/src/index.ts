@@ -142,8 +142,10 @@ export default class Freshchat {
     actorType?: 'agent' | 'bot',
     actorId?: string,
     replyParts?: ReplyPart[],
+    isEmailConversation?: boolean
   ): AxiosPromise<Message> {
     const postMessageApiUrl = `${this.apiUrl}/conversations/${conversationId}/messages`;
+    const messagePartType = isEmailConversation ? 'email' : 'text';
 
     return axios.post(
       postMessageApiUrl,
@@ -152,7 +154,7 @@ export default class Freshchat {
         actor_type: actorType || 'bot',
         message_parts: [
           {
-            text: {
+            [messagePartType]: {
               content: message,
             },
           },
@@ -294,8 +296,8 @@ export default class Freshchat {
   /**
    * Send Normal Reply.
    */
-  sendNormalReplyText(conversationId: string, message: string, agentId?: string): AxiosPromise<Message> {
-    return this.postMessage(conversationId, message, 'normal', agentId ? 'agent' : 'bot', agentId);
+  sendNormalReplyText(conversationId: string, message: string, agentId?: string, isEmailConversation: boolean = false): AxiosPromise<Message> {
+    return this.postMessage(conversationId, message, 'normal', agentId ? 'agent' : 'bot', agentId, undefined, isEmailConversation);
   }
 
   /** Update User API */
