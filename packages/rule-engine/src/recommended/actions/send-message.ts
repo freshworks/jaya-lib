@@ -1,4 +1,4 @@
-import { ProductEventPayload } from '@freshworks-jaya/marketplace-models';
+import { ConversationSource, ProductEventPayload } from '@freshworks-jaya/marketplace-models';
 import Freshchat from '@freshworks-jaya/freshchat-api';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { Integrations, RuleEngineOptions } from '../../models/rule-engine';
@@ -20,6 +20,7 @@ export default async (
   const freshchatApiToken = integrations.freshchatv2.token;
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken, ruleAlias);
   const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
+  const isEmailConversation = modelProperties.source === ConversationSource.Email;
   const conversationId = modelProperties.conversation_id;
   let generatedPlaceholders: PlaceholdersMap = {};
 
@@ -37,7 +38,7 @@ export default async (
       actionValue as string,
       combinedPlaceholders,
     );
-    await freshchat.sendNormalReplyText(conversationId, textWithReplacedPlaceholders);
+    await freshchat.sendNormalReplyText(conversationId, textWithReplacedPlaceholders, undefined, isEmailConversation);
   } catch (err) {
     Utils.log(
       productEventPayload,

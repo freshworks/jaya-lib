@@ -37,6 +37,7 @@ export enum ConversationSource {
   MobileSDK = 'MOBILE',
   WebMessenger = 'WEBCHAT',
   WhatsApp = 'WHATSAPP',
+  Email = 'EMAIL',
 }
 
 export enum MessageSource {
