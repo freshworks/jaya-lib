@@ -1,6 +1,6 @@
 {
   "name": "@freshworks-jaya/marketplace-models",
-  "version": "0.1.28",
+  "version": "0.1.29-beta-01",
   "description": "Provides type definitions for models in marketplace product events",
   "repository": "git@github.com:freshdesk/jaya-lib.git",
   "main": "lib/index.js",
@@ -22,9 +22,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^4.3.2"
+    "typescript": "^5.3.2"
   },
   "dependencies": {
-    "axios": "^0.21.4"
+    "axios": "^1.6.2"
   }
 }

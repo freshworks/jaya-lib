@@ -1,4 +1,4 @@
-import axios, { AxiosPromise } from 'axios';
+import axios, { AxiosHeaders, AxiosPromise, AxiosRequestHeaders, RawAxiosRequestHeaders } from 'axios';
 
 export interface KairosSchedule {
   data: {
@@ -24,7 +24,7 @@ export interface KairosScheduleOptions {
   webhookUrl: string;
 }
 
-interface KairosRequestHeader {
+interface KairosRequestHeader extends RawAxiosRequestHeaders {
   'Content-Type': string;
   'cache-control': string;
   service: string;
@@ -48,7 +48,7 @@ export default class Kairos {
       'Content-Type': 'application/json',
       'cache-control': 'no-cache',
       service: this.token,
-    };
+    } as KairosRequestHeader;
   }
 
   /**

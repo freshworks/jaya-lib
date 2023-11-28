@@ -1,3 +1,5 @@
+import { RawAxiosRequestHeaders } from "axios";
+
 export interface RequestProxyResponse {
   headers: never;
   response: string;
@@ -6,7 +8,7 @@ export interface RequestProxyResponse {
 
 export interface RequestProxyOptions {
   body?: string;
-  headers?: never;
+  headers?: RawAxiosRequestHeaders;
   maxAttempts?: number;
   retryDelay?: number;
   staticIP?: boolean;

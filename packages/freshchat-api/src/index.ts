@@ -1,4 +1,4 @@
-import axios, { AxiosPromise } from 'axios';
+import axios, { AxiosError, AxiosPromise, RawAxiosRequestHeaders } from 'axios';
 import {
   Message,
   GetMessagesResponse,
@@ -23,8 +23,8 @@ export * from './interfaces/User';
 export * from './interfaces/Report';
 
 export default class Freshchat {
-  private get headers(): Headers {
-    const activeHeaders: Headers = {
+  private get headers(): RawAxiosRequestHeaders {
+    const activeHeaders: RawAxiosRequestHeaders = {
       Authorization: `Bearer ${this.apiToken}`,
       'Content-Type': 'application/json',
       'x-service': 'advanced_automation',
@@ -230,8 +230,8 @@ export default class Freshchat {
         return Promise.resolve(result);
       }
     } catch (err) {
-      if (err.response && err.response.data) {
-        return Promise.reject(err.response.data);
+      if (err instanceof AxiosError && err?.response && err?.response.data) {
+        return Promise.reject(err?.response.data);
       } else {
         return Promise.reject('Error fetching conversation');
       }

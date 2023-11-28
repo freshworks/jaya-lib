@@ -12,7 +12,7 @@ import {
   WebhookRequestType,
 } from '../../models/rule';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
-import { AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
 import querystring, { ParsedUrlQueryInput } from 'querystring';
 import { Utils } from '../../Utils';
 import * as _ from 'lodash';
@@ -83,7 +83,7 @@ const getReplacedContent = (
   return jsonContent || {};
 };
 
-const getReplacedHeaders = (content: string, combinedPlaceholders: PlaceholdersMap): JsonMap => {
+const getReplacedHeaders = (content: string, combinedPlaceholders: PlaceholdersMap): RawAxiosRequestHeaders => {
   // replacePlaceholdersInObject(triggerWebhookValue.customHeaders, combinedPlaceholders);
   // Step 1: Parse content to JSON
   const jsonHeaders = Utils.safelyParseJson(content);
@@ -93,7 +93,7 @@ const getReplacedHeaders = (content: string, combinedPlaceholders: PlaceholdersM
     replacePlaceholdersInObject(jsonHeaders, combinedPlaceholders);
   }
 
-  return jsonHeaders || {};
+  return jsonHeaders as RawAxiosRequestHeaders || {} as RawAxiosRequestHeaders;
 };
 
 const getRequestConfig = (
@@ -156,7 +156,7 @@ const handleContentTypeHeader = (
   triggerWebhookValue: TriggerWebhookValue,
   combinedPlaceholders: PlaceholdersMap,
 ): AxiosRequestConfig => {
-  const headers: JsonMap = axiosRequestConfig.headers ?? {},
+  const headers: RawAxiosRequestHeaders = axiosRequestConfig.headers ?? {},
     contentType: WebhookContentType = triggerWebhookValue.contentType as WebhookContentType;
   let data = {};
 
@@ -232,7 +232,7 @@ export default async (
 
     combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
   } catch (err) {
-    return Promise.reject('Failed to generate dynamic placeholders map');
+    return Promise.reject({cause:'Failed to generate dynamic placeholders map',err});
   }
 
   const axiosRequestConfig = getRequestConfig(triggerApi.config, combinedPlaceholders);
@@ -243,15 +243,43 @@ export default async (
   try {
     axiosRequestConfig.data = handleFieldTypeCast(triggerApi.config, axiosRequestConfig.data);
   } catch (err) {
-    return Promise.reject('Failed to type cast dynamic placeholders map');
+    return Promise.reject({cause:'Failed to type cast dynamic placeholders map',err});
   }
 
   try {
+
+    if (options.enableLogger) {
+      Utils.log(
+        productEventPayload,
+        integrations,
+        ErrorCodes.TriggerAPITrace,
+        {
+          apiName: triggerApi.name,
+          reqObject: axiosRequestConfig as AnyJson,
+          requestProxy: integrations.marketplaceServices.requestProxy as unknown as AnyJson,
+          timestampBeforeTrigger: dateBeforeTrigger.toISOString(),
+        },
+        LogSeverity.DEBUG,
+      );
+    }
     // Step 6: Make the API call
     webhookResponse = await requestAxiosWrapper<JsonMap>(axiosRequestConfig, {
       isUseStaticIP: triggerApi.isUseStaticIP,
       requestProxy: integrations.marketplaceServices.requestProxy,
     });
+
+    if (options.enableLogger) {
+      Utils.log(
+        productEventPayload,
+        integrations,
+        ErrorCodes.TriggerAPITrace,
+        {
+          apiName: triggerApi.name,
+          webhookResponse: webhookResponse as unknown as AnyJson
+        },
+        LogSeverity.DEBUG,
+      );
+    }
 
     const dateAfterTrigger = new Date();
     const apiResponseTimeInMilliseconds = dateAfterTrigger.getTime() - dateBeforeTrigger.getTime();

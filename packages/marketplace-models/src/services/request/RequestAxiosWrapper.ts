@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse, RawAxiosRequestHeaders } from 'axios';
 import { Method, requestAxiosify } from './RequestAxiosify';
 import { RequestProxy } from './Request';
 
@@ -10,7 +10,7 @@ const requestAxiosWrapper = <T = unknown>(
   },
 ): Promise<AxiosResponse<T>> => {
   if (options.isUseStaticIP) {
-    const headers = axiosRequestConfig.headers ? { ...axiosRequestConfig.headers } : {};
+    const headers: RawAxiosRequestHeaders = axiosRequestConfig.headers ? { ...axiosRequestConfig.headers } : {};
 
     if (axiosRequestConfig.auth?.username && axiosRequestConfig.auth?.password) {
       const authBuffer = Buffer.from(
