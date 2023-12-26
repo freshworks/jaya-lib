@@ -237,7 +237,7 @@ export default async (
 
   const axiosRequestConfig = getRequestConfig(triggerApi.config, combinedPlaceholders);
   const dateBeforeTrigger = new Date();
-  let webhookResponse;
+  let webhookResponse,webhookObj;
 
   // Cast API content to specific type
   try {
@@ -263,7 +263,7 @@ export default async (
       );
     }
     // Step 6: Make the API call
-    webhookResponse = await requestAxiosWrapper<JsonMap>(axiosRequestConfig, {
+    webhookObj = requestAxiosWrapper<JsonMap>(axiosRequestConfig, {
       isUseStaticIP: triggerApi.isUseStaticIP,
       requestProxy: integrations.marketplaceServices.requestProxy,
     });
@@ -275,11 +275,14 @@ export default async (
         ErrorCodes.TriggerAPITrace,
         {
           apiName: triggerApi.name,
-          webhookResponse: webhookResponse as unknown as AnyJson
+          requestWrapper: integrations.marketplaceServices.requestProxy['post'] as unknown as AnyJson,
+          webhookObj: webhookObj as unknown as AnyJson
         },
         LogSeverity.DEBUG,
       );
     }
+
+    webhookResponse = await webhookObj;
 
     const dateAfterTrigger = new Date();
     const apiResponseTimeInMilliseconds = dateAfterTrigger.getTime() - dateBeforeTrigger.getTime();
@@ -296,6 +299,8 @@ export default async (
       },
       LogSeverity.INFO,
     );
+
+    return Promise.resolve({ [triggerApi.responseModelName]: webhookResponse.data });
   } catch (err) {
     Utils.log(productEventPayload, integrations, ErrorCodes.TriggerAPIError, {
       apiName: triggerApi.name,
@@ -304,5 +309,4 @@ export default async (
     return Promise.reject('Trigger webhook failure');
   }
 
-  return Promise.resolve({ [triggerApi.responseModelName]: webhookResponse.data });
 };
