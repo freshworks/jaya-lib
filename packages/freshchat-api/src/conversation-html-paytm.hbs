@@ -132,7 +132,11 @@
                     {{#each message.message_parts as | message_part index|}}
                       <div style="font-size: 13.6px; word-break: break-all; line-height: 1.24;">
                         {{#if (eq index 0)}}
-                          Agent:
+                          {{#if (eq message.actor_type 'agent')}}
+                              Agent:
+                          {{else}}
+                              Bot:
+                          {{/if}}
                         {{/if}}
                         {{> messageFragment fragment=message_part}}
                       </div>

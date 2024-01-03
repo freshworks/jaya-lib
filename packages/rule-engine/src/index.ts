@@ -85,15 +85,18 @@ export class RuleEngine {
         );
       }
     } catch (err) {
-      Utils.log(
-        payload,
-        integrations,
-        ErrorCodes.FreshchatAction,
-        {
-          error: err as AnyJson,
-        },
-        LogSeverity.ALERT,
-      );
+      if(options.enableLogger || (err !== 'no matching rule')){
+        Utils.log(
+          payload,
+          integrations,
+          ErrorCodes.FreshchatAction,
+          {
+            error: err as AnyJson,
+          },
+          LogSeverity.ALERT,
+        );
+      }
+      
       return Promise.reject(err);
     }
 
