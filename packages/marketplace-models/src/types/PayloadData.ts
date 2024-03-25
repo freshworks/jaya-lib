@@ -29,6 +29,7 @@ export enum ActorType {
 
 export enum ConversationSource {
   AppleBusinessChat = 'ABC',
+  Email = 'EMAIL',
   FacebookMessenger = 'FACEBOOK_MESSENGER',
   FacebookNative = 'FB_NATIVE',
   FreshbotsWidget = 'FRESHBOTS_WIDGET',
@@ -37,7 +38,6 @@ export enum ConversationSource {
   MobileSDK = 'MOBILE',
   WebMessenger = 'WEBCHAT',
   WhatsApp = 'WHATSAPP',
-  Email = 'EMAIL',
 }
 
 export enum MessageSource {
@@ -191,6 +191,7 @@ export interface ModelProperties {
   channel_id: string;
   conversation_id: string;
   created_time: string;
+  detectedLanguage: string;
   do_not_auto_resolve: boolean;
   ext_entity_meta: {
     meta: {
@@ -274,6 +275,7 @@ export interface ProductEventData {
     model_changes: {
       assigned_agent_id: [string, string];
       assigned_group_id: [string, string];
+      detected_language: [string, string];
       do_not_auto_resolve: [boolean, boolean];
       label_category_id: [string, string];
       label_subcategory_id: [string, string];
