@@ -37,6 +37,7 @@ import triggerActionFirstSLABreach from './trigger-actions/first-sla-breach';
 import triggerActionNextSLABreach from './trigger-actions/next-sla-breach';
 import triggerActionCallEnded from './trigger-actions/call-ended';
 import triggerActionUpdateConversationProperty from './trigger-actions/update-conversation-property';
+import triggerActionFreddyDetectsLanguage from './trigger-actions/freddy-detected-language';
 
 // Import all trigger actors
 import triggerActorAgent from './trigger-actors/agent';
@@ -86,6 +87,7 @@ import conditionCallStatus from './conditions/call-status';
 import conditionCallType from './conditions/call-type';
 import conditionConversationProperty from './conditions/conversation-property';
 import conditionEmailBody from './conditions/email-body';
+import conditionFreddyDetectedLanguage from './conditions/freddy-detected-language';
 
 // Import all dynamic placeholders
 import dynamicPlaceholderAverageWaitTime from './dynamic-placeholders/average-wait-time';
@@ -145,6 +147,7 @@ const recommendedPlugins: RulePlugin[] = [
       [ConditionKey.CallStatus]: conditionCallStatus,
       [ConditionKey.CallType]: conditionCallType,
       [ConditionKey.EmailBody]: conditionEmailBody,
+      [ConditionKey.FreddyDetectedLanguage]: conditionFreddyDetectedLanguage,
     },
     dynamicPlaceholders: {
       'conversation.url': dynamicPlaceholderConversationUrl,
@@ -198,6 +201,7 @@ const recommendedPlugins: RulePlugin[] = [
       [TriggerActionType.PrivateNoteCreate]: triggerActionPrivateNoteCreate,
       [TriggerActionType.FirstSlaBreach]: triggerActionFirstSLABreach,
       [TriggerActionType.NextSlaBreach]: triggerActionNextSLABreach,
+      [TriggerActionType.FreddyDetectsLanguage]: triggerActionFreddyDetectsLanguage,
       [TriggerActionType.CallEnded]: triggerActionCallEnded,
       [TriggerActionType.UpdateConversationProperty]: triggerActionUpdateConversationProperty,
     },
