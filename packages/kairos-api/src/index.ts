@@ -117,7 +117,7 @@ export default class Kairos {
    * Deletes a schedule using in Kairos.
    */
   deleteSchedule(jobId: string): AxiosPromise<string> {
-    return axios.delete(`${this.url}/schedules/${this.group}/${jobId}`, {
+    return axios.delete(`${this.url}/v2/schedules/${this.group}/${jobId}`, {
       headers: this.headers,
     });
   }
