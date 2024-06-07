@@ -14,7 +14,7 @@ import { TimerRuleEngine } from './TimerRuleEngine';
 import ruleConfig from './RuleConfig';
 import recommendedPlugins from './recommended/index';
 import { Utils } from './Utils';
-import { ErrorCodes } from './models/error-codes';
+import { APITraceCodes, ErrorCodes } from './models/error-codes';
 import { LogSeverity } from './services/GoogleCloudLogging';
 
 export * from './models/rule';
@@ -125,6 +125,15 @@ export class RuleEngine {
         );
         return Promise.resolve();
       } catch (err) {
+        Utils.log(
+        payload as unknown as ProductEventPayload,
+        integrations,
+        APITraceCodes.EXECUTE_SCHEDULE_FAILURE,
+        {
+          error: err as AnyJson,
+        },
+        LogSeverity.ALERT,
+      );
         return Promise.reject(err);
       }
     }

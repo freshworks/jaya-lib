@@ -84,35 +84,51 @@ export class Utils {
     }
   }
 
+  /**
+   * Logs the given event payload to Google Cloud Logging.
+   *
+   * @param {ProductEventPayload} productEventPayload - The payload of the product event.
+   * @param {Integrations} integrations - The integrations object containing the Google Cloud Logging configuration.
+   * @param {ErrorCodes | APITraceCodes} errorCode - The error or trace code associated with the event.
+   * @param {JsonMap | AnyJson} info - Additional information to be logged.
+   * @param {LogSeverity} [severity=LogSeverity.ERROR] - The severity of the log. Defaults to ERROR.
+   *
+   * @returns {Promise<void>} A Promise that resolves when the log has been successfully written.
+   *
+   * @throws Will throw an error if the logging fails.
+   */
+  
   public static async log(
     productEventPayload: ProductEventPayload,
     integrations: Integrations,
     errorCode: ErrorCodes | APITraceCodes,
     info: JsonMap | AnyJson,
-    severity?: LogSeverity,
+    severity: LogSeverity = LogSeverity.ERROR,
   ): Promise<void> {
     try {
-      const conversation = productEventPayload.data?.conversation || productEventPayload.data?.message;
-      const conversationId = conversation?.conversation_id;
-      const firstMessage = conversation?.messages && conversation.messages[0];
-      const messageId = firstMessage?.id;
+      const { data, domain, timestamp, event, region } = productEventPayload;
+      const conversation = data?.conversation || data?.message;
+      const { conversation_id: conversationId, app_id: appAlias, messages } = conversation || {};
+      const messageId = messages?.[0]?.id || 0;
+      const { sub_entity: actorSubentity = null, type: actorType } = data.actor;
+  
       const googleCloudLogging = new GoogleCloudLogging(integrations.googleCloudLoggingConfig);
-
+  
       googleCloudLogging.log(
         {
-          account_id: productEventPayload.account_id,
-          actor_subentity: productEventPayload.data.actor.sub_entity || null,
-          actor_type: productEventPayload.data.actor.type,
+          actor_subentity: actorSubentity,
+          actor_type: actorType,
+          appAlias,
           conversation_id: conversationId,
-          domain: productEventPayload.domain,
+          domain,
           error_code: errorCode,
-          event_epoch: new Date(productEventPayload.timestamp * 1000).toISOString(),
-          event_name: productEventPayload.event,
+          event_epoch: new Date(timestamp * 1000).toISOString(),
+          event_name: event,
           info,
-          message_id: messageId || 0,
-          region: productEventPayload.region,
+          message_id: messageId,
+          region,
         },
-        severity || LogSeverity.ERROR,
+        severity,
       );
     } catch (err) {}
   }
@@ -302,6 +318,7 @@ export class Utils {
         });
     });
   };
+  
   public static registerEmptyPlaceholder(
     convFieldsMap: Map<string, string>,
     conversation: ModelProperties,
