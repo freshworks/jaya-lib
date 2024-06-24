@@ -7,6 +7,12 @@ import { AnyJson, Api, PropertiesConditionValue } from '../../models/rule';
 import { ErrorCodes, ErrorTypes } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
 
+type PropertiesConditionPayload = PropertiesConditionValue[] | PropertiesConditionValue;
+
+let getConditionPayload = (payload: PropertiesConditionPayload) => {
+  return Array.isArray(payload) ? payload : [payload];
+};
+
 export default async (
   integrations: Integrations,
   productEventPayload: ProductEventPayload,
@@ -20,31 +26,36 @@ export default async (
   const freshchatApiToken = integrations.freshchatv2.token;
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken, ruleAlias);
 
-  const userPropertiesActionValue = actionValue as PropertiesConditionValue;
+  const userPropertiesActionValue = getConditionPayload(actionValue as PropertiesConditionPayload);
   let generatedPlaceholders: PlaceholdersMap = {};
 
-  try {
-    generatedPlaceholders = await Utils.getDynamicPlaceholders(
-      userPropertiesActionValue.propertyValue,
-      productEventPayload,
-      integrations,
-      placeholders,
-      options,
-      ruleAlias,
-    );
+  let getPropertiesPayload = (propertiesPayload: PropertiesConditionValue[], combinedPlaceholders: PlaceholdersMap) => {
+    return propertiesPayload.map((property: PropertiesConditionValue) => {
+      return {
+        name: property.propertyKey,
+        value: Utils.processHandlebarsAndReplacePlaceholders(property.propertyValue, combinedPlaceholders),
+      };
+    });
+  };
 
-    const combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
+  try {
+    let combinedPlaceholders = { ...placeholders };
+
+    userPropertiesActionValue.forEach(async (property) => {
+      generatedPlaceholders = await Utils.getDynamicPlaceholders(
+        property.propertyValue,
+        productEventPayload,
+        integrations,
+        placeholders,
+        options,
+        ruleAlias,
+      );
+
+      combinedPlaceholders = { ...combinedPlaceholders, ...generatedPlaceholders };
+    });
 
     await freshchat.updateUser(productEventPayload.data.associations.user.id, {
-      properties: [
-        {
-          name: userPropertiesActionValue.propertyKey,
-          value: Utils.processHandlebarsAndReplacePlaceholders(
-            userPropertiesActionValue.propertyValue,
-            combinedPlaceholders,
-          ),
-        },
-      ],
+      properties: getPropertiesPayload(userPropertiesActionValue, combinedPlaceholders),
     });
   } catch (err) {
     Utils.log(
