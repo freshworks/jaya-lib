@@ -139,12 +139,12 @@ const getRequestConfig = (
 
   // Step 4: Handle contentType
   if (triggerWebhookValue.contentType) {
-    const headersUpdate = handleContentTypeHeader(axiosRequestConfig, triggerWebhookValue, combinedPlaceholders);
+    const {headers, data} = handleContentTypeHeader(axiosRequestConfig, triggerWebhookValue, combinedPlaceholders);
 
-    axiosRequestConfig.headers = headersUpdate.headers;
+    axiosRequestConfig.headers = headers;
 
-    if (headersUpdate?.data) {
-      axiosRequestConfig.data = headersUpdate.data;
+    if (data) {
+      axiosRequestConfig.data = data;
     }
   }
 
@@ -160,7 +160,9 @@ const handleContentTypeHeader = (
     contentType: WebhookContentType = triggerWebhookValue.contentType as WebhookContentType;
   let data = null;
 
-  headers['Content-Type'] = contentTypeMap[contentType];
+  if(!headers['Content-Type']) {
+    headers['Content-Type'] = contentTypeMap[contentType];
+  }
 
   if (triggerWebhookValue.content && isRequestTypeContentMap[triggerWebhookValue.requestType]) {
     // Step 5: Handle content based on content-type
@@ -238,20 +240,28 @@ export default async (
     throw e; // re-throw the error after logging
   }
 
-  const dateBeforeTrigger = new Date();
-  const webhookResponse = await makeApiCall(axiosRequestConfig, triggerApi, integrations, productEventPayload);
-  const dateAfterTrigger = new Date();
+  try {
+    const dateBeforeTrigger = new Date();
+    const webhookResponse = await makeApiCall(axiosRequestConfig, triggerApi, integrations, productEventPayload);
 
-  logApiResponseTime(
-    productEventPayload,
-    integrations,
-    triggerApi,
-    dateBeforeTrigger,
-    dateAfterTrigger,
-    axiosRequestConfig.headers
-  );
-
-  return { [triggerApi.responseModelName]: webhookResponse.data };
+    const dateAfterTrigger = new Date();
+    logApiResponseTime(
+      productEventPayload,
+      integrations,
+      triggerApi,
+      dateBeforeTrigger,
+      dateAfterTrigger,
+      axiosRequestConfig.headers
+    );
+  
+    return { [triggerApi.responseModelName]: webhookResponse.data };
+  } catch (error) {
+    Utils.log(productEventPayload, integrations, ErrorCodes.TriggerAPITrace, {
+      apiName: triggerApi.name,
+      error: error as AnyJson,
+    }, LogSeverity.CRITICAL);
+    throw error;
+  }
 };
 
 async function generatePlaceholders(

@@ -20,6 +20,7 @@ const requestAxiosWrapper = <T = unknown>(
 
       headers['Authorization'] = authHeader;
       headers['x-service'] = 'advanced_automation';
+      headers['Content-Type'] = 'application/json';
     }
 
     return requestAxiosify[axiosRequestConfig.method?.toLowerCase() as Method]<T>(
@@ -28,7 +29,6 @@ const requestAxiosWrapper = <T = unknown>(
       {
         body: axiosRequestConfig.data,
         headers,
-        staticIP: true,
       },
     );
   } else {
