@@ -260,7 +260,7 @@ export default async (
       apiName: triggerApi.name,
       error: error as AnyJson,
     }, LogSeverity.CRITICAL);
-    throw error;
+    throw error
   }
 };
 

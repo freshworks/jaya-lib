@@ -113,8 +113,8 @@ export class Utils {
       const { sub_entity: actorSubentity = null, type: actorType } = data.actor;
   
       const googleCloudLogging = new GoogleCloudLogging(integrations.googleCloudLoggingConfig);
-  
-      googleCloudLogging.log(
+      
+      await googleCloudLogging.log(
         {
           actor_subentity: actorSubentity,
           actor_type: actorType,
