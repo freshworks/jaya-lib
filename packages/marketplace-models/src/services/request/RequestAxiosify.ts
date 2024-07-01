@@ -44,6 +44,7 @@ const requestProxyFunc = async <T = unknown>(
       context: {
         host: urlObj.hostname,
         path: urlObj.pathname,
+        auth: options.headers?.Authorization,
       },
       ...options,
     });

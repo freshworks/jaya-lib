@@ -19,8 +19,6 @@ const requestAxiosWrapper = <T = unknown>(
       const authHeader = `Basic ${authBuffer}`;
 
       headers['Authorization'] = authHeader;
-      headers['x-service'] = 'advanced_automation';
-      headers['Content-Type'] = 'application/json';
     }
 
     return requestAxiosify[axiosRequestConfig.method?.toLowerCase() as Method]<T>(
