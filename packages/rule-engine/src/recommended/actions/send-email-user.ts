@@ -7,6 +7,7 @@ import { AnyJson, Api } from '../../models/rule';
 import { Utils } from '../../Utils';
 import { ErrorCodes } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
+import constants from '../Constants';
 
 export default async (
   integrations: Integrations,
@@ -22,7 +23,7 @@ export default async (
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken, ruleAlias);
   const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
   const conversationId = modelProperties.conversation_id;
-  const appId = productEventPayload.account_id;
+  const appId = constants.DEFAULT_ACCOUNT_ID;
   const userEmail =
     productEventPayload.data.associations &&
     productEventPayload.data.associations.user &&

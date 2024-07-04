@@ -93,7 +93,7 @@ export class TimerRuleEngine {
           const scheduledTime = this.addSeconds(new Date(), rule.timerValue).toISOString();
 
           const originalPayload = {
-            account_id: payload.account_id,
+            app_id: modelProperties.app_id,
             data: {
               actor: payload.data.actor,
               associations: payload.data.associations,
@@ -183,7 +183,7 @@ export class TimerRuleEngine {
     try {
       await scheduler.deleteSchedule(externalEventPayload.data.jobId);
 
-      await Utils.log(
+      Utils.log(
         externalEventPayload as unknown as ProductEventPayload,
         integrations,
         APITraceCodes.EXECUTE_SCHEDULE_SUCCESS,
@@ -327,7 +327,8 @@ export class TimerRuleEngine {
                 integrations,
                 APITraceCodes.DELAY_SCHEDULE_CREATION,
                 {
-                  jobId: createScheduleJobId,
+                  createScheduleJobId,
+                  jobId: jobsToDelete,
                 },
                 LogSeverity.NOTICE,
               );

@@ -19,7 +19,6 @@ const requestAxiosWrapper = <T = unknown>(
       const authHeader = `Basic ${authBuffer}`;
 
       headers['Authorization'] = authHeader;
-      headers['x-service'] = 'advanced_automation';
     }
 
     return requestAxiosify[axiosRequestConfig.method?.toLowerCase() as Method]<T>(
@@ -28,7 +27,6 @@ const requestAxiosWrapper = <T = unknown>(
       {
         body: axiosRequestConfig.data,
         headers,
-        staticIP: true,
       },
     );
   } else {

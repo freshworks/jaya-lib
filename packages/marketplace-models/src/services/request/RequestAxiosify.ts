@@ -9,6 +9,20 @@ export enum Method {
   Put = 'put',
 }
 
+function getLocation(href:string) : any {
+  var match = href.match(/^(https?\:)\/\/(([^:\/?#]*)(?:\:([0-9]+))?)([\/]{0,1}[^?#]*)(\?[^#]*|)(#.*|)$/);
+  return match && {
+      href: href,
+      protocol: match[1],
+      host: match[2],
+      hostname: match[3],
+      port: match[4],
+      pathname: match[5],
+      search: match[6],
+      hash: match[7]
+  }
+}
+
 const safelyParseJson = <T = unknown>(string: string): T => {
   try {
     return JSON.parse(string);
@@ -17,26 +31,33 @@ const safelyParseJson = <T = unknown>(string: string): T => {
   }
 };
 
-const requestProxyFunc = <T = unknown>(
-  requestProxy: RequestProxy,
+const requestProxyFunc = async <T = unknown>(
+  requestProxy: any,
   method: Method,
   url: string,
-  options: RequestProxyOptions,
+  options: any,
 ): Promise<AxiosResponse<T>> => {
-  return new Promise((resolve, reject) => {
-    requestProxy[method](url, options).then(
-      (data) => {
-        resolve({
-          data: safelyParseJson<T>(data.response),
-          headers: data.headers,
-          status: data.status,
-        } as unknown as AxiosResponse);
+  try {
+    let urlObj = getLocation(url);
+
+    const data = await requestProxy.invokeTemplate(`${method.toLowerCase()}BaseTemplate`, {
+      context: {
+        host: urlObj.hostname,
+        path: urlObj.pathname,
+        auth: options.headers?.Authorization,
       },
-      (error) => {
-        reject(error);
-      },
-    );
-  });
+      ...options,
+    });
+
+    return {
+      data: safelyParseJson<T>(data.response),
+      headers: data.headers,
+      status: data.status,
+    } as unknown as AxiosResponse;  
+  } catch (error) {
+    // Consider logging the error or handling it as needed
+    throw error;
+  }
 };
 
 const requestAxiosify: {
