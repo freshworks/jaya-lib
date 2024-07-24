@@ -1,7 +1,9 @@
 {
   "extends": "../tsconfig.settings.json",
   "compilerOptions": {
-    "outDir": "lib"
+    "outDir": "lib",
+    "target": "es2017",
+    "lib": ["es2021", "dom"],
   },
   "include": ["src"],
   "exclude": ["node_modules", "**/__tests__/*"]

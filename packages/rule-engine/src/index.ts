@@ -14,7 +14,7 @@ import { TimerRuleEngine } from './TimerRuleEngine';
 import ruleConfig from './RuleConfig';
 import recommendedPlugins from './recommended/index';
 import { Utils } from './Utils';
-import { ErrorCodes } from './models/error-codes';
+import { APITraceCodes, ErrorCodes } from './models/error-codes';
 import { LogSeverity } from './services/GoogleCloudLogging';
 
 export * from './models/rule';
@@ -35,11 +35,9 @@ export class RuleEngine {
 
   registerPlugins = ruleConfig.registerPlugins;
 
-  getFirstMatchingRule = RuleProcessor.getFirstMatchingRule;
-
   executeActions = ActionExecutor.handleActions;
 
-  processProductEvent = async (
+  async processProductEvent(
     payload: ProductEventPayload,
     rules: Rule[],
     apis: Api[],
@@ -48,62 +46,29 @@ export class RuleEngine {
     externalEventUrl: string,
     integrations: Integrations,
     kairosCredentials?: KairosCredentials,
-  ): Promise<void> => {
+  ): Promise<void> {
     if (options.isSchedulerEnabled && kairosCredentials) {
-      try {
-        // Invalidate exising schedules
-        await TimerRuleEngine.invalidateTimers(payload, rules, externalEventUrl, kairosCredentials, integrations);
-
-        // Process all timer rules.
-        await TimerRuleEngine.triggerTimers(payload, rules, externalEventUrl, kairosCredentials, integrations, options);
-      } catch (err) {
-        return Promise.reject(err);
-      }
+      // Invalidate existing schedules and process all timer rules.
+      await TimerRuleEngine.invalidateTimers(payload, rules, externalEventUrl, kairosCredentials, integrations);
+      await TimerRuleEngine.triggerTimers(payload, rules, externalEventUrl, kairosCredentials, integrations, options);
     }
-
+  
+    // Process regular rules and get the actions of the first matching rule.
     try {
-      // Process regular rules and get the actions of the first matching rule.
-      const firstMatchingRule = await RuleProcessor.getFirstMatchingRule(
-        payload.event,
-        payload.data,
-        rules,
-        integrations,
-        options,
-      );
-      // Perform all actions sequentially in order.
-      if (firstMatchingRule.actions && firstMatchingRule.actions.length) {
+      const firstMatchingRule = await RuleProcessor.getFirstMatchingRule(payload.event, payload.data, rules, integrations, options);
+      if (firstMatchingRule.actions?.length) {
         const ruleAlias = firstMatchingRule.ruleAlias || '';
-
-        await ActionExecutor.handleActions(
-          integrations,
-          firstMatchingRule.actions,
-          payload,
-          apis,
-          customPlaceholders,
-          options,
-          ruleAlias,
-        );
+        await ActionExecutor.handleActions(integrations, firstMatchingRule.actions, payload, apis, customPlaceholders, options, ruleAlias);
       }
     } catch (err) {
-      if(options.enableLogger || (err !== 'no matching rule')){
-        Utils.log(
-          payload,
-          integrations,
-          ErrorCodes.FreshchatAction,
-          {
-            error: err as AnyJson,
-          },
-          LogSeverity.ALERT,
-        );
+      if (options.enableLogger || err !== 'no matching rule') {
+        Utils.log(payload, integrations, ErrorCodes.FreshchatAction, { error: err as AnyJson}, LogSeverity.ALERT);
       }
-      
-      return Promise.reject(err);
+      throw err; // Rethrow the error to be handled by the caller.
     }
+  }
 
-    return Promise.resolve();
-  };
-
-  processExternalEvent = async (
+  async processExternalEvent(
     payload: RuleEngineExternalEventPayload,
     rules: Rule[],
     apis: Api[],
@@ -111,7 +76,7 @@ export class RuleEngine {
     options: RuleEngineOptions,
     integrations: Integrations,
     kairosCredentials?: KairosCredentials,
-  ): Promise<void> => {
+  ): Promise<void> {
     if (options.isSchedulerEnabled && kairosCredentials) {
       try {
         await TimerRuleEngine.executeTimerActions(
@@ -123,12 +88,16 @@ export class RuleEngine {
           customPlaceholders,
           options,
         );
-        return Promise.resolve();
       } catch (err) {
-        return Promise.reject(err);
+        Utils.log(
+          payload as unknown as ProductEventPayload,
+          integrations,
+          APITraceCodes.EXECUTE_SCHEDULE_FAILURE,
+          { error: err as AnyJson },
+          LogSeverity.ALERT,
+        );
+        throw err;
       }
     }
-
-    return Promise.resolve();
-  };
+  }
 }

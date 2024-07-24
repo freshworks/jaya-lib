@@ -6,6 +6,7 @@ import { Utils } from '../../Utils';
 import { PlaceholdersMap } from '@freshworks-jaya/utilities';
 import { ErrorCodes } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
+import constants from '../Constants';
 
 export default async (
   integrations: Integrations,
@@ -17,7 +18,7 @@ export default async (
   ruleAlias: string,
 ): Promise<PlaceholdersMap> => {
   const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
-  const appId = productEventPayload.account_id;
+  const appId = constants.DEFAULT_ACCOUNT_ID;
 
   if (!integrations.emailService) {
     return Promise.reject('No email service integration');

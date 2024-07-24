@@ -16,7 +16,7 @@ import { AxiosRequestConfig } from 'axios';
 import querystring, { ParsedUrlQueryInput } from 'querystring';
 import { Utils } from '../../Utils';
 import * as _ from 'lodash';
-import { ErrorCodes } from '../../models/error-codes';
+import { APITraceCodes, ErrorCodes } from '../../models/error-codes';
 import { LogSeverity } from '../../services/GoogleCloudLogging';
 
 const contentTypeMap: {
@@ -139,12 +139,12 @@ const getRequestConfig = (
 
   // Step 4: Handle contentType
   if (triggerWebhookValue.contentType) {
-    const headersUpdate = handleContentTypeHeader(axiosRequestConfig, triggerWebhookValue, combinedPlaceholders);
+    const {headers, data} = handleContentTypeHeader(axiosRequestConfig, triggerWebhookValue, combinedPlaceholders);
 
-    axiosRequestConfig.headers = headersUpdate.headers;
+    axiosRequestConfig.headers = headers;
 
-    if (headersUpdate.data) {
-      axiosRequestConfig.data = headersUpdate.data;
+    if (data) {
+      axiosRequestConfig.data = data;
     }
   }
 
@@ -158,9 +158,9 @@ const handleContentTypeHeader = (
 ): AxiosRequestConfig => {
   const headers: JsonMap = axiosRequestConfig.headers ?? {},
     contentType: WebhookContentType = triggerWebhookValue.contentType as WebhookContentType;
-  let data = {};
+  let data = null;
 
-  if (!headers['Content-Type']) {
+  if(!headers['Content-Type']) {
     headers['Content-Type'] = contentTypeMap[contentType];
   }
 
@@ -214,15 +214,67 @@ export default async (
   const triggerApi = apis.find((api) => api.responseModelName === triggerApiModelName);
 
   if (!triggerApi) {
-    return Promise.reject(new Error('Api not found'));
+    throw new Error('Api not found');
   }
 
-  let combinedPlaceholders: PlaceholdersMap = {};
+  let combinedPlaceholders: PlaceholdersMap = await generatePlaceholders(
+    triggerApi.config,
+    productEventPayload,
+    integrations,
+    placeholders,
+    options,
+    ruleAlias,
+  );
 
-  // Get dynamic placeholders and combine it with the static placeholders
+  let axiosRequestConfig;
+
+  try {
+    axiosRequestConfig = getRequestConfig(triggerApi.config, combinedPlaceholders);
+    axiosRequestConfig.data = handleFieldTypeCast(triggerApi.config, axiosRequestConfig.data);
+  } catch (e) {
+    Utils.log(productEventPayload, integrations, ErrorCodes.APIConfigError, {
+      apiName: triggerApi.name,
+      config: axiosRequestConfig as unknown as AnyJson,
+      error: e as AnyJson
+    });
+    throw e; // re-throw the error after logging
+  }
+
+  try {
+    const dateBeforeTrigger = new Date();
+    const webhookResponse = await makeApiCall(axiosRequestConfig, triggerApi, integrations, productEventPayload);
+
+    const dateAfterTrigger = new Date();
+    logApiResponseTime(
+      productEventPayload,
+      integrations,
+      triggerApi,
+      dateBeforeTrigger,
+      dateAfterTrigger,
+      axiosRequestConfig.headers
+    );
+  
+    return { [triggerApi.responseModelName]: webhookResponse.data };
+  } catch (error) {
+    Utils.log(productEventPayload, integrations, ErrorCodes.TriggerAPITrace, {
+      apiName: triggerApi.name,
+      error: error as AnyJson,
+    }, LogSeverity.CRITICAL);
+    throw error
+  }
+};
+
+async function generatePlaceholders(
+  config: any,
+  productEventPayload: ProductEventPayload,
+  integrations: Integrations,
+  placeholders: PlaceholdersMap,
+  options: RuleEngineOptions,
+  ruleAlias: string,
+): Promise<PlaceholdersMap> {
   try {
     const generatedPlaceholders = await Utils.getDynamicPlaceholders(
-      JSON.stringify(triggerApi.config),
+      JSON.stringify(config),
       productEventPayload,
       integrations,
       placeholders,
@@ -230,51 +282,53 @@ export default async (
       ruleAlias,
     );
 
-    combinedPlaceholders = { ...placeholders, ...generatedPlaceholders };
+    return { ...placeholders, ...generatedPlaceholders };
   } catch (err) {
-    return Promise.reject('Failed to generate dynamic placeholders map');
+    throw new Error('Failed to generate dynamic placeholders map');
   }
+}
 
-  const axiosRequestConfig = getRequestConfig(triggerApi.config, combinedPlaceholders);
-  const dateBeforeTrigger = new Date();
-  let webhookResponse;
-
-  // Cast API content to specific type
+async function makeApiCall(
+  axiosRequestConfig: any,
+  triggerApi: Api,
+  integrations: Integrations,
+  productEventPayload: ProductEventPayload
+): Promise<any> {
   try {
-    axiosRequestConfig.data = handleFieldTypeCast(triggerApi.config, axiosRequestConfig.data);
-  } catch (err) {
-    return Promise.reject('Failed to type cast dynamic placeholders map');
-  }
-
-  try {
-    // Step 6: Make the API call
-    webhookResponse = await requestAxiosWrapper<JsonMap>(axiosRequestConfig, {
+    return await requestAxiosWrapper<JsonMap>(axiosRequestConfig, {
       isUseStaticIP: triggerApi.isUseStaticIP,
       requestProxy: integrations.marketplaceServices.requestProxy,
     });
-
-    const dateAfterTrigger = new Date();
-    const apiResponseTimeInMilliseconds = dateAfterTrigger.getTime() - dateBeforeTrigger.getTime();
-
-    Utils.log(
-      productEventPayload,
-      integrations,
-      ErrorCodes.TriggerAPITrace,
-      {
-        apiName: triggerApi.name,
-        apiResponseMillis: apiResponseTimeInMilliseconds,
-        timestampAfterTrigger: dateAfterTrigger.toISOString(),
-        timestampBeforeTrigger: dateBeforeTrigger.toISOString(),
-      },
-      LogSeverity.INFO,
-    );
   } catch (err) {
     Utils.log(productEventPayload, integrations, ErrorCodes.TriggerAPIError, {
       apiName: triggerApi.name,
       error: err as AnyJson,
     });
-    return Promise.reject('Trigger webhook failure');
+    throw new Error('Trigger webhook failure');
   }
+}
 
-  return Promise.resolve({ [triggerApi.responseModelName]: webhookResponse.data });
-};
+function logApiResponseTime(
+  productEventPayload: ProductEventPayload,
+  integrations: Integrations,
+  triggerApi: Api,
+  dateBeforeTrigger: Date,
+  dateAfterTrigger: Date,
+  headers: Headers
+): void {
+  const apiResponseTimeInMilliseconds = dateAfterTrigger.getTime() - dateBeforeTrigger.getTime();
+
+  Utils.log(
+    productEventPayload,
+    integrations,
+    ErrorCodes.TriggerAPITrace,
+    {
+      apiName: triggerApi.name,
+      apiResponseMillis: apiResponseTimeInMilliseconds,
+      headers: headers as unknown as AnyJson,
+      timestampAfterTrigger: dateAfterTrigger.toISOString(),
+      timestampBeforeTrigger: dateBeforeTrigger.toISOString(),
+    },
+    LogSeverity.INFO,
+  );
+}
