@@ -26,6 +26,10 @@ export interface Integrations {
     requestProxy: RequestProxy;
   };
   timezoneOffset: number;
+  haystackLogger: {
+    apiKey: string;
+    url: string;
+  };
 }
 
 export interface ProductCredentials {

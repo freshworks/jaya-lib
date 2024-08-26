@@ -117,7 +117,6 @@ export class TimerRuleEngine {
               payload: {
                 jobId,
                 originalPayload: {
-                  ...originalPayload,
                   encodedData: encodedPayload,
                 },
                 ruleAlias: rule.ruleAlias,

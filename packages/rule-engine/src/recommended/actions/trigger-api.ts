@@ -251,7 +251,8 @@ export default async (
       triggerApi,
       dateBeforeTrigger,
       dateAfterTrigger,
-      axiosRequestConfig.headers
+      axiosRequestConfig.headers,
+      webhookResponse.headers
     );
   
     return { [triggerApi.responseModelName]: webhookResponse.data };
@@ -314,7 +315,8 @@ function logApiResponseTime(
   triggerApi: Api,
   dateBeforeTrigger: Date,
   dateAfterTrigger: Date,
-  headers: Headers
+  headers: Headers,
+  responseHeaders: Headers
 ): void {
   const apiResponseTimeInMilliseconds = dateAfterTrigger.getTime() - dateBeforeTrigger.getTime();
 
@@ -328,6 +330,7 @@ function logApiResponseTime(
       headers: headers as unknown as AnyJson,
       timestampAfterTrigger: dateAfterTrigger.toISOString(),
       timestampBeforeTrigger: dateBeforeTrigger.toISOString(),
+      responseHeaders: responseHeaders as unknown as AnyJson,
     },
     LogSeverity.INFO,
   );

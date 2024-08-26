@@ -17,6 +17,7 @@ import utc from 'dayjs/plugin/utc';
 import { APITraceCodes, ErrorCodes } from './models/error-codes';
 import { AnyJson, ConditionDataType, JsonMap } from './models/rule';
 import { GoogleCloudLogging, LogSeverity } from './services/GoogleCloudLogging';
+import LoggerAPI from './HaystackLogging';
 
 dayjs.extend(utc);
 
@@ -112,24 +113,23 @@ export class Utils {
       const messageId = messages?.[0]?.id || 0;
       const { sub_entity: actorSubentity = null, type: actorType } = data.actor;
   
-      const googleCloudLogging = new GoogleCloudLogging(integrations.googleCloudLoggingConfig);
+      const haystackLogging = new LoggerAPI(integrations.haystackLogger);
       
-      await googleCloudLogging.log(
-        {
-          actor_subentity: actorSubentity,
-          actor_type: actorType,
-          appAlias,
-          conversation_id: conversationId,
-          domain,
-          error_code: errorCode,
-          event_epoch: new Date(timestamp * 1000).toISOString(),
-          event_name: event,
-          info,
-          message_id: messageId,
-          region,
-        },
-        severity,
-      );
+      await haystackLogging.sendHaystackLogs({
+        actor_subentity: actorSubentity,
+        actor_type: actorType,
+        appAlias,
+        conversation_id: conversationId,
+        domain,
+        error_code: errorCode,
+        event_epoch: new Date(timestamp * 1000).toISOString(),
+        event_name: event,
+        info,
+        message_id: messageId,
+        region,
+        severity
+      });
+
     } catch (err) {}
   }
 
