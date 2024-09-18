@@ -331,6 +331,7 @@ export class Utils {
       }
     });
   }
+
   public static setConversationFields(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     conversationFieldsResponse: any,
@@ -346,4 +347,16 @@ export class Utils {
       convFieldsMap.set(field.column_name, field.name);
     });
   }
+
+    /**
+   * Gets business hour for an account based on businessHourId provided.
+   */
+    public static isFeatureFlagEnabled = (
+      integrations: Integrations,
+      featureFlag: string,
+    ): Boolean => {
+      const { featuresEnabled, betaFeaturesEnabled }  = integrations.features;
+      return featuresEnabled.includes(featureFlag) || betaFeaturesEnabled.includes(featureFlag);
+    };
+
 }
