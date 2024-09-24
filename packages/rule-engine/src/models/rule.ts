@@ -78,6 +78,7 @@ export enum ConditionKey {
   UserName = 'USER_NAME',
   UserPhone = 'USER_PHONE',
   UserProperty = 'USER_PROPERTY',
+  ChannelType = 'CHANNEL_TYPE'
 }
 export enum ConditionOperator {
   After = 'AFTER',
