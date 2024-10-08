@@ -61,7 +61,7 @@ export class RuleEngine {
         await ActionExecutor.handleActions(integrations, firstMatchingRule.actions, payload, apis, customPlaceholders, options, ruleAlias);
       }
     } catch (err) {
-      if (options.enableLogger || err !== 'no matching rule') {
+      if (options.enableLogger || err !== 'Error: no matching rule') {
         Utils.log(payload, integrations, ErrorCodes.FreshchatAction, { error: err as AnyJson}, LogSeverity.ALERT);
       }
       throw err; // Rethrow the error to be handled by the caller.
