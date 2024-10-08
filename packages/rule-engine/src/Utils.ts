@@ -348,14 +348,14 @@ export class Utils {
     });
   }
 
-    /**
-   * Gets business hour for an account based on businessHourId provided.
-   */
-    public static isFeatureFlagEnabled = (
-      integrations: Integrations,
-      featureFlag: string,
-    ): Boolean => {
-      return integrations?.featureFlags?.[featureFlag] || false;
-    };
+  /*
+  * Check if feature flag is available and enabled.
+  */
+  public static isFeatureFlagEnabled = (
+    integrations: Integrations,
+    featureFlag: string,
+  ): Boolean => {
+    return integrations?.featureFlags?.[featureFlag] || false;
+  };
 
 }
