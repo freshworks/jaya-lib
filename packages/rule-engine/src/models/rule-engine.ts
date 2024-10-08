@@ -26,10 +26,7 @@ export interface Integrations {
     requestProxy: RequestProxy;
   };
   timezoneOffset: number;
-  features: {
-    betaFeaturesEnabled: string[];
-    featuresEnabled: string[];
-  };
+  featureFlags: Record<string, boolean>;
 }
 
 export interface ProductCredentials {

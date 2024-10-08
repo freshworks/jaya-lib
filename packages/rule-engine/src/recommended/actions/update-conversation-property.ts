@@ -21,7 +21,6 @@ export default async (
   const freshchat = new Freshchat(freshchatApiUrl, freshchatApiToken, ruleAlias);
   const modelProperties = productEventPayload.data.conversation || productEventPayload.data.message;
   const conversationId = modelProperties.conversation_id;
-  const assigned_agent_id = modelProperties.assigned_agent_id ? modelProperties.assigned_agent_id : '';
   const status = modelProperties.status;
 
   const convPropertiesActionValue = actionValue as PropertiesConditionValue;
@@ -50,7 +49,13 @@ export default async (
         ),
       };
     }
-    await freshchat.conversationPropertiesUpdate(conversationId, status, properties, assigned_agent_id);
+
+    if (Utils.isFeatureFlagEnabled(integrations, 'EXCLUSIVE_UPDATE_FOR_CONV_PROP')) {
+      await freshchat.conversationPropertiesUpdate(conversationId, properties, null);
+    } else {
+      await freshchat.conversationPropertiesUpdate(conversationId, properties, status);
+    }
+
   } catch (err) {
     Utils.log(
       productEventPayload,
