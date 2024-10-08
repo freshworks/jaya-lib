@@ -355,7 +355,7 @@ export class Utils {
       integrations: Integrations,
       featureFlag: string,
     ): Boolean => {
-      return integrations?.featureFlags[featureFlag] || false;
+      return integrations?.featureFlags?.[featureFlag] || false;
     };
 
 }
