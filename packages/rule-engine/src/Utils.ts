@@ -355,8 +355,7 @@ export class Utils {
       integrations: Integrations,
       featureFlag: string,
     ): Boolean => {
-      const { featuresEnabled, betaFeaturesEnabled }  = integrations.features;
-      return featuresEnabled.includes(featureFlag) || betaFeaturesEnabled.includes(featureFlag);
+      return integrations?.featureFlags[featureFlag] || false;
     };
 
 }

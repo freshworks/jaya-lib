@@ -26,6 +26,7 @@ export interface Integrations {
     requestProxy: RequestProxy;
   };
   timezoneOffset: number;
+  featureFlags: Record<string, boolean>;
 }
 
 export interface ProductCredentials {
