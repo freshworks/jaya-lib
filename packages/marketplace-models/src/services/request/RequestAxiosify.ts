@@ -43,7 +43,7 @@ const requestProxyFunc = async <T = unknown>(
     const data = await requestProxy.invokeTemplate(`${method.toLowerCase()}BaseTemplate`, {
       context: {
         host: urlObj.hostname,
-        path: urlObj.pathname,
+        path: urlObj.pathname + urlObj.search,
         auth: options.headers?.Authorization,
       },
       ...options,
