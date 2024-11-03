@@ -229,7 +229,7 @@ export class RuleProcessor {
     rules: Rule[],
     integrations: Integrations,
     options: RuleEngineOptions,
-  ): Promise<Rule> {
+  ): Promise<Rule | null> {
     for (const rule of rules) {
       if (this.isEnabledNonTimerRule(rule)) {
         try {
@@ -240,6 +240,6 @@ export class RuleProcessor {
         }
       }
     }
-    throw new Error('no matching rule');
+    return null;
   }
 }

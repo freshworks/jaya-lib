@@ -56,12 +56,12 @@ export class RuleEngine {
     // Process regular rules and get the actions of the first matching rule.
     try {
       const firstMatchingRule = await RuleProcessor.getFirstMatchingRule(payload.event, payload.data, rules, integrations, options);
-      if (firstMatchingRule.actions?.length) {
+      if (firstMatchingRule?.actions?.length) {
         const ruleAlias = firstMatchingRule.ruleAlias || '';
         await ActionExecutor.handleActions(integrations, firstMatchingRule.actions, payload, apis, customPlaceholders, options, ruleAlias);
       }
     } catch (err) {
-      if (options.enableLogger || err !== 'Error: no matching rule') {
+      if (options.enableLogger) {
         Utils.log(payload, integrations, ErrorCodes.FreshchatAction, { error: err as AnyJson}, LogSeverity.ALERT);
       }
       throw err; // Rethrow the error to be handled by the caller.
