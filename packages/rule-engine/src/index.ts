@@ -52,7 +52,7 @@ export class RuleEngine {
       await TimerRuleEngine.invalidateTimers(payload, rules, externalEventUrl, kairosCredentials, integrations);
       await TimerRuleEngine.triggerTimers(payload, rules, externalEventUrl, kairosCredentials, integrations, options);
     }
-  
+
     // Process regular rules and get the actions of the first matching rule.
     try {
       const firstMatchingRule = await RuleProcessor.getFirstMatchingRule(payload.event, payload.data, rules, integrations, options);

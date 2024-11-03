@@ -331,6 +331,7 @@ export class Utils {
       }
     });
   }
+
   public static setConversationFields(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     conversationFieldsResponse: any,
@@ -346,4 +347,15 @@ export class Utils {
       convFieldsMap.set(field.column_name, field.name);
     });
   }
+
+  /*
+  * Check if feature flag is available and enabled.
+  */
+  public static isFeatureFlagEnabled = (
+    integrations: Integrations,
+    featureFlag: string,
+  ): Boolean => {
+    return integrations?.featureFlags?.[featureFlag] || false;
+  };
+
 }

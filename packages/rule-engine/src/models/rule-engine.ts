@@ -26,6 +26,7 @@ export interface Integrations {
     requestProxy: RequestProxy;
   };
   timezoneOffset: number;
+  featureFlags: Record<string, boolean>;
 }
 
 export interface ProductCredentials {
@@ -45,7 +46,7 @@ export interface TimerCompletionPayload {
   eventData?: DeleteSchedulesData;
   eventType?: ExternalEventType;
   jobId: string;
-  originalPayload: ProductEventPayload;
+  originalPayload: ProductEventPayload | string;
   ruleAlias?: string;
   ruleIndex: number;
   scheduled_at?: string;
@@ -56,3 +57,7 @@ export interface KairosCredentials {
   token: string;
   url: string;
 }
+
+
+
+

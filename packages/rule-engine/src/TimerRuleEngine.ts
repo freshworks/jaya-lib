@@ -5,10 +5,7 @@ import {
   AnyJson,
   Api,
   CustomPlaceholdersMap,
-  Rule,
-  TriggerActionType,
-  TriggerActorCause,
-  TriggerActorType,
+  Rule
 } from './models/rule';
 import { RuleProcessor } from './RuleProcessor';
 import {
@@ -20,6 +17,7 @@ import {
 import { Utils } from './Utils';
 import { ErrorCodes, ErrorTypes, APITraceCodes } from './models/error-codes';
 import { LogSeverity } from './services/GoogleCloudLogging';
+import { assignmentConditions } from './models/constants';
 export class TimerRuleEngine {
   /**
    * Add minutes to date object.
@@ -116,10 +114,7 @@ export class TimerRuleEngine {
               jobId,
               payload: {
                 jobId,
-                originalPayload: {
-                  ...originalPayload,
-                  encodedData: encodedPayload,
-                },
+                originalPayload: encodedPayload,
                 ruleAlias: rule.ruleAlias,
                 ruleIndex,
                 scheduled_at: scheduledTime,
@@ -215,17 +210,27 @@ export class TimerRuleEngine {
       timerRule = rules[externalEventPayload.data.ruleIndex];
     }
 
-    if (externalEventPayload.data.originalPayload?.encodedData) {
-      const data = Buffer.from(externalEventPayload.data.originalPayload.encodedData as string, 'base64').toString();
-      externalEventPayload.data.originalPayload = JSON.parse(data) as ProductEventPayload;
+
+    let originalPayload = {} as ProductEventPayload;
+
+    // Decode and parse the originalPayload. Handle the case where the originalPayload is object,
+    // but app update has happened before schedule execution.
+    const encodedData = typeof externalEventPayload.data.originalPayload === 'string'
+      ? externalEventPayload.data.originalPayload
+      : externalEventPayload.data.originalPayload?.encodedData;
+
+    if (encodedData) {
+      const data = Buffer.from(encodedData, 'base64').toString();
+      originalPayload = JSON.parse(data) as ProductEventPayload;
     }
+
 
     // Execute actions
     if (timerRule && Array.isArray(timerRule.actions)) {
       return ActionExecutor.handleActions(
         integrations,
         timerRule.actions,
-        externalEventPayload.data.originalPayload,
+        originalPayload,
         apis,
         customPlaceholders,
         options,
@@ -262,47 +267,7 @@ export class TimerRuleEngine {
     if (jobsToDelete && jobsToDelete.length) {
       const scheduler = new Kairos(kairosCredentials);
       if (
-        RuleProcessor.isTriggerConditionMatching(payload.event, payload.data, [
-          {
-            action: {
-              change: {
-                from: 'ANY',
-                to: 'ASSIGNED',
-              },
-              type: TriggerActionType.ConversationAgentAssign,
-            },
-            actor: {
-              cause: TriggerActorCause.IntelliAssign,
-              type: TriggerActorType.System,
-            },
-          },
-          {
-            action: {
-              change: {
-                from: 'ANY',
-                to: 'ASSIGNED',
-              },
-              type: TriggerActionType.ConversationAgentAssign,
-            },
-            actor: {
-              cause: TriggerActorCause.AssignmentRule,
-              type: TriggerActorType.System,
-            },
-          },
-          {
-            action: {
-              change: {
-                from: 'ANY',
-                to: 'ANY',
-              },
-              type: TriggerActionType.ConversationGroupAssign,
-            },
-            actor: {
-              cause: TriggerActorCause.AssignmentRule,
-              type: TriggerActorType.System,
-            },
-          },
-        ])
+        RuleProcessor.isTriggerConditionMatching(payload.event, payload.data, assignmentConditions)
       ) {
         // Current event is IntelliAssign assigns an Agent, or assignment rule assigns an Agent or group schedule to cancel it after 3 seconds
         const createScheduleJobId = `${modelProperties.app_id}_${modelProperties.conversation_id}_delay_invalidation`;
