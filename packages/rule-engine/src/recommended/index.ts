@@ -35,7 +35,6 @@ import triggerActionMessageCreate from './trigger-actions/message-create';
 import triggerActionPrivateNoteCreate from './trigger-actions/private-note-create';
 import triggerActionFirstSLABreach from './trigger-actions/first-sla-breach';
 import triggerActionNextSLABreach from './trigger-actions/next-sla-breach';
-import triggerActionResolutionSLABreach from './trigger-actions/resolution-sla-breach';
 import triggerActionCallEnded from './trigger-actions/call-ended';
 import triggerActionUpdateConversationProperty from './trigger-actions/update-conversation-property';
 
@@ -201,7 +200,6 @@ const recommendedPlugins: RulePlugin[] = [
       [TriggerActionType.PrivateNoteCreate]: triggerActionPrivateNoteCreate,
       [TriggerActionType.FirstSlaBreach]: triggerActionFirstSLABreach,
       [TriggerActionType.NextSlaBreach]: triggerActionNextSLABreach,
-      [TriggerActionType.ResolutionSlaBreach]: triggerActionResolutionSLABreach,
       [TriggerActionType.CallEnded]: triggerActionCallEnded,
       [TriggerActionType.UpdateConversationProperty]: triggerActionUpdateConversationProperty,
     },
