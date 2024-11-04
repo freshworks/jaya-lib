@@ -59,6 +59,11 @@ export enum ResponseDueType {
   ResponseDue = 'RESPONSE_DUE',
 }
 
+export enum ResolutionDueType {
+  NO_RESOLUTION_DUE = 'NO_RESOLUTION_DUE',
+  RESOLUTION_DUE = 'RESOLUTION_DUE',
+}
+
 export enum ActorSubEntity {
   AgentGroupMapping = 'agent_group_mapping',
   AssignmentRule = 'assignment_rule',
@@ -210,6 +215,7 @@ export interface ModelProperties {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   properties: any;
   reopened_time: string | null;
+  resolution_due_type: ResolutionDueType;
   resolved_time: string | null;
   response_due_type: ResponseDueType;
   sla_policy_name?: string | null;
