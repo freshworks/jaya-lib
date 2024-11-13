@@ -221,6 +221,7 @@ describe('TimerRuleEngine test', () => {
           marketplaceServices: {
             requestProxy: {} as unknown as RequestProxy,
           },
+          featureFlags:{},
           timezoneOffset: -330,
         },
       );
@@ -258,6 +259,7 @@ describe('TimerRuleEngine test', () => {
           marketplaceServices: {
             requestProxy: {} as unknown as RequestProxy,
           },
+          featureFlags:{},
           timezoneOffset: -330,
         },
       );
@@ -295,6 +297,7 @@ describe('TimerRuleEngine test', () => {
           marketplaceServices: {
             requestProxy: {} as unknown as RequestProxy,
           },
+          featureFlags:{},
           timezoneOffset: -330,
         },
       );
@@ -332,6 +335,7 @@ describe('TimerRuleEngine test', () => {
           marketplaceServices: {
             requestProxy: {} as unknown as RequestProxy,
           },
+          featureFlags:{},
           timezoneOffset: -330,
         },
       );
@@ -369,6 +373,7 @@ describe('TimerRuleEngine test', () => {
           marketplaceServices: {
             requestProxy: {} as unknown as RequestProxy,
           },
+          featureFlags:{},
           timezoneOffset: -330,
         },
       );
@@ -407,6 +412,7 @@ describe('TimerRuleEngine test', () => {
             marketplaceServices: {
               requestProxy: {} as unknown as RequestProxy,
             },
+          featureFlags:{},
             timezoneOffset: -330,
           },
         );
