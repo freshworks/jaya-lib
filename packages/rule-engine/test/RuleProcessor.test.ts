@@ -216,7 +216,11 @@ describe('RuleProcessor test', () => {
           maxProductEventDelay: 30000,
         },
       ).then((rule) => {
-        assert.equal(rule.name, matchingRules[0].name);
+        if (rule) {
+          assert.equal(rule.name, matchingRules[0].name);
+        } else {
+          assert.fail('Expected rule to be non-null');
+        }
       });
     });
   });

@@ -55,6 +55,7 @@ describe('ActionExecutor test', () => {
           marketplaceServices: {
             requestProxy: {} as unknown as RequestProxy,
           },
+          featureFlags:{},
           timezoneOffset: -330,
         },
         convFieldsMap,
