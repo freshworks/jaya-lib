@@ -14,7 +14,7 @@ const isChangeMatching = (changedAssignee: string, assignChangeValue: string | n
 };
 
 const isTriggerChangeMatching = (productEventData: ProductEventData, triggerAction: TriggerAction): boolean => {
-  if (!productEventData.changes.model_changes.assigned_group_id) {
+  if (!productEventData.changes?.model_changes?.assigned_group_id) {
     return false;
   }
 
