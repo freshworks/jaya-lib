@@ -223,6 +223,13 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@freshworks-jaya/utilities@^0.2.10":
+  version "0.2.12"
+  resolved "https://registry.yarnpkg.com/@freshworks-jaya/utilities/-/utilities-0.2.12.tgz#db1cdbcbba6ef66a5e7a231f390e0797540a71ce"
+  integrity sha512-8MelCfzPjdgv4iisaJbyPW8ggNMcYSQJnppmW/kQ9FRi7FVRRES2TE+4bDIcTM7I6b8fGnlVzEqQJXmxaRAcfw==
+  dependencies:
+    moment-timezone "^0.5.33"
+
 "@google-cloud/common@^3.4.1":
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/@google-cloud/common/-/common-3.6.0.tgz#c2f6da5f79279a4a9ac7c71fc02d582beab98e8b"
@@ -5730,9 +5737,9 @@ moment-timezone@^0.5.33:
     moment ">= 2.9.0"
 
 "moment@>= 2.9.0", moment@^2.18.1:
-  version "2.29.1"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
-  integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
+  version "2.29.4"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
+  integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
 
 moo@^0.5.0, moo@^0.5.1:
   version "0.5.1"
