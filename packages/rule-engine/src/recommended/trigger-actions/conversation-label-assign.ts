@@ -15,8 +15,8 @@ const isChangeMatching = (changedAssignee: string, assignChangeValue: string | n
 
 const isTriggerChangeMatching = (productEventData: ProductEventData, triggerAction: TriggerAction): boolean => {
   if (
-    !productEventData.changes.model_changes.label_category_id &&
-    !productEventData.changes.model_changes.label_subcategory_id
+    !productEventData.changes?.model_changes?.label_category_id &&
+    !productEventData.changes?.model_changes?.label_subcategory_id
   ) {
     return false;
   }
