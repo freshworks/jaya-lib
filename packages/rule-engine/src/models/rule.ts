@@ -33,6 +33,7 @@ export enum TriggerActionType {
   MessageCreate = 'MESSAGE_CREATE',
   NextSlaBreach = 'NEXT_SLA_BREACH',
   PrivateNoteCreate = 'PRIVATE_NOTE_CREATE',
+  ResolutionSlaBreach = 'RESOLUTION_SLA_BREACH',
   UpdateConversationProperty = 'UPDATE_CONVERSATION_PROPERTY',
 }
 
