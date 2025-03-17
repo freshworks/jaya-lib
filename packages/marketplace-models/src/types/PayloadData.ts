@@ -215,6 +215,7 @@ export interface ModelProperties {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   properties: any;
   reopened_time: string | null;
+  resolution_due_breached?: boolean;
   resolution_due_type: ResolutionDueType;
   resolved_time: string | null;
   response_due_type: ResponseDueType;
@@ -284,6 +285,7 @@ export interface ProductEventData {
       label_category_id: [string, string];
       label_subcategory_id: [string, string];
       priority: [string, string];
+      resolution_sla_breach: [boolean, boolean];
       sla_breach: [boolean, boolean];
       status: [ChangedStatus, ChangedStatus];
     };
